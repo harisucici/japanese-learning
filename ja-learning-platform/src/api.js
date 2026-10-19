@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api/reading').replace(/\/$/, '')
-const READING_API_BASE = (import.meta.env.VITE_READING_API_BASE_URL || import.meta.env.VITE_MATERIALS_API_BASE_URL || '/api/reading').replace(/\/$/, '')
 // Remove the token saved by earlier releases; all future identity is in an HttpOnly cookie.
 try { window.localStorage.removeItem('learning_token') } catch { /* Storage may be disabled. */ }
 export const assetUrl = (url) => {
@@ -18,8 +17,7 @@ export const useLearningStore = defineStore('learning', {
   actions: {
     async request(path, body, auth = false, retried = false) {
       if (auth) await this.ensureGuest()
-      const remoteReading = path === 'materials' || path.startsWith('materials/') || path === 'novel-lessons' || path.startsWith('novel-lessons/')
-      const base = remoteReading ? READING_API_BASE : API_BASE
+      const base = API_BASE
       const response = await fetch(`${base}/learning/${path}`, {
         method: body === undefined ? 'GET' : 'POST',
         credentials: 'include',
