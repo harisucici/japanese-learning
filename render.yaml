@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: japanese-learning-platform
+    runtime: node
+    plan: free
+    buildCommand: bash scripts/render-build.sh
+    startCommand: node ja-learning-backend/dist/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22.22.0
+      # Used by Prisma Client generation only. The running app uses remote Turso.
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: TURSO_URL
+        value: libsql://japanese-learning-harisucici.aws-ap-northeast-1.turso.io
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      - key: USER_TURSO_URL
+        value: libsql://user-data-harisucici.aws-ap-northeast-1.turso.io
+      - key: USER_TURSO_AUTH_TOKEN
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENABLE_USER_REGISTRATION
+        value: "false"
+      - key: AUDIO_PUBLIC_BASE_URL
+        value: https://res.cloudinary.com/dfh2jvj6e/video/upload/ja-learning/audio
+      # Vite embeds these values while building the browser bundle.
+      - key: VITE_API_BASE_URL
+        value: /api/v1
+      - key: VITE_READING_API_BASE_URL
+        value: /api/v1

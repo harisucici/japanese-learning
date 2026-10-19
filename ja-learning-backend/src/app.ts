@@ -33,6 +33,15 @@ app.use('/api/v1/stats', statsRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
+if (config.nodeEnv === 'production') {
+  const siteDirectory = path.resolve(__dirname, '../../ja-learning-platform/dist');
+  app.use(express.static(siteDirectory, { index: false }));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/') || req.path.startsWith('/study-assets/') || req.path.startsWith('/exam-assets/')) return next();
+    res.sendFile(path.join(siteDirectory, 'index.html'));
+  });
+}
+
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
