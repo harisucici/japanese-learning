@@ -176,8 +176,8 @@ class AppColors {
   // 浅色主题（可选：浅色模式）
   // ============================================================
 
-  /// 浅色背景 - 白青色
-  static const Color lightBackground = Color(0xFFF0FAFA);
+  /// 浅色背景 - 纯白（Web 桌面端主题背景）
+  static const Color lightBackground = Color(0xFFFFFFFF);
 
   /// 浅色表面 - 纯白
   static const Color lightSurface = Color(0xFFFFFFFF);
@@ -218,4 +218,50 @@ class AppColors {
 
   /// 深色提示文字
   static const Color darkTextHint = Color(0xFF78909C);
+
+  // ============================================================
+  // 日式传统色（Japanese Classical Colors）
+  // ============================================================
+
+  /// 藤紫 - #89729E（辅助装饰，优雅紫色）
+  static const Color sumire = Color(0xFF89729E);
+
+  /// 朱色 - #C73E3E（强调/重要按钮，传统朱红）
+  static const Color shu = Color(0xFFC73E3E);
+
+  /// 朱色变体 - 浅色（hover）
+  static const Color shuLight = Color(0xFFD95555);
+
+  /// 朱色变体 - 深色（pressed）
+  static const Color shuDark = Color(0xFFA02E2E);
+
+  /// 金茶色 - #C9A96E（等级/成就，传统金色）
+  static const Color kincha = Color(0xFFC9A96E);
+
+  /// 金茶色变体 - 浅色
+  static const Color kinchaLight = Color(0xFFD4B87A);
+
+  /// 金茶色变体 - 深色
+  static const Color kinchaDark = Color(0xFFB08F5A);
+
+  /// 和纸白 - #FAF8F5（背景色，温暖的米白）
+  static const Color washi = Color(0xFFFAF8F5);
+
+  /// 和纸白变体 - 稍深
+  static const Color washiDeep = Color(0xFFF5F1EC);
+
+  /// 墨色 - #1C1C1C（正文文字，深沉的墨黑）
+  static const Color sumi = Color(0xFF1C1C1C);
+
+  /// 墨色变体 - 次要文字
+  static const Color sumiLight = Color(0xFF4A4A4A);
+
+  /// 墨色变体 - 辅助文字
+  static const Color sumiLighter = Color(0xFF7A7A7A);
+
+  /// 和纸边框色 - #E5E0D8（温暖的浅灰边框，日式风格）
+  static const Color washiBorder = Color(0xFFE5E0D8);
+
+  /// 和纸边框色 - 深色
+  static const Color washiBorderDark = Color(0xFFB8B0A3);
 }

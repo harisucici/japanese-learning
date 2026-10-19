@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../redux/redux.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/models/models.dart';
 
 import 'package:japanese_learning_platform/utils/color_extensions.dart';
@@ -73,7 +74,7 @@ class ExamResultPage extends StatelessWidget {
                 _buildWrongAnswersList(context, session),
                 const SizedBox(height: 20),
                 _buildReviewSuggestions(context, session),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xxxxl),
                 _buildActionButtons(context, session),
               ],
             ),

@@ -1,224 +1,274 @@
 /// 练习页面
-/// 
-/// 按 JLPT 等级和题型浏览练习内容
-/// 支持等级筛选和分类展示
+///
+/// 星野京都风格 × Material Design 3
+/// 全幅沉浸式布局 + 极端留白 + 轻盈字体
 library;
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/app_illustrations.dart';
 import '../../../../shared/widgets/app_scaffold.dart';
-import '../../../../shared/widgets/section_header.dart';
-import '../../../../shared/widgets/content_card.dart';
-import '../../../../shared/widgets/jlpt_level_selector.dart';
-import '../../../../core/theme/theme.dart';
-import '../../../../core/router/app_router.dart';
 
-import 'package:japanese_learning_platform/utils/color_extensions.dart';
-/// 练习页面组件
-/// 
-/// 按 JLPT 等级分类展示练习内容：
-/// - 顶部：等级选择器
-/// - 中部：题型分类（词汇、语法、阅读、听力）
-/// - 下部：推荐练习列表
-class PracticePage extends StatefulWidget {
-  const PracticePage({super.key});
+/// 练习类型
+enum PracticeType {
+  vocabulary('词汇', '語彙', Icons.translate_rounded),
+  grammar('语法', '文法', Icons.rule_rounded),
+  reading('阅读', '読解', Icons.menu_book_rounded),
+  listening('听力', '聴解', Icons.headphones_rounded);
 
-  @override
-  State<PracticePage> createState() => _PracticePageState();
+  final String name;
+  final String japaneseName;
+  final IconData icon;
+
+  const PracticeType(this.name, this.japaneseName, this.icon);
 }
 
-class _PracticePageState extends State<PracticePage> {
-  /// 当前选中的 JLPT 等级
-  String _selectedLevel = 'N5';
+/// 练习页面
+class PracticePage extends StatelessWidget {
+  const PracticePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      backgroundColor: AppColors.washi,
       scrollable: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 页面标题
-          _buildHeader(context),
-          
-          // 等级选择器
-          JlptLevelSelector(
-            selectedLevel: _selectedLevel,
-            onLevelChanged: (level) {
-              setState(() => _selectedLevel = level);
-            },
+          // 全幅 Hero 区域
+          HeroImageArea(
+            height: 380,
+            primaryColor: AppColors.primary,
+            illustration: SakuraBranchIllustration(
+              width: 240,
+              height: 160,
+              color: const Color(0xFFFFB7C5),
+            ),
+            overlayText: '学習の道',
           ),
-          
-          // 题型分类
-          const SectionHeader(title: '题型分类'),
-          _buildCategoryGrid(context),
-          
+
+          // 标题区域
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xxxxl,
+              80,
+              AppSpacing.xxxxl,
+              60,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '练习',
+                  style: TextStyle(
+                    fontFamily: AppTypography.serifFontFamily,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                    color: AppColors.sumi,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  '选择题型，开始专项训练',
+                  style: TextStyle(
+                    fontFamily: AppTypography.fontFamily,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    color: AppColors.sumiLighter,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 题型分类 - 编辑式布局
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxxl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '题型',
+                  style: TextStyle(
+                    fontFamily: AppTypography.serifFontFamily,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.sumiLighter,
+                    letterSpacing: 3,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                ...PracticeType.values.map((type) => _buildPracticeTypeItem(type)),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 80),
+
           // 推荐练习
-          const SectionHeader(title: '推荐练习'),
-          _buildRecommendedList(context),
-          
-          // 底部间距
-          const SizedBox(height: AppSpacing.xxxxl),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxxl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '推荐练习',
+                  style: TextStyle(
+                    fontFamily: AppTypography.serifFontFamily,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.sumiLighter,
+                    letterSpacing: 3,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _buildRecommendedPractice(context, 0),
+                _buildRecommendedPractice(context, 1),
+                _buildRecommendedPractice(context, 2),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 120),
         ],
       ),
     );
   }
 
-  /// 构建页面头部
-  Widget _buildHeader(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        AppSpacing.xxl,
-        AppSpacing.lg,
-        AppSpacing.xl,
-      ),
-      child: Text(
-        '练习',
-        style: textTheme.displayLarge?.copyWith(
-          color: colorScheme.onSurface,
+  Widget _buildPracticeTypeItem(PracticeType type) {
+    return GestureDetector(
+      onTap: () {
+        // TODO: 导航到对应练习页面
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 2),
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 0),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.washiBorder,
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.primary.withOpacity(0.3),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Icon(
+                type.icon,
+                color: AppColors.primary,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    type.name,
+                    style: TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.sumi,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    type.japaneseName,
+                    style: TextStyle(
+                      fontFamily: AppTypography.serifFontFamily,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      color: AppColors.sumiLighter,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.sumiLighter.withOpacity(0.5),
+              size: 14,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  /// 构建题型分类网格
-  /// 
-  /// 展示四种题型：词汇、语法、阅读理解、听力
-  Widget _buildCategoryGrid(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    
-    final categories = [
-      ('词汇', '2,340 题', Icons.text_fields, colorScheme.primary),
-      ('语法', '1,560 题', Icons.book, colorScheme.secondary),
-      ('阅读理解', '890 题', Icons.article, colorScheme.tertiary),
-      ('听力', '650 题', Icons.headphones, colorScheme.error),
-    ];
+  Widget _buildRecommendedPractice(BuildContext context, int index) {
+    final titles = ['N3 词汇精选', 'N2 语法突破', 'N4 阅读理解'];
+    final counts = [50, 30, 25];
+    final colors = [AppColors.primary, AppColors.shu, AppColors.kincha];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 2,
-        mainAxisSpacing: AppSpacing.md,
-        crossAxisSpacing: AppSpacing.md,
-        childAspectRatio: 1.4,
-        children: categories.map((cat) {
-          return ContentCard(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            onTap: () {
-              // 导航到对应题型练习
-              AppRouter.goToQuiz(context, _selectedLevel);
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: cat.$4.withAlphaCompat(0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: Icon(
-                    cat.$3,
-                    size: 20,
-                    color: cat.$4,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  cat.$1,
-                  style: textTheme.headlineSmall?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: AppTypography.semiBold,
-                  ),
-                ),
-                Text(
-                  cat.$2,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
+    return GestureDetector(
+      onTap: () {
+        // TODO: 导航到练习详情
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 2),
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 0),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.washiBorder,
+              width: 0.5,
             ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  /// 构建推荐练习列表
-  Widget _buildRecommendedList(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    
-    final items = [
-      ('N5 基础词汇 01', '50 题', '约 10 分钟'),
-      ('N5 语法入门', '30 题', '约 15 分钟'),
-      ('N5 阅读练习', '10 篇', '约 20 分钟'),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Column(
-        children: items.map((item) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: ContentCard(
-              onTap: () {
-                AppRouter.goToQuiz(context, _selectedLevel);
-              },
-              child: Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(AppRadius.md),
-                    ),
-                    child: Icon(
-                      Icons.play_arrow,
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.$1,
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: colorScheme.onSurface,
-                            fontWeight: AppTypography.medium,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          '${item.$2} · ${item.$3}',
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ],
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: colors[index],
+                shape: BoxShape.circle,
               ),
             ),
-          );
-        }).toList(),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                titles[index],
+                style: TextStyle(
+                  fontFamily: AppTypography.fontFamily,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.sumi,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            Text(
+              '${counts[index]} 题',
+              style: TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: 12,
+                fontWeight: FontWeight.w300,
+                color: AppColors.sumiLighter,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

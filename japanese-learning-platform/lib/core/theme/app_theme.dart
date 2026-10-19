@@ -28,7 +28,7 @@ class AppTheme {
   // 浅色主题
   // ============================================================
 
-  /// 浅色主题 - 日式古典（暖米白 + 深靛蓝）
+  /// 浅色主题 - 日式古典（白色背景 + 深色文字）
   static ThemeData get light {
     const colorScheme = ColorScheme.light(
       // 主色 - 深靛蓝（墨色）
@@ -56,13 +56,13 @@ class AppTheme {
       onErrorContainer: AppColors.secondaryDark,
 
       // 表面 - 纯白（卡片）
-      surface: AppColors.surface,
-      onSurface: AppColors.textPrimary,
+      surface: AppColors.lightSurface,
+      onSurface: AppColors.lightTextPrimary,
       surfaceContainerHighest: AppColors.surfaceVariant,
-      onSurfaceVariant: AppColors.textSecondary,
+      onSurfaceVariant: AppColors.lightTextSecondary,
 
       // 边框 - 和纸边缘
-      outline: AppColors.border,
+      outline: AppColors.lightBorder,
       outlineVariant: AppColors.borderLight,
     );
 
@@ -71,11 +71,11 @@ class AppTheme {
       brightness: Brightness.light,
       colorScheme: colorScheme,
 
-      // 基础颜色 - 暖米白背景
-      scaffoldBackgroundColor: AppColors.background,
-      canvasColor: AppColors.surface,
-      cardColor: AppColors.surface,
-      dialogBackgroundColor: AppColors.surface,
+      // 基础颜色 - 白色背景
+      scaffoldBackgroundColor: AppColors.lightBackground,
+      canvasColor: AppColors.lightSurface,
+      cardColor: AppColors.lightSurface,
+      dialogBackgroundColor: AppColors.lightSurface,
       dividerColor: AppColors.divider,
 
       // 字体配置
@@ -259,7 +259,7 @@ class AppTheme {
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.displayLarge,
         fontWeight: AppTypography.bold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightTight,
         letterSpacing: AppTypography.letterSpacingTight,
       ),
@@ -267,7 +267,7 @@ class AppTheme {
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.displayMedium,
         fontWeight: AppTypography.bold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightTight,
         letterSpacing: AppTypography.letterSpacingTight,
       ),
@@ -275,82 +275,82 @@ class AppTheme {
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.displaySmall,
         fontWeight: AppTypography.bold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightTight,
       ),
       headlineLarge: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.headlineLarge,
         fontWeight: AppTypography.semiBold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightNormal,
       ),
       headlineMedium: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.headlineMedium,
         fontWeight: AppTypography.semiBold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightNormal,
       ),
       headlineSmall: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.headlineSmall,
         fontWeight: AppTypography.semiBold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightNormal,
       ),
       titleLarge: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.titleLarge,
         fontWeight: AppTypography.semiBold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightNormal,
       ),
       titleMedium: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.titleMedium,
         fontWeight: AppTypography.medium,
-        color: AppColors.textSecondary,
+        color: AppColors.lightTextSecondary,
         height: AppTypography.lineHeightNormal,
       ),
       bodyLarge: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.bodyLarge,
         fontWeight: AppTypography.regular,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
         height: AppTypography.lineHeightRelaxed,
       ),
       bodyMedium: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.bodyMedium,
         fontWeight: AppTypography.regular,
-        color: AppColors.textSecondary,
+        color: AppColors.lightTextSecondary,
         height: AppTypography.lineHeightNormal,
       ),
       bodySmall: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.bodySmall,
         fontWeight: AppTypography.regular,
-        color: AppColors.textHint,
+        color: AppColors.lightTextHint,
         height: AppTypography.lineHeightNormal,
       ),
       labelLarge: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.bodyMedium,
         fontWeight: AppTypography.medium,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
       ),
       labelMedium: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.bodySmall,
         fontWeight: AppTypography.medium,
-        color: AppColors.textSecondary,
+        color: AppColors.lightTextSecondary,
       ),
       labelSmall: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.labelSmall,
         fontWeight: AppTypography.medium,
-        color: AppColors.textHint,
+        color: AppColors.lightTextHint,
       ),
     );
   }
@@ -462,13 +462,13 @@ class AppTheme {
   // 组件主题构建器
   // ============================================================
 
-  /// 浅色 AppBar 主题 - 日式古典（白色背景 + 深靛蓝文字）
+  /// 浅色 AppBar 主题 - 日式古典（白色背景 + 深色文字）
   static AppBarTheme _buildLightAppBarTheme(ColorScheme colorScheme) {
     return const AppBarTheme(
       elevation: 0,
       scrolledUnderElevation: 0, // 日式扁平
-      backgroundColor: AppColors.surface,
-      foregroundColor: AppColors.textPrimary,
+      backgroundColor: AppColors.lightSurface,
+      foregroundColor: AppColors.lightTextPrimary,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       titleSpacing: AppSpacing.lg,
@@ -476,7 +476,7 @@ class AppTheme {
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.headlineMedium,
         fontWeight: AppTypography.semiBold,
-        color: AppColors.textPrimary,
+        color: AppColors.lightTextPrimary,
       ),
     );
   }
@@ -504,12 +504,12 @@ class AppTheme {
   static CardTheme _buildLightCardTheme(ColorScheme colorScheme) {
     return CardTheme(
       elevation: 0, // 日式极简
-      color: AppColors.surface,
+      color: AppColors.lightSurface,
       surfaceTintColor: Colors.transparent,
       shadowColor: const Color(0xFF2D2D3D), // 暖色调阴影
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.lg), // 16px
-        side: const BorderSide(color: AppColors.border, width: 1),
+        side: const BorderSide(color: AppColors.lightBorder, width: 1),
       ),
       margin: EdgeInsets.zero,
     );

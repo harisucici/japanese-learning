@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 import '../../../../redux/redux.dart';
 import '../../../../shared/widgets/app_scaffold.dart';
 import '../../../../shared/widgets/content_card.dart';
@@ -134,7 +136,7 @@ class StatisticsPage extends StatelessWidget {
     final minutes = totalMinutes % 60;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -168,6 +170,7 @@ class StatisticsPage extends StatelessWidget {
                         '总学习时长',
                         style: textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
+                  letterSpacing: AppTypography.letterSpacingWide,
                         ),
                       ),
                     ],
@@ -340,6 +343,7 @@ class _LevelProgressTile extends StatelessWidget {
                   '${progress.correctCount}/${progress.totalQuestions} · $percentage%',
                   style: textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
+                  letterSpacing: AppTypography.letterSpacingWide,
                   ),
                 ),
               ],
@@ -445,6 +449,7 @@ class _TypeMasteryTile extends StatelessWidget {
               '总 ${mastery.totalQuestions} 题 · 正确 ${mastery.correctCount}',
               style: textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
+                  letterSpacing: AppTypography.letterSpacingWide,
               ),
             ),
           ],

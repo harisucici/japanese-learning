@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 import '../../../../redux/redux.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../shared/models/models.dart';

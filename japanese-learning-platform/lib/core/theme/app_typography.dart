@@ -158,6 +158,14 @@ class AppTypography {
     height: lineHeightNormal,
   );
   
+  /// Body Small - 辅助文字
+  static TextStyle get bodySmallStyle => const TextStyle(
+    fontSize: bodySmall,
+    fontWeight: regular,
+    letterSpacing: letterSpacingNormal,
+    height: lineHeightNormal,
+  );
+  
   /// Label Large - 按钮文字
   static TextStyle get labelLargeStyle => const TextStyle(
     fontSize: labelLarge,

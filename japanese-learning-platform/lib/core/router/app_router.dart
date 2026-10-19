@@ -1,22 +1,22 @@
 /// 应用路由配置
 /// 
 /// 使用 GoRouter 实现声明式路由
-/// 核心路由结构：底部导航（首页/练习/复习/我的）+ 子路由
+/// 核心路由结构：侧边栏/顶部导航（真题库/练习/复习/模拟考试/个人中心）+ 子路由
 library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../shared/widgets/app_nav_bar.dart';
-import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/exam/presentation/pages/exam_config_page.dart';
 import '../../features/practice/presentation/pages/practice_page.dart';
 import '../../features/review/presentation/pages/review_page.dart';
+import '../../features/exam/presentation/pages/mock_exam_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/quiz/presentation/pages/quiz_page.dart';
 import '../../features/quiz/presentation/pages/quiz_answer_page.dart';
 import '../../features/wrong_book/presentation/pages/wrong_book_page.dart';
 import '../../features/statistics/presentation/pages/statistics_page.dart';
-import '../../features/exam/presentation/pages/exam_config_page.dart';
 import '../../features/exam/presentation/pages/exam_page.dart';
 import '../../features/exam/presentation/pages/exam_result_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -105,19 +105,19 @@ class AppRouter {
     
     // 路由表
     routes: [
-      // Shell 路由 - 底部导航容器（每个分支独立状态栈）
+      // Shell 路由 - 侧边栏/顶部导航容器（每个分支独立状态栈）
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppNavBar(navigationShell: navigationShell);
         },
         branches: [
-          // 首页
+          // 真题库
           StatefulShellBranch(routes: [
             GoRoute(
               path: home,
               name: 'home',
               pageBuilder: (context, state) {
-                return const NoTransitionPage(child: HomePage());
+                return const NoTransitionPage(child: ExamConfigPage());
               },
             ),
           ]),
@@ -138,6 +138,16 @@ class AppRouter {
               name: 'review',
               pageBuilder: (context, state) {
                 return const NoTransitionPage(child: ReviewPage());
+              },
+            ),
+          ]),
+          // 模拟考试
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/mock-exam',
+              name: 'mockExam',
+              pageBuilder: (context, state) {
+                return const NoTransitionPage(child: MockExamPage());
               },
             ),
           ]),

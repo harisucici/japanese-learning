@@ -89,27 +89,39 @@ class _DatabaseLearningAppState extends State<DatabaseLearningApp> {
   }
 
   @override
-  Widget build(BuildContext context) => MaterialApp.router(
-        title: '日本語学習',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        routerConfig: router,
-        builder: (context, child) => FutureBuilder<void>(
-            future: ready,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()));
-              }
-              if (snapshot.hasError) {
-                return Scaffold(
-                    body: _Message(
-                        text: '服务连接失败：${_error(snapshot.error!)}',
-                        retry: () => setState(() => ready = api.initialize())));
-              }
-              return child ?? const SizedBox.shrink();
-            }),
-      );
+  Widget build(BuildContext context) => LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive theme switching:
+        // - Mobile (< 768px): dark teal theme
+        // - Web/Desktop (>= 768px): white light theme
+        final isMobile = constraints.maxWidth < 768;
+        final themeData = isMobile ? AppTheme.dark : AppTheme.light;
+
+        return MaterialApp.router(
+          title: '日本語学習',
+          debugShowCheckedModeBanner: false,
+          theme: themeData,
+          darkTheme: AppTheme.dark,
+          themeMode: isMobile ? ThemeMode.dark : ThemeMode.light,
+          routerConfig: router,
+          builder: (context, child) => FutureBuilder<void>(
+              future: ready,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const Scaffold(
+                      body: Center(child: CircularProgressIndicator()));
+                }
+                if (snapshot.hasError) {
+                  return Scaffold(
+                      body: _Message(
+                          text: '服务连接失败：${_error(snapshot.error!)}',
+                          retry: () => setState(() => ready = api.initialize())));
+                }
+                return child ?? const SizedBox.shrink();
+              }),
+        );
+      },
+    );
 }
 
 class _Shell extends StatelessWidget {

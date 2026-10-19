@@ -1,22 +1,23 @@
 /// 个人中心页面
-/// 
-/// 展示用户信息、学习统计和设置入口
+///
+/// 星野京都风格 × Material Design 3
+/// 全幅沉浸式布局 + 极端留白 + 轻盈字体
+/// 枯山水波纹装饰，简洁信息展示
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
 
 import '../../../../redux/redux.dart';
 import '../../../../core/router/app_router.dart';
-import '../../../../shared/widgets/app_scaffold.dart';
-import '../../../../shared/widgets/section_header.dart';
-import '../../../../shared/widgets/content_card.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../shared/models/models.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/app_illustrations.dart';
+import '../../../../shared/widgets/app_scaffold.dart';
 
-import 'package:japanese_learning_platform/utils/color_extensions.dart';
-/// 个人中心页面组件
+/// 个人中心页面
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -32,18 +33,155 @@ class ProfilePage extends StatelessWidget {
         final stats = statsState.statistics;
 
         return AppScaffold(
+          backgroundColor: AppColors.washi,
           scrollable: true,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context),
-              _buildUserInfoCard(context, user),
-              _buildLearningStats(context, statsState),
-              const SectionHeader(title: '功能入口'),
-              _buildFeatureEntries(context),
-              const SectionHeader(title: '设置'),
-              _buildSettingsList(context, themeMode),
-              const SizedBox(height: AppSpacing.xxxxl),
+              // 全幅 Hero 区域 - 枯山水
+              HeroImageArea(
+                height: 360,
+                primaryColor: AppColors.primary,
+                illustration: KaresansuiPattern(
+                  width: 280,
+                  height: 140,
+                  color: const Color(0xFF9E9E9E),
+                ),
+                overlayText: '私のページ',
+              ),
+
+              // 标题区域
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.xxxxl,
+                  80,
+                  AppSpacing.xxxxl,
+                  60,
+                ),
+                child: Text(
+                  '我的',
+                  style: TextStyle(
+                    fontFamily: AppTypography.serifFontFamily,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                    color: AppColors.sumi,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+
+              // 用户信息 - 简洁展示
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxxl),
+                child: _buildUserInfoSection(user),
+              ),
+
+              const SizedBox(height: 80),
+
+              // 学习统计
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxxl),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '学习统计',
+                      style: TextStyle(
+                        fontFamily: AppTypography.serifFontFamily,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.sumiLighter,
+                        letterSpacing: 3,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    _buildLearningStats(context, statsState),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 80),
+
+              // 功能入口
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxxl),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '功能',
+                      style: TextStyle(
+                        fontFamily: AppTypography.serifFontFamily,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.sumiLighter,
+                        letterSpacing: 3,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    _buildFeatureEntry(
+                      title: '错题本',
+                      subtitle: '回顾答错的题目',
+                      onTap: () => AppRouter.goToWrongBook(context),
+                    ),
+                    _buildFeatureEntry(
+                      title: '学习统计',
+                      subtitle: '查看完整学习数据',
+                      onTap: () => AppRouter.goToStatistics(context),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 80),
+
+              // 设置
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxxl),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '设置',
+                      style: TextStyle(
+                        fontFamily: AppTypography.serifFontFamily,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.sumiLighter,
+                        letterSpacing: 3,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    _buildSettingItem(
+                      title: '外观',
+                      subtitle: _getThemeModeText(themeMode),
+                      onTap: () => StoreProvider.of<AppState>(context)
+                          .dispatch(toggleThemeMode()),
+                    ),
+                    _buildSettingItem(
+                      title: '语言',
+                      subtitle: '简体中文',
+                      onTap: () {},
+                    ),
+                    _buildSettingItem(
+                      title: '通知',
+                      subtitle: '已开启',
+                      onTap: () {},
+                    ),
+                    _buildSettingItem(
+                      title: '帮助中心',
+                      onTap: () {},
+                    ),
+                    _buildSettingItem(
+                      title: '关于',
+                      subtitle: 'v1.0.0',
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 120),
             ],
           ),
         );
@@ -51,94 +189,46 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        AppSpacing.xxl,
-        AppSpacing.lg,
-        AppSpacing.xl,
-      ),
-      child: Text(
-        '我的',
-        style: textTheme.displayLarge?.copyWith(
-          color: colorScheme.onSurface,
+  Widget _buildUserInfoSection(User? user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          user?.name ?? '学习者',
+          style: TextStyle(
+            fontFamily: AppTypography.fontFamily,
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+            color: AppColors.sumi,
+            letterSpacing: 1,
+          ),
         ),
-      ),
+        const SizedBox(height: 12),
+        Text(
+          '当前等级：${user?.currentLevel.displayName ?? 'N5'}',
+          style: TextStyle(
+            fontFamily: AppTypography.fontFamily,
+            fontSize: 13,
+            fontWeight: FontWeight.w300,
+            color: AppColors.sumiLighter,
+            letterSpacing: 1.5,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildUserInfoCard(BuildContext context, User? user) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: ContentCard(
-        child: Row(
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(AppRadius.full),
-              ),
-              child: Icon(
-                Icons.person,
-                size: 28,
-                color: colorScheme.onPrimaryContainer,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    user?.name ?? '学习者',
-                    style: textTheme.headlineSmall?.copyWith(
-                      color: colorScheme.onSurface,
-                      fontWeight: AppTypography.semiBold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    '当前等级：${user?.currentLevel.displayName ?? 'N5'}',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.edit_outlined,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLearningStats(
-      BuildContext context, StatisticsState statsState) {
+  Widget _buildLearningStats(BuildContext context, StatisticsState statsState) {
     if (statsState.loading) {
       return const Padding(
         padding: EdgeInsets.all(AppSpacing.lg),
         child: Center(child: CircularProgressIndicator()),
       );
     }
-    return _renderLearningStats(context, statsState.statistics);
+    return _renderLearningStats(statsState.statistics);
   }
 
-  Widget _renderLearningStats(
-      BuildContext context, LearningStatistics? stats) {
+  Widget _renderLearningStats(LearningStatistics? stats) {
     final totalQuestions = stats?.totalAnswers ?? 0;
     final accuracy = ((stats?.overallAccuracy ?? 0.0) * 100).toInt();
     final totalMinutes = (stats?.totalDurationMs ?? 0) ~/ 60000;
@@ -151,270 +241,194 @@ class ProfilePage extends StatelessWidget {
       duration = '${minutes}m';
     }
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        AppSpacing.xxl,
-        AppSpacing.lg,
-        0,
-      ),
-      child: GestureDetector(
-        onTap: () => AppRouter.goToStatistics(context),
-        child: ContentCard(
-          child: Row(
-            children: [
-              Expanded(
-                child: _buildStatItem(
-                  context: context,
-                  value: '$totalQuestions',
-                  label: '总题数',
-                ),
-              ),
-              _buildDivider(context),
-              Expanded(
-                child: _buildStatItem(
-                  context: context,
-                  value: '$accuracy%',
-                  label: '正确率',
-                ),
-              ),
-              _buildDivider(context),
-              Expanded(
-                child: _buildStatItem(
-                  context: context,
-                  value: duration,
-                  label: '学习时长',
-                ),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        // TODO: 导航到统计详情页
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildStatItem(
+              value: '$totalQuestions',
+              label: '总题数',
+              color: AppColors.primary,
+            ),
           ),
-        ),
+          Container(width: 0.5, height: 60, color: AppColors.washiBorder),
+          Expanded(
+            child: _buildStatItem(
+              value: '$accuracy%',
+              label: '正确率',
+              color: AppColors.kincha,
+            ),
+          ),
+          Container(width: 0.5, height: 60, color: AppColors.washiBorder),
+          Expanded(
+            child: _buildStatItem(
+              value: duration,
+              label: '学习时长',
+              color: AppColors.sumire,
+            ),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildDivider(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 40,
-      color: Theme.of(context).colorScheme.outline.withAlphaCompat(0.3),
     );
   }
 
   Widget _buildStatItem({
-    required BuildContext context,
     required String value,
     required String label,
+    required Color color,
   }) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Text(
           value,
-          style: textTheme.headlineMedium?.copyWith(
-            color: colorScheme.primary,
-            fontWeight: AppTypography.bold,
+          style: TextStyle(
+            fontFamily: AppTypography.serifFontFamily,
+            fontSize: 32,
+            fontWeight: FontWeight.w300,
+            color: color,
+            letterSpacing: 1,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: 12),
         Text(
           label,
-          style: textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
+          style: TextStyle(
+            fontFamily: AppTypography.fontFamily,
+            fontSize: 11,
+            fontWeight: FontWeight.w400,
+            color: AppColors.sumiLighter,
+            letterSpacing: 2,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildFeatureEntries(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    final entries = [
-      _FeatureEntry(
-        icon: Icons.bookmark_outline,
-        iconColor: colorScheme.error,
-        title: '错题本',
-        subtitle: '回顾答错的题目',
-        onTap: () => AppRouter.goToWrongBook(context),
-      ),
-      _FeatureEntry(
-        icon: Icons.bar_chart_rounded,
-        iconColor: colorScheme.primary,
-        title: '学习统计',
-        subtitle: '查看完整学习数据',
-        onTap: () => AppRouter.goToStatistics(context),
-      ),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: ContentCard(
-        padding: EdgeInsets.zero,
-        child: Column(
-          children: entries
-              .map((entry) => ListTile(
-                    leading: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: entry.iconColor.withAlphaCompat(0.1),
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                      ),
-                      child: Icon(entry.icon, color: entry.iconColor, size: 20),
+  Widget _buildFeatureEntry({
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 2),
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 0),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.washiBorder,
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.sumi,
+                      letterSpacing: 0.5,
                     ),
-                    title: Text(
-                      entry.title,
-                      style: textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurface,
-                        fontWeight: AppTypography.medium,
-                      ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      color: AppColors.sumiLighter,
+                      letterSpacing: 1,
                     ),
-                    subtitle: Text(
-                      entry.subtitle,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    trailing: Icon(
-                      Icons.chevron_right,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    onTap: entry.onTap,
-                  ))
-              .toList(),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.sumiLighter.withOpacity(0.5),
+              size: 12,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSettingsList(BuildContext context, ThemeMode currentThemeMode) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    String themeModeText;
-    switch (currentThemeMode) {
-      case ThemeMode.system:
-        themeModeText = '跟随系统';
-        break;
-      case ThemeMode.light:
-        themeModeText = '浅色';
-        break;
-      case ThemeMode.dark:
-        themeModeText = '深色';
-        break;
-    }
-
-    final settings = [
-      _SettingsItem(
-        icon: Icons.palette_outlined,
-        title: '外观',
-        subtitle: themeModeText,
-        onTap: () => StoreProvider.of<AppState>(context).dispatch(toggleThemeMode()),
-      ),
-      _SettingsItem(
-        icon: Icons.language,
-        title: '语言',
-        subtitle: '简体中文',
-        onTap: () {},
-      ),
-      _SettingsItem(
-        icon: Icons.notifications_outlined,
-        title: '通知',
-        subtitle: '已开启',
-        onTap: () {},
-      ),
-      _SettingsItem(
-        icon: Icons.help_outline,
-        title: '帮助中心',
-        onTap: () {},
-      ),
-      _SettingsItem(
-        icon: Icons.info_outline,
-        title: '关于',
-        subtitle: 'v1.0.0',
-        onTap: () {},
-      ),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: ContentCard(
-        padding: EdgeInsets.zero,
-        child: Column(
-          children: settings.asMap().entries.map((entry) {
-            final index = entry.key;
-            final item = entry.value;
-            return Column(
-              children: [
-                ListTile(
-                  leading: Icon(
-                    item.icon,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  title: Text(
-                    item.title,
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  subtitle: item.subtitle != null
-                      ? Text(
-                          item.subtitle!,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        )
-                      : null,
-                  trailing: Icon(
-                    Icons.chevron_right,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  onTap: item.onTap,
+  Widget _buildSettingItem({
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 2),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.washiBorder,
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontFamily: AppTypography.fontFamily,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.sumi,
+                  letterSpacing: 0.5,
                 ),
-                if (index < settings.length - 1)
-                  Divider(
-                    height: 1,
-                    indent: AppSpacing.xxl + AppSpacing.lg,
-                    color: colorScheme.outline.withAlphaCompat(0.2),
-                  ),
-              ],
-            );
-          }).toList(),
+              ),
+            ),
+            if (subtitle != null)
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontFamily: AppTypography.fontFamily,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w300,
+                  color: AppColors.sumiLighter,
+                  letterSpacing: 1,
+                ),
+              ),
+            const SizedBox(width: 16),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.sumiLighter.withOpacity(0.5),
+              size: 12,
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class _SettingsItem {
-  final IconData icon;
-  final String title;
-  final String? subtitle;
-  final VoidCallback? onTap;
-
-  const _SettingsItem({
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    this.onTap,
-  });
-}
-
-class _FeatureEntry {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  const _FeatureEntry({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
+  String _getThemeModeText(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.system:
+        return '跟随系统';
+      case ThemeMode.light:
+        return '浅色';
+      case ThemeMode.dark:
+        return '深色';
+    }
+  }
 }

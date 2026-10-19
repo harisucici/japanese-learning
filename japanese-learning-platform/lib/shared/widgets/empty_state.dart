@@ -1,21 +1,26 @@
 /// 空状态组件
 /// 
-/// 在列表无数据时显示友好的空状态提示
-/// 引导用户进行下一步操作
+/// Material Design 3 + 日式古典风格：
+/// - 大量留白（padding 48px）
+/// - 图标使用 tertiary 色（金色点缀）
+/// - 标题使用 serif 字体（古典感）
+/// - 操作按钮使用 FilledTonalButton（柔和）
 library;
 
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import '../../core/theme/app_colors.dart';
 
 import 'package:japanese_learning_platform/utils/color_extensions.dart';
 /// 空状态组件
 /// 
 /// 使用规范：
 /// - 用于列表无数据、搜索无结果等场景
+/// - 日式留白：padding 48px，呼吸感强
 /// - 提供清晰的视觉指引和可选的操作按钮
-/// - 图标/插图居中，文字说明清晰
+/// - 图标使用 tertiary 色（金色点缀）
 class EmptyState extends StatelessWidget {
   /// 图标（与 image 二选一）
   final IconData? icon;
@@ -56,16 +61,17 @@ class EmptyState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xxl),
+        // 日式大量留白
+        padding: const EdgeInsets.all(AppSpacing.xxxxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 图标或图片
+            // 图标或图片（日式古典：使用 tertiary 金色点缀）
             if (icon != null)
               Icon(
                 icon,
                 size: iconSize,
-                color: colorScheme.onSurfaceVariant.withAlphaCompat(0.5),
+                color: colorScheme.tertiary.withAlphaCompat(0.6),
               )
             else if (image != null)
               SizedBox(
@@ -74,34 +80,37 @@ class EmptyState extends StatelessWidget {
                 child: image,
               ),
             
-            const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xxl),
             
-            // 主标题
+            // 主标题（日式古典：serif 字体，tracking-tight）
             Text(
               title,
               style: textTheme.headlineMedium?.copyWith(
                 color: colorScheme.onSurface,
-                fontWeight: AppTypography.semiBold,
+                fontWeight: AppTypography.bold,
+                letterSpacing: AppTypography.letterSpacingTight,
+                fontFamily: AppTypography.serifFontFamily,
               ),
               textAlign: TextAlign.center,
             ),
             
             // 副标题（可选）
             if (subtitle != null) ...[
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 subtitle!,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
+                  letterSpacing: AppTypography.letterSpacingWide,
                 ),
                 textAlign: TextAlign.center,
               ),
             ],
             
-            // 操作按钮（可选）
+            // 操作按钮（可选，Material 3 FilledButton.tonal）
             if (actionText != null && onAction != null) ...[
-              const SizedBox(height: AppSpacing.xxl),
-              FilledButton(
+              const SizedBox(height: AppSpacing.xxxl),
+              FilledButton.tonal(
                 onPressed: onAction,
                 child: Text(actionText!),
               ),

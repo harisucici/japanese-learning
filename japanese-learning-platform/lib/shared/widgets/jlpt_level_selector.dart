@@ -1,7 +1,10 @@
 /// 日语等级选择器组件
 /// 
-/// 用于选择 JLPT 等级（N5-N1）
-/// 支持水平滚动和选中状态高亮
+/// Material 3 + 日式古典风格：
+/// - 使用 FilledTonalButton 风格的柔和按钮
+/// - 大量留白（horizontal padding 24px）
+/// - 宽松的字间距
+/// - 无硬边框，使用圆角和背景色区分层级
 library;
 
 import 'package:flutter/material.dart';
@@ -9,6 +12,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_radius.dart';
 import '../../core/theme/app_typography.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 
 /// 日语等级选择器
@@ -36,24 +40,26 @@ class JlptLevelSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     
-    return SizedBox(
-      height: 44,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        itemCount: levels.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (context, index) {
-          final level = levels[index];
-          final isSelected = level == selectedLevel;
-          
-          return _LevelChip(
-            level: level,
-            isSelected: isSelected,
-            colorScheme: colorScheme,
-            onTap: () => onLevelChanged(level),
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+      child: SizedBox(
+        height: 48,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: levels.length,
+          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+          itemBuilder: (context, index) {
+            final level = levels[index];
+            final isSelected = level == selectedLevel;
+            
+            return _LevelChip(
+              level: level,
+              isSelected: isSelected,
+              colorScheme: colorScheme,
+              onTap: () => onLevelChanged(level),
+            );
+          },
+        ),
       ),
     );
   }
@@ -61,7 +67,10 @@ class JlptLevelSelector extends StatelessWidget {
 
 /// 等级标签（私有组件）
 /// 
-/// 单个 JLPT 等级标签，使用 AnimatedContainer 实现平滑过渡
+/// Material 3 FilledTonalButton 风格：
+/// - 选中：primaryContainer 背景 + primary 文字
+/// - 未选中：surface 背景 + outline 边框（1px）
+/// - 日式古典：大量留白，宽松字间距
 class _LevelChip extends StatelessWidget {
   final String level;
   final bool isSelected;
@@ -83,15 +92,15 @@ class _LevelChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.sm,
+          horizontal: AppSpacing.xxl,
+          vertical: AppSpacing.md,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? colorScheme.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadius.full),
+          color: isSelected ? colorScheme.primaryContainer : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
-            color: isSelected ? colorScheme.primary : colorScheme.outline,
-            width: 1.5,
+            color: isSelected ? Colors.transparent : AppColors.border,
+            width: 1,
           ),
         ),
         child: Center(
@@ -101,7 +110,8 @@ class _LevelChip extends StatelessWidget {
               fontFamily: AppTypography.fontFamily,
               fontSize: AppTypography.bodyMedium,
               fontWeight: AppTypography.semiBold,
-              color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+              color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurface,
+              letterSpacing: AppTypography.letterSpacingWide,
             ),
           ),
         ),

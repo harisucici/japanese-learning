@@ -10,6 +10,10 @@ import '../../../../shared/widgets/app_scaffold.dart';
 import '../../../../shared/widgets/section_header.dart';
 import '../../../../shared/widgets/content_card.dart';
 import '../../../../core/theme/theme.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/animations.dart';
 
 /// 练习详情页组件
 /// 
@@ -67,7 +71,9 @@ class QuizPage extends StatelessWidget {
               '$level 等级练习',
               style: textTheme.headlineLarge?.copyWith(
                 color: colorScheme.onSurface,
-                fontWeight: AppTypography.bold,
+          fontWeight: AppTypography.bold,
+          letterSpacing: AppTypography.letterSpacingTight,
+          fontFamily: AppTypography.serifFontFamily,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -114,6 +120,7 @@ class QuizPage extends StatelessWidget {
               label,
               style: textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
+                  letterSpacing: AppTypography.letterSpacingWide,
               ),
             ),
           ],
@@ -137,7 +144,7 @@ class QuizPage extends StatelessWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         children: practices.map((practice) {
           return Padding(
@@ -178,6 +185,7 @@ class QuizPage extends StatelessWidget {
                           '${practice.$2} · ${practice.$3}',
                           style: textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
+                  letterSpacing: AppTypography.letterSpacingWide,
                           ),
                         ),
                       ],

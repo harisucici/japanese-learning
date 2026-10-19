@@ -8,6 +8,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import '../../../../redux/redux.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/models/models.dart';
 import '../widgets/answer_card.dart';
 import '../widgets/option_tile.dart';
@@ -163,7 +164,7 @@ class _QuizAnswerPageState extends State<QuizAnswerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildQuestionCard(question),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxxxl),
           ...question.options.map((option) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
