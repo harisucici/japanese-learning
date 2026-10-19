@@ -58,3 +58,8 @@ coverage/
 # Misc
 .cache/
 temp/
+
+# Vue frontend specific
+work/
+outputs/
+.openai/
