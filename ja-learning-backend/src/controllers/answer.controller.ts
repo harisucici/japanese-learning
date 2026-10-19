@@ -23,8 +23,12 @@ export class AnswerController {
           throw new HttpError(409, '请按顺序完成当前题目');
         }
         const q = await db.question.findUniqueOrThrow({ where: { id: body.questionId } });
-        if (!(q.options as any[]).some(o => o.id === body.optionId)) throw new HttpError(400, '选项无效');
-        const correct = q.answer === body.optionId;
+        const typed = q.type === 'fillInBlank' && (q.options as any[]).length === 0;
+        if (typed && (!body.optionId.trim() || body.optionId.length > 100)) throw new HttpError(400, '请填写不超过 100 字的答案');
+        if (!typed && !(q.options as any[]).some(o => o.id === body.optionId)) throw new HttpError(400, '选项无效');
+        const correct = typed
+          ? q.answer.normalize('NFKC').replace(/\s+/g, '') === body.optionId.normalize('NFKC').replace(/\s+/g, '')
+          : q.answer === body.optionId;
         await db.learningAnswer.create({
           data: {
             sessionId: s.id,
@@ -41,7 +45,7 @@ export class AnswerController {
         }
         return state(db, s.id, req.userId!);
       },
-      { isolationLevel: 'Serializable' }
+      { isolationLevel: 'Serializable', timeout: 30000 }
     );
     res.json(result);
   });
@@ -59,7 +63,7 @@ export class AnswerController {
         if (!fresh.completedAt && !(fresh.examConfig as any)?.waitingSection) await advance(db, fresh);
         return state(db, s.id, req.userId!);
       },
-      { isolationLevel: 'Serializable' }
+      { isolationLevel: 'Serializable', timeout: 30000 }
     );
     res.json(result);
   });

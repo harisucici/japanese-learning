@@ -38,7 +38,7 @@ export class ExamController {
           }
           return state(db, s.id, req.userId!);
         },
-        { isolationLevel: 'Serializable' }
+        { isolationLevel: 'Serializable', timeout: 30000 }
       )
     );
   });
