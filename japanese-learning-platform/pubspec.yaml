@@ -1,7 +1,7 @@
 name: japanese_learning_platform
 description: 日语 N5-N1 刷题与深度解析平台 - 商业版
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.1.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
