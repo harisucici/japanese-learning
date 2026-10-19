@@ -3,6 +3,6 @@ import { config } from './config/env';
 
 const PORT = config.port;
 
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`Server running on http://localhost:${PORT} [${config.nodeEnv}]`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT} [${config.nodeEnv}]`);
 });
