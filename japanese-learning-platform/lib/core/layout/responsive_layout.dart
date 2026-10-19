@@ -7,34 +7,37 @@ import 'package:flutter/material.dart';
 
 /// 响应式断点
 class Breakpoints {
-  /// 移动端最大宽度
-  static const double mobile = 600;
+  /// 移动端/Web 分界点：768px
+  static const double mobile = 768;
 
-  /// 平板最大宽度
+  /// 平板最大宽度（保持向后兼容）
   static const double tablet = 1024;
 
-  /// 桌面最小宽度（>1024）
+  /// 桌面最小宽度
   static const double desktop = 1024;
 
   /// 根据宽度判断布局类型
+  /// - < 768px: mobile
+  /// - >= 768px: desktop (web)
   static LayoutType getLayoutType(double width) {
     if (width < mobile) {
       return LayoutType.mobile;
-    } else if (width < tablet) {
-      return LayoutType.tablet;
     } else {
       return LayoutType.desktop;
     }
   }
 
-  /// 是否为移动端
+  /// 是否为移动端 (< 768px)
   static bool isMobile(double width) => width < mobile;
 
-  /// 是否为平板
+  /// 是否为平板（保持向后兼容，归入 desktop）
   static bool isTablet(double width) => width >= mobile && width < tablet;
 
-  /// 是否为桌面
-  static bool isDesktop(double width) => width >= tablet;
+  /// 是否为桌面/Web (>= 768px)
+  static bool isDesktop(double width) => width >= mobile;
+
+  /// 是否为 Web 布局 (>= 768px)
+  static bool isWeb(double width) => width >= mobile;
 }
 
 /// 布局类型
