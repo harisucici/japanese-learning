@@ -106,12 +106,11 @@ router.get('/exam-papers',run(async(_req,res)=>{
   res.json({papers,timingSource,rules:Object.fromEntries(['n5','n4','n3','n2','n1'].map(l=>[l,examSections(l)]))});
 }));
 router.get('/fun-papers',run(async(_req,res)=>{
- const novel=await prisma.novelLesson.findMany({select:{paperId:true}});
- const reading=await prisma.readingArticle.findMany({select:{paperId:true}});
- const papers=await prisma.funPaper.findMany({where:{published:true,id:{notIn:[...novel.map(l=>l.paperId),...reading.map(l=>l.paperId)]}},orderBy:{id:'asc'}});
+ const reading=await prisma.readingArticle.findMany({select:{id:true,paperId:true}});
+ const papers=await prisma.funPaper.findMany({where:{published:true},orderBy:{id:'asc'}});
  const qs=await prisma.question.findMany({where:{id:{in:papers.flatMap(p=>ids(p.questionIds))},source:'custom'},select:{id:true}});
  const known=new Set(qs.map(q=>q.id));
- res.json({papers:papers.map(p=>({...p,questionCount:ids(p.questionIds).filter(id=>known.has(id)).length,ready:ids(p.questionIds).length>0&&ids(p.questionIds).every(id=>known.has(id))})),label:'用户素材改编练习，非JLPT真题，不作等级认证'});
+ res.json({papers:papers.map(p=>({...p,readingLessonId:reading.find(l=>l.paperId===p.id)?.id??null,questionCount:ids(p.questionIds).filter(id=>known.has(id)).length,ready:ids(p.questionIds).length>0&&ids(p.questionIds).every(id=>known.has(id))})),label:'用户素材改编练习，非JLPT真题，不作等级认证'});
 }));
 router.get('/novel-lessons',run(async(_req,res)=>{
  const rows=await prisma.readingArticle.findMany({orderBy:{position:'asc'}});
