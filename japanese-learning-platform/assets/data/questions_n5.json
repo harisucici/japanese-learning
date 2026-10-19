@@ -1,0 +1,1964 @@
+{
+  "questions": [
+    {
+      "id": "jlpt-2018-n5-v-001",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nあしたは【 雨】ですか。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-001-o1",
+          "content": "ゆき",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-001-o2",
+          "content": "はれ",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-001-o3",
+          "content": "くもり",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-001-o4",
+          "content": "あめ",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-001-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-001-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:1",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 1,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 3,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 1,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-002",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nきょうしつで【 書いて】 ください。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-002-o1",
+          "content": "かいて",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-002-o2",
+          "content": "きいて",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-002-o3",
+          "content": "はいて",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-002-o4",
+          "content": "ひいて",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-002-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-002-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:2",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 2,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 3,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 2,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-003",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nしゃしんは はこの【 中】に あります。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-003-o1",
+          "content": "そば",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-003-o2",
+          "content": "そと",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-003-o3",
+          "content": "なか",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-003-o4",
+          "content": "よこ",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-003-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-003-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:3",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 3,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 3,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 3,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-004",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nこの いすは【 小さい】です。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-004-o1",
+          "content": "ちいさい",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-004-o2",
+          "content": "ちさい",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-004-o3",
+          "content": "しいさい",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-004-o4",
+          "content": "しさい",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-004-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-004-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:4",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 4,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 3,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 4,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-005",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nあしたは【 火よう日】です。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-005-o1",
+          "content": "どようび",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-005-o2",
+          "content": "すいようび",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-005-o3",
+          "content": "かようび",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-005-o4",
+          "content": "にちようび",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-005-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-005-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:5",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 5,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 3,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 5,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-006",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nきれいな【 空】ですね。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-006-o1",
+          "content": "いえ",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-006-o2",
+          "content": "うみ",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-006-o3",
+          "content": "にわ",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-006-o4",
+          "content": "そら",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-006-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-006-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:6",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 6,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 3,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 6,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-007",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nせいとは【 百人】 います。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-007-o1",
+          "content": "ひゃくにん",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-007-o2",
+          "content": "びゃくにん",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-007-o3",
+          "content": "ひゃくじん",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-007-o4",
+          "content": "びゃくじん",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-007-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-007-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:7",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 7,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 4,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 7,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-008",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\n【魚】が たくさん いますよ。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-008-o1",
+          "content": "ねこ",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-008-o2",
+          "content": "とり",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-008-o3",
+          "content": "いぬ",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-008-o4",
+          "content": "さかな",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-008-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-008-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:8",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 8,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 4,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 8,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-009",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nパンを【 半分】 ともだちに あげました。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-009-o1",
+          "content": "はんふん",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-009-o2",
+          "content": "はんぶん",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-009-o3",
+          "content": "ほんぶん",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-009-o4",
+          "content": "ほんふん",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-009-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-009-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:9",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 9,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 4,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 9,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-010",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nぎんこうと スーパーの【 間】に ほそい みちが あります。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-010-o1",
+          "content": "あいた",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-010-o2",
+          "content": "となり",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-010-o3",
+          "content": "あいだ",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-010-o4",
+          "content": "どなり",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-010-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-010-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:10",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 10,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 4,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 10,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-011",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nたまごを【 三つ】 とって ください。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-011-o1",
+          "content": "いつつ",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-011-o2",
+          "content": "みっつ",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-011-o3",
+          "content": "さんつ",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-011-o4",
+          "content": "ごつ",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-011-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-011-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:11",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 11,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 4,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 11,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-012",
+      "level": "n5",
+      "type": "kanji",
+      "content": "选择【】部分的正确读音。\nきょうは【 元気】が いいですね。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-012-o1",
+          "content": "けんき",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-012-o2",
+          "content": "げんき",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-012-o3",
+          "content": "でんき",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-012-o4",
+          "content": "てんき",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-012-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-012-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:1",
+        "题号:12",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 12,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 4,
+        "section": "vocabulary",
+        "group": 1,
+        "number": 12,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-013",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nこの【 わいしゃつ】を ください。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-013-o1",
+          "content": "ウイシャソ",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-013-o2",
+          "content": "ウイシャツ",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-013-o3",
+          "content": "ワイシャソ",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-013-o4",
+          "content": "ワイシャツ",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-013-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-013-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:13",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 13,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 5,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 13,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-014",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nわたしの くには【 かわ】が おおいです。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-014-o1",
+          "content": "花",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-014-o2",
+          "content": "山",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-014-o3",
+          "content": "川",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-014-o4",
+          "content": "木",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-014-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-014-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:14",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 14,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 5,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 14,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-015",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nヤンさんの【 がっこう】は どこですか。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-015-o1",
+          "content": "宇校",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-015-o2",
+          "content": "学校",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-015-o3",
+          "content": "宇枚",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-015-o4",
+          "content": "学枚",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-015-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-015-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:15",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 15,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 5,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 15,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-016",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nこの ざっしを【 みて】 ください。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-016-o1",
+          "content": "見て",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-016-o2",
+          "content": "買て",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-016-o3",
+          "content": "貝て",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-016-o4",
+          "content": "目て",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-016-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-016-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:16",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 16,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 5,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 16,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-017",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nこの カメラは【 たかい】ですね。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-017-o1",
+          "content": "高い",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-017-o2",
+          "content": "安い",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-017-o3",
+          "content": "古い",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-017-o4",
+          "content": "新い",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-017-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-017-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:17",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 17,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 5,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 17,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-018",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nきのうは【 かいしゃ】を やすみました。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-018-o1",
+          "content": "公仕",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-018-o2",
+          "content": "公社",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-018-o3",
+          "content": "会仕",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-018-o4",
+          "content": "会社",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-018-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-018-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:18",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 18,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 5,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 18,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-019",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\nまだ【 いわないで】 ください。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-019-o1",
+          "content": "行わないで",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-019-o2",
+          "content": "立わないで",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-019-o3",
+          "content": "言わないで",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-019-o4",
+          "content": "食わないで",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-019-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-019-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:19",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 19,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 6,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 19,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-020",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择【】部分的正确汉字写法。\n【らいげつ】 けっこんします。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-020-o1",
+          "content": "今月",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-020-o2",
+          "content": "来月",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-020-o3",
+          "content": "来週",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-020-o4",
+          "content": "今週",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-020-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-020-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:2",
+        "题号:20",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 20,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 6,
+        "section": "vocabulary",
+        "group": 2,
+        "number": 20,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-021",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nわたしの へやは この アパートの ２（ ）です。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-021-o1",
+          "content": "ほん",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-021-o2",
+          "content": "さつ",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-021-o3",
+          "content": "だい",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-021-o4",
+          "content": "かい",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-021-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-021-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:21",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 21,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 7,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 21,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": true,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-022",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nその ナイフで りんごを （ ） ください。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-022-o1",
+          "content": "おきて",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-022-o2",
+          "content": "つけて",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-022-o3",
+          "content": "しめて",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-022-o4",
+          "content": "きって",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-022-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-022-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:22",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 22,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 7,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 22,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-023",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\n（ ）を わすれましたから、じかんが わかりません。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-023-o1",
+          "content": "じしょ",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-023-o2",
+          "content": "ちず",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-023-o3",
+          "content": "とけい",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-023-o4",
+          "content": "さいふ",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-023-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-023-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:23",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 23,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 7,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 23,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-024",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nわたしの うちは えきに ちかいですから、（ ）です。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-024-o1",
+          "content": "べんり",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-024-o2",
+          "content": "じょうぶ",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-024-o3",
+          "content": "いっぱい",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-024-o4",
+          "content": "へた",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-024-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-024-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:24",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 24,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 7,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 24,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-025",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nなつやすみは まいにち （ ）で およぎました。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-025-o1",
+          "content": "レストラン",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-025-o2",
+          "content": "プール",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-025-o3",
+          "content": "エレベーター",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-025-o4",
+          "content": "ビル",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-025-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-025-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:25",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 25,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 7,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 25,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-026",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nしらない ことばが ありましたから、せんせいに\n（ ）しました。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-026-o1",
+          "content": "しつもん",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-026-o2",
+          "content": "べんきょう",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-026-o3",
+          "content": "れんしゅう",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-026-o4",
+          "content": "じゅぎょう",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-026-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-026-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:26",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 26,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 7,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 26,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-027",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nこの へやは あついですから、（ ）を あけましょう。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-027-o1",
+          "content": "おふろ",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-027-o2",
+          "content": "まど",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-027-o3",
+          "content": "エアコン",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-027-o4",
+          "content": "テーブル",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-027-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-027-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:27",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 27,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 8,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 27,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-028",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nきのうは がっこうで たくさん かんじを （ ）。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-028-o1",
+          "content": "うりました",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-028-o2",
+          "content": "もちました",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-028-o3",
+          "content": "おぼえました",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-028-o4",
+          "content": "こまりました",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-028-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-028-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:28",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 28,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 8,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 28,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-029",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nこの コーヒーは、さとうを たくさん いれましたから、\n（ ）です。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-029-o1",
+          "content": "わかい",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-029-o2",
+          "content": "くろい",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-029-o3",
+          "content": "まるい",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-029-o4",
+          "content": "あまい",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-029-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-029-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:29",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 29,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 8,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 29,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-030",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择最合适的选项填空。\nつよい かぜが （ ） います。",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-030-o1",
+          "content": "ふいて",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-030-o2",
+          "content": "いそいで",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-030-o3",
+          "content": "とんで",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-030-o4",
+          "content": "はしって",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-030-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-030-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:3",
+        "题号:30",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 30,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 8,
+        "section": "vocabulary",
+        "group": 3,
+        "number": 30,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-031",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择与【】部分意思最接近的选项。\n【これは りょうしんの しゃしんです。】",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-031-o1",
+          "content": "これは そふと そぼの しゃしんです。",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-031-o2",
+          "content": "これは ちちと ははの しゃしんです。",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-031-o3",
+          "content": "これは あにと おとうとの しゃしんです。",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-031-o4",
+          "content": "これは あねと いもうとの しゃしんです。",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-031-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-031-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:4",
+        "题号:31",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 31,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 9,
+        "section": "vocabulary",
+        "group": 4,
+        "number": 31,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-032",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择与【】部分意思最接近的选项。\n【この ダンスは やさしいです。】",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-032-o1",
+          "content": "この ダンスは かんたんです。",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-032-o2",
+          "content": "この ダンスは たいへんです。",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-032-o3",
+          "content": "この ダンスは たのしいです。",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-032-o4",
+          "content": "この ダンスは つまらないです。",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-032-o1",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-032-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:4",
+        "题号:32",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 32,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 9,
+        "section": "vocabulary",
+        "group": 4,
+        "number": 32,
+        "correctOption": 1,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-033",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择与【】部分意思最接近的选项。\n【ふくを せんたくしました。】",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-033-o1",
+          "content": "ふくを ぬぎました。",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-033-o2",
+          "content": "ふくを わたしました。",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-033-o3",
+          "content": "ふくを あらいました。",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-033-o4",
+          "content": "ふくを きました。",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-033-o3",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-033-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:4",
+        "题号:33",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 33,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 10,
+        "section": "vocabulary",
+        "group": 4,
+        "number": 33,
+        "correctOption": 3,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-034",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择与【】部分意思最接近的选项。\n【この へやは くらいですね。】",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-034-o1",
+          "content": "この へやは あかるいですね。",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-034-o2",
+          "content": "この へやは あかるくないですね。",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-034-o3",
+          "content": "この へやは しずかじゃ ないですね。",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-034-o4",
+          "content": "この へやは しずかですね。",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-034-o2",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-034-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:4",
+        "题号:34",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 34,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 10,
+        "section": "vocabulary",
+        "group": 4,
+        "number": 34,
+        "correctOption": 2,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    },
+    {
+      "id": "jlpt-2018-n5-v-035",
+      "level": "n5",
+      "type": "vocabulary",
+      "content": "选择与【】部分意思最接近的选项。\n【リーさんは もりさんに ペンを かしました。】",
+      "options": [
+        {
+          "id": "jlpt-2018-n5-v-035-o1",
+          "content": "リーさんは もりさんに ペンを もらいました。",
+          "index": 0
+        },
+        {
+          "id": "jlpt-2018-n5-v-035-o2",
+          "content": "もりさんは リーさんに ペンを もらいました。",
+          "index": 1
+        },
+        {
+          "id": "jlpt-2018-n5-v-035-o3",
+          "content": "リーさんは もりさんに ペンを かりました。",
+          "index": 2
+        },
+        {
+          "id": "jlpt-2018-n5-v-035-o4",
+          "content": "もりさんは リーさんに ペンを かりました。",
+          "index": 3
+        }
+      ],
+      "answer": "jlpt-2018-n5-v-035-o4",
+      "source": "pastExam",
+      "explanationId": "jlpt-2018-n5-v-035-explanation",
+      "tags": [
+        "JLPT官方问题集",
+        "出版年份:2018",
+        "仅限本机个人学习",
+        "大题:4",
+        "题号:35",
+        "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+      ],
+      "order": 35,
+      "provenance": {
+        "publicationYear": 2018,
+        "examYear": null,
+        "workbook": "Official Practice Workbook Vol. 2",
+        "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+        "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+        "pdfPage": 10,
+        "section": "vocabulary",
+        "group": 4,
+        "number": 35,
+        "correctOption": 4,
+        "verification": "official_text_and_answer_table",
+        "manualGlyphReview": false,
+        "usage": "local_personal_study",
+        "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575"
+      }
+    }
+  ]
+}

@@ -1,0 +1,891 @@
+{
+  "catalog": {
+    "total": 162,
+    "groups": [
+      {
+        "level": "n1",
+        "type": "vocabulary",
+        "count": 19
+      },
+      {
+        "level": "n5",
+        "type": "kanji",
+        "count": 12
+      },
+      {
+        "level": "n3",
+        "type": "kanji",
+        "count": 8
+      },
+      {
+        "level": "n4",
+        "type": "kanji",
+        "count": 9
+      },
+      {
+        "level": "n2",
+        "type": "vocabulary",
+        "count": 27
+      },
+      {
+        "level": "n2",
+        "type": "kanji",
+        "count": 5
+      },
+      {
+        "level": "n3",
+        "type": "vocabulary",
+        "count": 27
+      },
+      {
+        "level": "n1",
+        "type": "kanji",
+        "count": 6
+      },
+      {
+        "level": "n4",
+        "type": "vocabulary",
+        "count": 26
+      },
+      {
+        "level": "n5",
+        "type": "vocabulary",
+        "count": 23
+      }
+    ]
+  },
+  "initial": {
+    "id": "69399489-4fff-4368-a75d-bf705c0dc70e",
+    "userId": "f07fd6e9-a73b-469c-9e56-d7d49219ac05",
+    "level": "n5",
+    "mode": "practice",
+    "questionIds": [
+      "jlpt-2018-n5-v-001",
+      "jlpt-2018-n5-v-002"
+    ],
+    "currentIndex": 0,
+    "awaitingNext": false,
+    "completedAt": null,
+    "createdAt": "2026-10-19T01:40:07.337Z",
+    "updatedAt": "2026-10-19T01:40:07.337Z",
+    "answers": [],
+    "correctCount": 0,
+    "answeredCount": 0,
+    "totalQuestions": 2,
+    "score": 0,
+    "questions": [
+      {
+        "id": "jlpt-2018-n5-v-001",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nあしたは【 雨】ですか。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-001-o1",
+            "index": 0,
+            "content": "ゆき"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o2",
+            "index": 1,
+            "content": "はれ"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o3",
+            "index": 2,
+            "content": "くもり"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o4",
+            "index": 3,
+            "content": "あめ"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 1,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:1",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 1,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      },
+      {
+        "id": "jlpt-2018-n5-v-002",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nきょうしつで【 書いて】 ください。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-002-o1",
+            "index": 0,
+            "content": "かいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o2",
+            "index": 1,
+            "content": "きいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o3",
+            "index": 2,
+            "content": "はいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o4",
+            "index": 3,
+            "content": "ひいて"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 2,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:2",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 2,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      }
+    ]
+  },
+  "wrong": {
+    "id": "69399489-4fff-4368-a75d-bf705c0dc70e",
+    "userId": "f07fd6e9-a73b-469c-9e56-d7d49219ac05",
+    "level": "n5",
+    "mode": "practice",
+    "questionIds": [
+      "jlpt-2018-n5-v-001",
+      "jlpt-2018-n5-v-002"
+    ],
+    "currentIndex": 0,
+    "awaitingNext": true,
+    "completedAt": null,
+    "createdAt": "2026-10-19T01:40:07.337Z",
+    "updatedAt": "2026-10-19T01:40:07.351Z",
+    "answers": [
+      {
+        "id": "b3366148-f048-41ca-96ee-18d89c9bb1f3",
+        "sessionId": "69399489-4fff-4368-a75d-bf705c0dc70e",
+        "questionId": "jlpt-2018-n5-v-001",
+        "selectedOptionId": "jlpt-2018-n5-v-001-o1",
+        "isCorrect": false,
+        "answeredAt": "2026-10-19T01:40:07.350Z",
+        "correctOptionId": "jlpt-2018-n5-v-001-o4",
+        "explanation": {
+          "id": "jlpt-2018-n5-v-001-explanation",
+          "questionId": "jlpt-2018-n5-v-001",
+          "translation": "",
+          "wordAnalysis": [],
+          "sentenceStructure": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+          "grammar": [],
+          "optionAnalysis": [
+            {
+              "reason": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+              "optionId": "jlpt-2018-n5-v-001-o4",
+              "isCorrect": true
+            }
+          ],
+          "extensions": [],
+          "note": "讲解由本项目编写，不是官方解析。标准答案依据JLPT官方问题集第二集正答表；出版年为2018年，不代表具体考试年份。",
+          "createdAt": "2026-10-19T01:14:30.616Z",
+          "updatedAt": "2026-10-19T01:32:41.278Z"
+        }
+      }
+    ],
+    "correctCount": 0,
+    "answeredCount": 1,
+    "totalQuestions": 2,
+    "score": 0,
+    "questions": [
+      {
+        "id": "jlpt-2018-n5-v-001",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nあしたは【 雨】ですか。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-001-o1",
+            "index": 0,
+            "content": "ゆき"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o2",
+            "index": 1,
+            "content": "はれ"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o3",
+            "index": 2,
+            "content": "くもり"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o4",
+            "index": 3,
+            "content": "あめ"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 1,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:1",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 1,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      },
+      {
+        "id": "jlpt-2018-n5-v-002",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nきょうしつで【 書いて】 ください。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-002-o1",
+            "index": 0,
+            "content": "かいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o2",
+            "index": 1,
+            "content": "きいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o3",
+            "index": 2,
+            "content": "はいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o4",
+            "index": 3,
+            "content": "ひいて"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 2,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:2",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 2,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      }
+    ]
+  },
+  "advanced": {
+    "id": "69399489-4fff-4368-a75d-bf705c0dc70e",
+    "userId": "f07fd6e9-a73b-469c-9e56-d7d49219ac05",
+    "level": "n5",
+    "mode": "practice",
+    "questionIds": [
+      "jlpt-2018-n5-v-001",
+      "jlpt-2018-n5-v-002"
+    ],
+    "currentIndex": 1,
+    "awaitingNext": false,
+    "completedAt": null,
+    "createdAt": "2026-10-19T01:40:07.337Z",
+    "updatedAt": "2026-10-19T01:40:07.355Z",
+    "answers": [
+      {
+        "id": "b3366148-f048-41ca-96ee-18d89c9bb1f3",
+        "sessionId": "69399489-4fff-4368-a75d-bf705c0dc70e",
+        "questionId": "jlpt-2018-n5-v-001",
+        "selectedOptionId": "jlpt-2018-n5-v-001-o1",
+        "isCorrect": false,
+        "answeredAt": "2026-10-19T01:40:07.350Z",
+        "correctOptionId": "jlpt-2018-n5-v-001-o4",
+        "explanation": {
+          "id": "jlpt-2018-n5-v-001-explanation",
+          "questionId": "jlpt-2018-n5-v-001",
+          "translation": "",
+          "wordAnalysis": [],
+          "sentenceStructure": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+          "grammar": [],
+          "optionAnalysis": [
+            {
+              "reason": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+              "optionId": "jlpt-2018-n5-v-001-o4",
+              "isCorrect": true
+            }
+          ],
+          "extensions": [],
+          "note": "讲解由本项目编写，不是官方解析。标准答案依据JLPT官方问题集第二集正答表；出版年为2018年，不代表具体考试年份。",
+          "createdAt": "2026-10-19T01:14:30.616Z",
+          "updatedAt": "2026-10-19T01:32:41.278Z"
+        }
+      }
+    ],
+    "correctCount": 0,
+    "answeredCount": 1,
+    "totalQuestions": 2,
+    "score": 0,
+    "questions": [
+      {
+        "id": "jlpt-2018-n5-v-001",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nあしたは【 雨】ですか。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-001-o1",
+            "index": 0,
+            "content": "ゆき"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o2",
+            "index": 1,
+            "content": "はれ"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o3",
+            "index": 2,
+            "content": "くもり"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o4",
+            "index": 3,
+            "content": "あめ"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 1,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:1",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 1,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      },
+      {
+        "id": "jlpt-2018-n5-v-002",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nきょうしつで【 書いて】 ください。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-002-o1",
+            "index": 0,
+            "content": "かいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o2",
+            "index": 1,
+            "content": "きいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o3",
+            "index": 2,
+            "content": "はいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o4",
+            "index": 3,
+            "content": "ひいて"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 2,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:2",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 2,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      }
+    ]
+  },
+  "completed": {
+    "id": "69399489-4fff-4368-a75d-bf705c0dc70e",
+    "userId": "f07fd6e9-a73b-469c-9e56-d7d49219ac05",
+    "level": "n5",
+    "mode": "practice",
+    "questionIds": [
+      "jlpt-2018-n5-v-001",
+      "jlpt-2018-n5-v-002"
+    ],
+    "currentIndex": 1,
+    "awaitingNext": false,
+    "completedAt": "2026-10-19T01:40:07.359Z",
+    "createdAt": "2026-10-19T01:40:07.337Z",
+    "updatedAt": "2026-10-19T01:40:07.359Z",
+    "answers": [
+      {
+        "id": "b3366148-f048-41ca-96ee-18d89c9bb1f3",
+        "sessionId": "69399489-4fff-4368-a75d-bf705c0dc70e",
+        "questionId": "jlpt-2018-n5-v-001",
+        "selectedOptionId": "jlpt-2018-n5-v-001-o1",
+        "isCorrect": false,
+        "answeredAt": "2026-10-19T01:40:07.350Z",
+        "correctOptionId": "jlpt-2018-n5-v-001-o4",
+        "explanation": {
+          "id": "jlpt-2018-n5-v-001-explanation",
+          "questionId": "jlpt-2018-n5-v-001",
+          "translation": "",
+          "wordAnalysis": [],
+          "sentenceStructure": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+          "grammar": [],
+          "optionAnalysis": [
+            {
+              "reason": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+              "optionId": "jlpt-2018-n5-v-001-o4",
+              "isCorrect": true
+            }
+          ],
+          "extensions": [],
+          "note": "讲解由本项目编写，不是官方解析。标准答案依据JLPT官方问题集第二集正答表；出版年为2018年，不代表具体考试年份。",
+          "createdAt": "2026-10-19T01:14:30.616Z",
+          "updatedAt": "2026-10-19T01:32:41.278Z"
+        }
+      },
+      {
+        "id": "d1516855-dfe3-4dcb-85f6-9b6b6e21121c",
+        "sessionId": "69399489-4fff-4368-a75d-bf705c0dc70e",
+        "questionId": "jlpt-2018-n5-v-002",
+        "selectedOptionId": "jlpt-2018-n5-v-002-o1",
+        "isCorrect": true,
+        "answeredAt": "2026-10-19T01:40:07.359Z",
+        "correctOptionId": "jlpt-2018-n5-v-002-o1",
+        "explanation": {
+          "id": "jlpt-2018-n5-v-002-explanation",
+          "questionId": "jlpt-2018-n5-v-002",
+          "translation": "",
+          "wordAnalysis": [],
+          "sentenceStructure": "「」的正确读音是「かいて」。「書く」表示写，て形为「書いて」，读作「かいて」。",
+          "grammar": [],
+          "optionAnalysis": [
+            {
+              "reason": "「」的正确读音是「かいて」。「書く」表示写，て形为「書いて」，读作「かいて」。",
+              "optionId": "jlpt-2018-n5-v-002-o1",
+              "isCorrect": true
+            }
+          ],
+          "extensions": [],
+          "note": "讲解由本项目编写，不是官方解析。标准答案依据JLPT官方问题集第二集正答表；出版年为2018年，不代表具体考试年份。",
+          "createdAt": "2026-10-19T01:14:30.616Z",
+          "updatedAt": "2026-10-19T01:32:41.278Z"
+        }
+      }
+    ],
+    "correctCount": 1,
+    "answeredCount": 2,
+    "totalQuestions": 2,
+    "score": 50,
+    "questions": [
+      {
+        "id": "jlpt-2018-n5-v-001",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nあしたは【 雨】ですか。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-001-o1",
+            "index": 0,
+            "content": "ゆき"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o2",
+            "index": 1,
+            "content": "はれ"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o3",
+            "index": 2,
+            "content": "くもり"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o4",
+            "index": 3,
+            "content": "あめ"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 1,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:1",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 1,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      },
+      {
+        "id": "jlpt-2018-n5-v-002",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nきょうしつで【 書いて】 ください。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-002-o1",
+            "index": 0,
+            "content": "かいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o2",
+            "index": 1,
+            "content": "きいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o3",
+            "index": 2,
+            "content": "はいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o4",
+            "index": 3,
+            "content": "ひいて"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 2,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:2",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 2,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      }
+    ]
+  },
+  "auto": {
+    "id": "69fce26d-0d35-452b-8435-1fb3a4427549",
+    "userId": "f07fd6e9-a73b-469c-9e56-d7d49219ac05",
+    "level": "n5",
+    "mode": "practice",
+    "questionIds": [
+      "jlpt-2018-n5-v-001",
+      "jlpt-2018-n5-v-002"
+    ],
+    "currentIndex": 1,
+    "awaitingNext": false,
+    "completedAt": null,
+    "createdAt": "2026-10-19T01:40:07.364Z",
+    "updatedAt": "2026-10-19T01:40:07.367Z",
+    "answers": [
+      {
+        "id": "48240414-2908-4237-a1dd-bd0f16afb95f",
+        "sessionId": "69fce26d-0d35-452b-8435-1fb3a4427549",
+        "questionId": "jlpt-2018-n5-v-001",
+        "selectedOptionId": "jlpt-2018-n5-v-001-o4",
+        "isCorrect": true,
+        "answeredAt": "2026-10-19T01:40:07.367Z",
+        "correctOptionId": "jlpt-2018-n5-v-001-o4",
+        "explanation": {
+          "id": "jlpt-2018-n5-v-001-explanation",
+          "questionId": "jlpt-2018-n5-v-001",
+          "translation": "",
+          "wordAnalysis": [],
+          "sentenceStructure": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+          "grammar": [],
+          "optionAnalysis": [
+            {
+              "reason": "「」的正确读音是「あめ」。「雨」表示雨，读作「あめ」；其他选项分别是雪、晴天和阴天。",
+              "optionId": "jlpt-2018-n5-v-001-o4",
+              "isCorrect": true
+            }
+          ],
+          "extensions": [],
+          "note": "讲解由本项目编写，不是官方解析。标准答案依据JLPT官方问题集第二集正答表；出版年为2018年，不代表具体考试年份。",
+          "createdAt": "2026-10-19T01:14:30.616Z",
+          "updatedAt": "2026-10-19T01:32:41.278Z"
+        }
+      }
+    ],
+    "correctCount": 1,
+    "answeredCount": 1,
+    "totalQuestions": 2,
+    "score": 50,
+    "questions": [
+      {
+        "id": "jlpt-2018-n5-v-001",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nあしたは【 雨】ですか。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-001-o1",
+            "index": 0,
+            "content": "ゆき"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o2",
+            "index": 1,
+            "content": "はれ"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o3",
+            "index": 2,
+            "content": "くもり"
+          },
+          {
+            "id": "jlpt-2018-n5-v-001-o4",
+            "index": 3,
+            "content": "あめ"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 1,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:1",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 1,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      },
+      {
+        "id": "jlpt-2018-n5-v-002",
+        "level": "n5",
+        "type": "kanji",
+        "content": "选择【】部分的正确读音。\nきょうしつで【 書いて】 ください。",
+        "contentReading": null,
+        "contentImageUrl": null,
+        "audioUrl": null,
+        "options": [
+          {
+            "id": "jlpt-2018-n5-v-002-o1",
+            "index": 0,
+            "content": "かいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o2",
+            "index": 1,
+            "content": "きいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o3",
+            "index": 2,
+            "content": "はいて"
+          },
+          {
+            "id": "jlpt-2018-n5-v-002-o4",
+            "index": 3,
+            "content": "ひいて"
+          }
+        ],
+        "source": "pastExam",
+        "provenance": {
+          "group": 1,
+          "usage": "local_personal_study",
+          "number": 2,
+          "pdfPage": 3,
+          "section": "vocabulary",
+          "examYear": null,
+          "workbook": "Official Practice Workbook Vol. 2",
+          "answerUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5answer.pdf",
+          "pdfSha256": "44d6c36e877b5cace8cbbb3d96d7d6114d69d8f48520fc2a7bac0a4273307575",
+          "sourceUrl": "https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf",
+          "verification": "official_text_and_answer_table",
+          "publicationYear": 2018,
+          "manualGlyphReview": false
+        },
+        "tags": [
+          "JLPT官方问题集",
+          "出版年份:2018",
+          "仅限本机个人学习",
+          "大题:1",
+          "题号:2",
+          "来源:https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf"
+        ],
+        "order": 2,
+        "createdAt": "2026-10-19T01:14:30.586Z",
+        "updatedAt": "2026-10-19T01:14:30.586Z"
+      }
+    ]
+  }
+}

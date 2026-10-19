@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 与前端 JLPTLevel 枚举一致，使用小写
+enum JLPTLevel {
+  ungraded
+  n5
+  n4
+  n3
+  n2
+  n1
+}
+
+enum QuestionType {
+  vocabulary
+  kanji
+  grammar
+  reading
+  listening
+  fillInBlank
+  comprehensive
+}
+
+enum QuestionSource {
+  official
+  mock
+  textbook
+  userGenerated
+  aiGenerated
+  pastExam
+  custom
+}
+
+enum ExamRecordType {
+  practice
+  exam
+  review
+}
+
+// 'new' 是 SQL 关键字，改为 'new_' 避免冲突（与前端 ReviewStatus.new_ 一致）
+enum ReviewStatus {
+  new_
+  learning
+  reviewing
+  mastered
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  currentLevel  JLPTLevel @default(n5)
+  targetLevel   JLPTLevel @default(n5)
+  avatarUrl     String?
+  streakDays    Int       @default(0)
+  totalQuestions Int      @default(0)
+  accuracy      Float     @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  learningSessions LearningSession[]
+  examRecords   ExamRecord[]
+  reviewItems   ReviewItem[]
+}
+
+model Question {
+  id              String         @id @default(uuid())
+  level           JLPTLevel
+  type            QuestionType
+  content         String
+  contentReading  String?        // 题干读音（假名）
+  contentImageUrl String?        // 题干图片 URL
+  audioUrl        String?        // 音频 URL（听力题）
+  options         Json           // [{id, content, hint?, reading?, index}]
+  answer          String         // 正确选项的 optionId
+  source          QuestionSource @default(official)
+  provenance      Json?          // 官方原卷、页码、题号、答案及文件校验值
+  explanationId   String         // 关联解析 ID（与前端 Question.explanationId 一致）
+  tags            String[]       @default([])
+  difficulty      Float          @default(0.5)
+  order           Int            @default(0)  // 题目顺序
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  learningAnswers LearningAnswer[]
+  reviewItems     ReviewItem[]
+}
+
+model Explanation {
+  id                String   @id @default(uuid())
+  questionId        String   @unique // 关联的题目 ID（与前端 Explanation.questionId 一致）
+  translation       String
+  wordAnalysis      Json     @default("[]")   // [{word, reading, partOfSpeech, meaning, level?, exampleSentence?, exampleTranslation?}]
+  sentenceStructure String   @default("")
+  grammar           Json     @default("[]")   // [{name, connection, meaning, usage, similarGrammars, exampleSentence?, exampleTranslation?}]
+  optionAnalysis    Json     @default("[]")   // [{optionId, isCorrect, reason, detail?, pitfall?}]
+  extensions        Json     @default("[]")   // [{id, type, content, options, answer, explanation?, relatedTags}]
+  note              String?                  // 学习重点 / 备注
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ExamRecord {
+  id              String          @id @default(uuid())
+  userId          String
+  level           JLPTLevel
+  recordType      ExamRecordType
+  questionIds     String[]
+  answers         Json            // [{questionId, selectedOptionId, isCorrect}]
+  score           Int             @default(0)
+  totalQuestions  Int
+  correctCount    Int             @default(0)
+  durationMs      Int
+  completedAt     DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ReviewItem {
+  id              String        @id @default(uuid())
+  userId          String
+  questionId      String
+  level           JLPTLevel
+  type            QuestionType
+  status          ReviewStatus  @default(new_)
+  reviewCount     Int           @default(0)
+  nextReviewAt    DateTime?
+  easeFactor      Float         @default(2.5)
+  intervalDays    Int           @default(0)
+  isFavorite      Boolean       @default(false)
+  isWrongAnswer   Boolean       @default(false)
+  wrongCount      Int           @default(0)
+  correctStreak   Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId, nextReviewAt])
+}
+
+// Database-backed practice: one immutable first answer per question and session.
+model LearningSession {
+  id             String @id @default(uuid())
+  userId         String
+  level          JLPTLevel
+  mode           String @default("practice")
+  examConfig     Json?
+  collectionId   String?
+  questionIds    String[]
+  currentIndex   Int @default(0)
+  awaitingNext   Boolean @default(false)
+  completedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers        LearningAnswer[]
+  @@index([userId, createdAt])
+}
+
+model LearningAnswer {
+  id               String @id @default(uuid())
+  sessionId        String
+  questionId       String
+  selectedOptionId String
+  isCorrect        Boolean
+  answeredAt       DateTime @default(now())
+  session          LearningSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question         Question @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  @@unique([sessionId, questionId])
+  @@index([sessionId])
+}
+
+model ExamPaper {
+ id String @id
+ title String
+ level JLPTLevel
+ kind String
+ examYear Int?
+ examMonth Int?
+ ready Boolean @default(false)
+ sections Json
+ materials Json
+ verificationNote String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+
+model StudyMaterial {
+ novelLessons NovelLesson[]
+ id String @id
+ title String
+ collection String
+ filename String
+ pages Int
+ sha256 String
+ fileUrl String
+ audioUrl String?
+ videoUrl String?
+ japanese String?
+ translation String?
+ textStatus String
+ metadata Json
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+
+model FunPaper {
+ novelLesson NovelLesson?
+ id String @id
+ title String
+ description String
+ theme String
+ questionIds String[]
+ materialIds String[]
+ published Boolean @default(false)
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+
+// Independent source-based novel reading and recall practice.
+model NovelLesson {
+ id String @id
+ materialId String
+ paperId String @unique
+ title String
+ category String
+ position Int
+ startPage Int
+ endPage Int
+ pages Json
+ vocabulary Json
+ note String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ material StudyMaterial @relation(fields:[materialId],references:[id],onDelete:Restrict)
+ paper FunPaper @relation(fields:[paperId],references:[id],onDelete:Restrict)
+}

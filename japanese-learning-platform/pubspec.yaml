@@ -1,0 +1,83 @@
+name: japanese_learning_platform
+description: 日语 N5-N1 刷题与深度解析平台 - 商业版
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.16.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  
+  # State Management
+  flutter_redux: ^0.10.0
+  redux: ^5.0.0
+  redux_thunk: ^0.4.0
+  
+  # Navigation
+  go_router: ^13.0.1
+  
+  # Network & Data
+  dio: ^5.4.0
+  json_annotation: ^4.8.1
+  shared_preferences: ^2.2.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  
+  # UI
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.9
+  google_fonts: ^6.1.0
+  shimmer: ^3.0.0
+  smooth_page_indicator: ^1.1.0+1
+  
+  # Audio (disabled for web compatibility)
+  just_audio: ^0.9.40  # 移动端音频播放
+  
+  # Utils
+  intl: ^0.19.0
+  uuid: ^4.3.3
+  timeago: ^3.6.0
+  url_launcher: ^6.2.2
+  package_info_plus: ^9.0.1
+  device_info_plus: ^9.1.1
+  
+  # Animation
+  flutter_animate: ^4.3.3
+
+dependency_overrides:
+  just_audio_web: ^0.4.16
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+  hive_generator: ^2.0.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/audio/
+  
+  # 暂时移除字体配置，使用系统默认字体
+  # TODO: 下载真实字体文件后再启用
+  # fonts:
+  #   - family: NotoSansJP
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansJP-Regular.ttf
+  #       - asset: assets/fonts/NotoSansJP-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/NotoSansJP-Bold.ttf
+  #         weight: 700
+  #   - family: NotoSerifJP
+  #     fonts:
+  #       - asset: assets/fonts/NotoSerifJP-Regular.ttf

@@ -1,0 +1,20 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+coverage/
+.vscode/
+.idea/
+
+# Personal study history backups
+data/backups/
+
+# User-provided personal learning materials (local only)
+data/study-assets/
+data/material-fun-library.json
+
+# Portable snapshots contain personal accounts and learning history
+data/portable-export/
+data/novel-lessons.json
+data/novel-annotations.json
