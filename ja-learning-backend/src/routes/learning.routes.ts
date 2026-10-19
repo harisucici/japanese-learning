@@ -1,6 +1,5 @@
 import { Router, Response } from 'express';
 import { randomUUID } from 'crypto';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
@@ -8,6 +7,8 @@ import prisma from '../config/database';
 import { examSections, examConfig, timingSource } from '../services/exam-rules';
 import { config } from '../config/env';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { articleAudio } from '../services/article-audio';
+import { setSessionCookie } from '../services/session-cookie';
 
 const router = Router();
 const verified: Prisma.QuestionWhereInput = { source: { in: ['pastExam', 'official'] }, provenance: { not: Prisma.DbNull } };
@@ -90,12 +91,26 @@ async function finish(db: Prisma.TransactionClient, session: any) {
   } });
 }
 
-// A genuine local learner account, persisted in PostgreSQL; never a demo profile.
-router.post('/guest', run(async (_req, res) => {
-  const id = randomUUID();
-  const user = await prisma.user.create({ data: { id, email: `${id}@local.invalid`, name: '本机学习者', passwordHash: await bcrypt.hash(randomUUID(), 10) } });
-  const token = jwt.sign({ userId: id }, config.jwtSecret, { expiresIn: '365d' });
-  res.status(201).json({ token, user: { id, name: user.name } });
+// The cookie contains an opaque identity; no account or personal data is created.
+router.post('/guest', run(async (req, res) => {
+  let id: string | undefined;
+  const cookie = req.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith('ja_session='))?.slice('ja_session='.length);
+  if (cookie) {
+    try {
+      const payload = jwt.verify(decodeURIComponent(cookie), config.jwtSecret) as { userId?: string; kind?: string };
+      if (payload.userId && await prisma.anonymousLearner.findUnique({ where: { id: payload.userId } })) {
+        if (payload.kind === 'account') { res.json({ ready: true }); return; }
+        id = payload.userId;
+      }
+    } catch { /* Expired cookie receives a new anonymous identity. */ }
+  }
+  if (!id) {
+    id = randomUUID();
+    await prisma.anonymousLearner.create({ data: { id } });
+  }
+  const token = jwt.sign({ userId: id, kind: 'guest' }, config.jwtSecret, { expiresIn: '365d' });
+  setSessionCookie(res, token);
+  res.json({ ready: true });
 }));
 router.get('/catalog', run(async (_req, res) => {
   const groups = await prisma.question.groupBy({ by: ['level', 'type'], where: verified, _count: { _all: true } });
@@ -123,21 +138,21 @@ router.get('/novel-lessons/:id',run(async(req,res)=>{
  res.json(l);
 }));
 router.get('/materials',run(async(_req,res)=>{
- const rows=await prisma.studyMaterial.findMany({select:{id:true,title:true,collection:true,textStatus:true,japanese:true,videoUrl:true,audioLinks:{orderBy:{position:'asc'},include:{audio:{select:{id:true,title:true,url:true,durationSeconds:true}}}}},orderBy:[{collection:'asc'},{id:'asc'}]});
- const items=rows.map(({audioLinks,japanese,...item})=>({...item,hasText:!!japanese,audios:audioLinks.map(l=>l.audio)}));
- res.json({items,total:items.length,audioCount:items.filter(i=>i.audios.length).length,videoCount:items.filter(i=>i.videoUrl).length});
+ const rows=await prisma.studyMaterial.findMany({select:{id:true,title:true,collection:true,textStatus:true,japanese:true,audioLinks:{orderBy:{position:'asc'}}},orderBy:[{collection:'asc'},{id:'asc'}]});
+ const items=rows.map(({audioLinks,japanese,...item})=>({...item,hasText:!!japanese,audios:audioLinks.map(l=>articleAudio(l.audioId))}));
+ res.json({items,total:items.length,audioCount:items.filter(i=>i.audios.length).length});
 }));
 router.get('/materials/:id',run(async(req,res)=>{
- const m=await prisma.studyMaterial.findUnique({where:{id:req.params.id as string},include:{audioLinks:{orderBy:{position:'asc'},include:{audio:true}}}});
+ const m=await prisma.studyMaterial.findUnique({where:{id:req.params.id as string},include:{audioLinks:{orderBy:{position:'asc'}}}});
  if(!m)throw new HttpError(404,'素材不存在');
  const {sourcePath,...metadata}=m.metadata as any;
- const {audioLinks,filename,fileUrl,sha256,audioUrl,...article}=m;
- res.json({...article,metadata,audios:audioLinks.map(l=>l.audio)});
+ const {audioLinks,...article}=m;
+ res.json({...article,metadata,audios:audioLinks.map(l=>articleAudio(l.audioId))});
 }));
 router.use(authMiddleware);
 router.get('/dashboard', run(async (req, res) => {
   const [user, sessions, attempts] = await Promise.all([
-    prisma.user.findUniqueOrThrow({ where: { id: req.userId }, select: { id: true, name: true, createdAt: true } }),
+    prisma.anonymousLearner.findUniqueOrThrow({ where: { id: req.userId }, select: { id: true, createdAt: true } }),
     prisma.learningSession.findMany({ where: { userId: req.userId }, orderBy: { createdAt: 'desc' }, include: { answers: true } }),
     prisma.learningAnswer.findMany({ where: { session: { userId: req.userId,OR:[{mode:{not:'exam'}},{completedAt:{not:null}}] } }, select: { isCorrect: true } }),
   ]);

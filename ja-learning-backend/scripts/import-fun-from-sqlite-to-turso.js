@@ -56,8 +56,8 @@ async function main() {
       throw new Error(`Invalid source question: ${row.id}`);
     }
     return {
-      ...fields(row, ['id', 'level', 'type', 'content', 'contentReading', 'contentImageUrl',
-        'audioUrl', 'answer', 'source', 'explanationId', 'difficulty', 'order']),
+      ...fields(row, ['id', 'level', 'type', 'content', 'contentReading',
+        'answer', 'source', 'explanationId', 'difficulty', 'order']),
       options, tags: parse(row.tags),
       provenance: { ...safeProvenance, materialId: materialId(provenance.materialId), sourcePage: pdfPage },
     };

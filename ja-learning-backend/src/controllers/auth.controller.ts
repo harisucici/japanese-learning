@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { AuthService } from '../services/auth.service';
 import { loginSchema, registerSchema } from '../config/validators';
+import { setSessionCookie, clearSessionCookie } from '../services/session-cookie';
 
 const svc = new AuthService();
 
@@ -11,9 +12,10 @@ export class AuthController {
       const parsed = loginSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
       const result = await svc.login(parsed.data.email, parsed.data.password);
-      res.json(result);
+      setSessionCookie(res, result.token);
+      res.json({ user: result.user });
     } catch (e: any) {
-      res.status(401).json({ error: e.message });
+      res.status(e.status || 401).json({ error: e.message });
     }
   }
 
@@ -23,9 +25,10 @@ export class AuthController {
       if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
       const { email, password, name, targetLevel } = parsed.data;
       const result = await svc.register(email, password, name, targetLevel);
-      res.status(201).json(result);
+      setSessionCookie(res, result.token);
+      res.status(201).json({ user: result.user });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      res.status(e.status || 400).json({ error: e.message });
     }
   }
 
@@ -34,7 +37,7 @@ export class AuthController {
       const user = await svc.me(req.userId!);
       res.json({ user });
     } catch (e: any) {
-      res.status(404).json({ error: e.message });
+      res.status(e.status || 404).json({ error: e.message });
     }
   }
 
@@ -44,7 +47,7 @@ export class AuthController {
       const user = await svc.me(req.userId!);
       res.json({ user });
     } catch (e: any) {
-      res.status(404).json({ error: e.message });
+      res.status(e.status || 404).json({ error: e.message });
     }
   }
 
@@ -56,12 +59,13 @@ export class AuthController {
       const user = await svc.updateProfile(userId, { name, avatarUrl, currentLevel, targetLevel });
       res.json({ user });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      res.status(e.status || 400).json({ error: e.message });
     }
   }
 
   // POST /logout — JWT 无状态，简单返回成功
   async logout(req: AuthRequest, res: Response) {
+    clearSessionCookie(res);
     res.json({ success: true });
   }
 }

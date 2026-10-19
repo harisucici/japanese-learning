@@ -35,7 +35,8 @@ async function main() {
   }
   const questions = data.questions.map(question => {
     const { filename, pdfPage, pdfSha256, sourceUrl, ...provenance } = question.provenance;
-    return { ...question, provenance: { ...provenance, sourcePage: pdfPage } };
+    const { contentImageUrl, audioUrl, ...content } = question;
+    return { ...content, provenance: { ...provenance, sourcePage: pdfPage } };
   });
   const explanations = data.explanations.map(explanation => ({
     ...explanation,

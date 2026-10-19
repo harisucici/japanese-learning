@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
+import { config } from './config/env';
 
 import learningRoutes from './routes/learning.routes';
 
@@ -14,8 +15,9 @@ import statsRoutes from './routes/stats.routes';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: (origin, done) => done(null, !origin || config.frontendOrigins.includes(origin)), credentials: true }));
 app.use(express.json());
+app.use('/api/v1', (_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 app.use('/study-assets',express.static(path.join(__dirname,'../data/study-assets')));
 app.use('/exam-assets',express.static(path.join(__dirname,'../data/exam-assets')));
 app.use(morgan('dev'));

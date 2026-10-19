@@ -10,7 +10,9 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "db:export:turso": "node scripts/export-portable-db.js"
+    "db:export:turso": "node scripts/export-portable-db.js",
+    "db:init:users": "node scripts/init-user-database.js",
+    "db:migrate:content": "node scripts/migrate-content-separation.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1152.0",

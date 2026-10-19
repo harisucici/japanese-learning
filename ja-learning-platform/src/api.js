@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api/reading').replace(/\/$/, '')
 const READING_API_BASE = (import.meta.env.VITE_READING_API_BASE_URL || import.meta.env.VITE_MATERIALS_API_BASE_URL || '/api/reading').replace(/\/$/, '')
+// Remove the token saved by earlier releases; all future identity is in an HttpOnly cookie.
+try { window.localStorage.removeItem('learning_token') } catch { /* Storage may be disabled. */ }
 export const assetUrl = (url) => {
   if (!url) return ''
   try {
@@ -12,7 +14,7 @@ export const assetUrl = (url) => {
 }
 
 export const useLearningStore = defineStore('learning', {
-  state: () => ({ token: localStorage.getItem('learning_token') || '', session: null }),
+  state: () => ({ guestReady: false, session: null }),
   actions: {
     async request(path, body, auth = false, retried = false) {
       if (auth) await this.ensureGuest()
@@ -20,13 +22,13 @@ export const useLearningStore = defineStore('learning', {
       const base = remoteReading ? READING_API_BASE : API_BASE
       const response = await fetch(`${base}/learning/${path}`, {
         method: body === undefined ? 'GET' : 'POST',
-        headers: { ...(body === undefined ? {} : { 'Content-Type': 'application/json' }), ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        credentials: 'include',
+        headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
         ...(body === undefined ? {} : { body: JSON.stringify(body) })
       })
       const data = await response.json().catch(() => ({}))
       if (auth && response.status === 401 && !retried) {
-        this.token = ''
-        localStorage.removeItem('learning_token')
+        this.guestReady = false
         await this.ensureGuest()
         return this.request(path, body, true, true)
       }
@@ -34,12 +36,11 @@ export const useLearningStore = defineStore('learning', {
       return data
     },
     async ensureGuest() {
-      if (this.token) return
-      const response = await fetch(`${API_BASE}/learning/guest`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+      if (this.guestReady) return
+      const response = await fetch(`${API_BASE}/learning/guest`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: '{}' })
       const data = await response.json().catch(() => ({}))
-      if (!response.ok || !data.token) throw new Error(data.error || '无法创建学习身份')
-      this.token = data.token
-      localStorage.setItem('learning_token', data.token)
+      if (!response.ok || !data.ready) throw new Error(data.error || '无法建立学习会话')
+      this.guestReady = true
     },
     async startFun(id) { this.session = await this.request('sessions', { level: 'n5', mode: 'fun', collectionId: id }, true); return this.session },
     async startExam(level, paperId, instantFeedback) { this.session = await this.request('sessions', { level, mode: 'exam', paperId, instantFeedback }, true); return this.session },
