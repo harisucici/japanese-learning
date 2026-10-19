@@ -33,7 +33,7 @@ app.use('/api/v1/stats', statsRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-if (config.nodeEnv === 'production') {
+if (config.serveFrontend) {
   const siteDirectory = path.resolve(__dirname, '../../ja-learning-platform/dist');
   app.use(express.static(siteDirectory, { index: false }));
   app.get('*', (req, res, next) => {
