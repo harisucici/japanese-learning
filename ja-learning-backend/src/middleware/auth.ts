@@ -8,14 +8,14 @@ export interface AuthRequest extends Request {
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'Missing or invalid authorization header' });
+  const cookie = req.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith('ja_session='))?.slice('ja_session='.length);
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : cookie;
+  if (!token) {
+    res.status(401).json({ error: 'Missing learning session cookie' });
     return;
   }
-
-  const token = authHeader.substring(7);
   try {
-    const payload = jwt.verify(token, config.jwtSecret) as { userId: string };
+    const payload = jwt.verify(decodeURIComponent(token), config.jwtSecret) as { userId: string };
     req.userId = payload.userId;
     next();
   } catch (err) {

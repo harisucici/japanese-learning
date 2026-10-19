@@ -2,18 +2,8 @@ import prisma from '../config/database';
 
 export class StatsService {
   async getUserStats(userId: string) {
-    // Get user info
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        totalQuestions: true,
-        accuracy: true,
-        streakDays: true,
-        currentLevel: true,
-      },
-    });
-
-    if (!user) throw new Error('User not found');
+    const learner = await prisma.anonymousLearner.findUnique({ where: { id: userId }, select: { id: true } });
+    if (!learner) throw new Error('Learning identity not found');
 
     // Get all exam records for this user
     const records = await prisma.examRecord.findMany({
@@ -56,8 +46,8 @@ export class StatsService {
       totalQuestions,
       correctCount,
       accuracy,
-      streakDays: user.streakDays,
-      currentLevel: user.currentLevel,
+      streakDays: 0,
+      currentLevel: 'n5',
       levelStats,
     };
   }

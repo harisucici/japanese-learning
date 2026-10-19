@@ -10,11 +10,17 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "db:export:turso": "node scripts/export-portable-db.js"
+    "db:export:turso": "node scripts/export-portable-db.js",
+    "db:init:users": "node scripts/init-user-database.js",
+    "db:migrate:content": "node scripts/migrate-content-separation.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@libsql/client": "^0.8.1",
+    "@prisma/adapter-libsql": "^6.19.3",
+    "@prisma/client": "^6.19.3",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
@@ -29,7 +35,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.1",
-    "prisma": "^5.22.0",
+    "prisma": "^6.19.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2"
   }
