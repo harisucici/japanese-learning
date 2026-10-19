@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002/api/v1').replace(/\/$/, '')
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api/reading').replace(/\/$/, '')
+const READING_API_BASE = (import.meta.env.VITE_READING_API_BASE_URL || import.meta.env.VITE_MATERIALS_API_BASE_URL || '/api/reading').replace(/\/$/, '')
 export const assetUrl = (url) => {
   if (!url) return ''
   try {
-    const parsed = new URL(url, API_BASE)
-    const api = new URL(API_BASE)
-    if (['localhost', '127.0.0.1'].includes(parsed.hostname) && ['localhost', '127.0.0.1'].includes(api.hostname)) parsed.host = api.host
+    const parsed = new URL(url, window.location.origin)
+    if (['localhost', '127.0.0.1'].includes(parsed.hostname) && ['3002', '3003'].includes(parsed.port)) parsed.host = window.location.host
     return parsed.href
   } catch { return url }
 }
@@ -16,7 +16,9 @@ export const useLearningStore = defineStore('learning', {
   actions: {
     async request(path, body, auth = false, retried = false) {
       if (auth) await this.ensureGuest()
-      const response = await fetch(`${API_BASE}/learning/${path}`, {
+      const remoteReading = path === 'materials' || path.startsWith('materials/') || path === 'novel-lessons' || path.startsWith('novel-lessons/')
+      const base = remoteReading ? READING_API_BASE : API_BASE
+      const response = await fetch(`${base}/learning/${path}`, {
         method: body === undefined ? 'GET' : 'POST',
         headers: { ...(body === undefined ? {} : { 'Content-Type': 'application/json' }), ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
         ...(body === undefined ? {} : { body: JSON.stringify(body) })

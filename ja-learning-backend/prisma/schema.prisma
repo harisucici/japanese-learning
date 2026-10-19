@@ -3,61 +3,24 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-// 与前端 JLPTLevel 枚举一致，使用小写
-enum JLPTLevel {
-  ungraded
-  n5
-  n4
-  n3
-  n2
-  n1
-}
-
-enum QuestionType {
-  vocabulary
-  kanji
-  grammar
-  reading
-  listening
-  fillInBlank
-  comprehensive
-}
-
-enum QuestionSource {
-  official
-  mock
-  textbook
-  userGenerated
-  aiGenerated
-  pastExam
-  custom
-}
-
-enum ExamRecordType {
-  practice
-  exam
-  review
-}
-
-// 'new' 是 SQL 关键字，改为 'new_' 避免冲突（与前端 ReviewStatus.new_ 一致）
-enum ReviewStatus {
-  new_
-  learning
-  reviewing
-  mastered
-}
+// SQLite does not support enums; use String with validated values in application code
+// JLPTLevel: ungraded | n5 | n4 | n3 | n2 | n1
+// QuestionType: vocabulary | kanji | grammar | reading | listening | fillInBlank | comprehensive
+// QuestionSource: official | mock | textbook | userGenerated | aiGenerated | pastExam | custom
+// ExamRecordType: practice | exam | review
+// ReviewStatus: new_ | learning | reviewing | mastered
 
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
   passwordHash  String
   name          String
-  currentLevel  JLPTLevel @default(n5)
-  targetLevel   JLPTLevel @default(n5)
+  currentLevel  String    @default("n5")   // JLPTLevel
+  targetLevel   String    @default("n5")   // JLPTLevel
   avatarUrl     String?
   streakDays    Int       @default(0)
   totalQuestions Int      @default(0)
@@ -72,18 +35,18 @@ model User {
 
 model Question {
   id              String         @id @default(uuid())
-  level           JLPTLevel
-  type            QuestionType
+  level           String                              // JLPTLevel
+  type            String                              // QuestionType
   content         String
   contentReading  String?        // 题干读音（假名）
   contentImageUrl String?        // 题干图片 URL
   audioUrl        String?        // 音频 URL（听力题）
   options         Json           // [{id, content, hint?, reading?, index}]
   answer          String         // 正确选项的 optionId
-  source          QuestionSource @default(official)
+  source          String         @default("official") // QuestionSource
   provenance      Json?          // 官方原卷、页码、题号、答案及文件校验值
   explanationId   String         // 关联解析 ID（与前端 Question.explanationId 一致）
-  tags            String[]       @default([])
+  tags            Json           @default("[]")       // String[] as JSON array
   difficulty      Float          @default(0.5)
   order           Int            @default(0)  // 题目顺序
   createdAt       DateTime       @default(now())
@@ -110,9 +73,9 @@ model Explanation {
 model ExamRecord {
   id              String          @id @default(uuid())
   userId          String
-  level           JLPTLevel
-  recordType      ExamRecordType
-  questionIds     String[]
+  level           String                              // JLPTLevel
+  recordType      String                              // ExamRecordType
+  questionIds     Json                                // String[] as JSON array
   answers         Json            // [{questionId, selectedOptionId, isCorrect}]
   score           Int             @default(0)
   totalQuestions  Int
@@ -130,9 +93,9 @@ model ReviewItem {
   id              String        @id @default(uuid())
   userId          String
   questionId      String
-  level           JLPTLevel
-  type            QuestionType
-  status          ReviewStatus  @default(new_)
+  level           String                            // JLPTLevel
+  type            String                            // QuestionType
+  status          String        @default("new_")     // ReviewStatus
   reviewCount     Int           @default(0)
   nextReviewAt    DateTime?
   easeFactor      Float         @default(2.5)
@@ -155,11 +118,11 @@ model ReviewItem {
 model LearningSession {
   id             String @id @default(uuid())
   userId         String
-  level          JLPTLevel
+  level          String                            // JLPTLevel
   mode           String @default("practice")
   examConfig     Json?
   collectionId   String?
-  questionIds    String[]
+  questionIds    Json                              // String[] as JSON array
   currentIndex   Int @default(0)
   awaitingNext   Boolean @default(false)
   completedAt    DateTime?
@@ -186,7 +149,7 @@ model LearningAnswer {
 model ExamPaper {
  id String @id
  title String
- level JLPTLevel
+ level String                            // JLPTLevel
  kind String
  examYear Int?
  examMonth Int?
@@ -200,6 +163,7 @@ model ExamPaper {
 
 model StudyMaterial {
  novelLessons NovelLesson[]
+ audioLinks MaterialAudio[]
  id String @id
  title String
  collection String
@@ -217,14 +181,40 @@ model StudyMaterial {
  updatedAt DateTime @updatedAt
 }
 
+// Uploaded media metadata lives in the database; binary files remain in object storage.
+model AudioAsset {
+ id String @id
+ title String
+ filename String @unique
+ url String
+ storageProvider String
+ storageKey String?
+ mimeType String @default("audio/mpeg")
+ sizeBytes Int?
+ durationSeconds Float?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ materials MaterialAudio[]
+}
+
+model MaterialAudio {
+ materialId String
+ audioId String
+ position Int @default(0)
+ material StudyMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+ audio AudioAsset @relation(fields: [audioId], references: [id], onDelete: Cascade)
+ @@id([materialId, audioId])
+ @@index([audioId])
+}
+
 model FunPaper {
  novelLesson NovelLesson?
  id String @id
  title String
  description String
  theme String
- questionIds String[]
- materialIds String[]
+ questionIds Json                          // String[] as JSON array
+ materialIds Json                          // String[] as JSON array
  published Boolean @default(false)
  createdAt DateTime @default(now())
  updatedAt DateTime @updatedAt
@@ -247,4 +237,27 @@ model NovelLesson {
  updatedAt DateTime @updatedAt
  material StudyMaterial @relation(fields:[materialId],references:[id],onDelete:Restrict)
  paper FunPaper @relation(fields:[paperId],references:[id],onDelete:Restrict)
+}
+
+// Reading content is hosted in Turso independently of practice paper relations.
+model ReadingArticle {
+ id String @id
+ title String
+ category String
+ position Int
+ startPage Int
+ endPage Int
+ pages Json
+ vocabulary Json
+ note String
+ materialId String
+ paperId String
+ questionCount Int @default(0)
+ published Boolean @default(false)
+ sourceTitle String?
+ sourcePages Int @default(0)
+ attribution String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([position])
 }
