@@ -51,10 +51,10 @@ class AppAnimations {
   static const Curve easeElastic = Curves.elasticOut;
   
   /// 流畅曲线 - 自然流畅（iOS 风格）
-  static final Curve easeSmooth = const Cubic(0.16, 1, 0.3, 1);
+  static const Curve easeSmooth = Cubic(0.16, 1, 0.3, 1);
   
   /// 弹簧曲线 - 动感
-  static final Curve easeBounce = const Cubic(0.34, 1.56, 0.64, 1);
+  static const Curve easeBounce = Cubic(0.34, 1.56, 0.64, 1);
 
   // ============================================================
   // Spring 物理参数

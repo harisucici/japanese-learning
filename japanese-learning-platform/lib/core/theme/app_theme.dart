@@ -389,7 +389,7 @@ class AppTheme {
   
   /// 浅色 AppBar 主题
   static AppBarTheme _buildLightAppBarTheme(ColorScheme colorScheme) {
-    return AppBarTheme(
+    return const AppBarTheme(
       elevation: 0,
       scrolledUnderElevation: 0.5,
       backgroundColor: AppColors.surface,
@@ -397,7 +397,7 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       titleSpacing: AppSpacing.lg,
-      titleTextStyle: const TextStyle(
+      titleTextStyle: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.headlineMedium,
         fontWeight: AppTypography.semiBold,
@@ -408,7 +408,7 @@ class AppTheme {
 
   /// 深色 AppBar 主题
   static AppBarTheme _buildDarkAppBarTheme(ColorScheme colorScheme) {
-    return AppBarTheme(
+    return const AppBarTheme(
       elevation: 0,
       scrolledUnderElevation: 0.5,
       backgroundColor: AppColors.darkSurface,
@@ -416,7 +416,7 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       titleSpacing: AppSpacing.lg,
-      titleTextStyle: const TextStyle(
+      titleTextStyle: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.headlineMedium,
         fontWeight: AppTypography.semiBold,

@@ -22,9 +22,6 @@ class AppShadows {
   
   /// 浅色主题阴影色（柔和灰蓝）
   static const Color _lightShadow = Color(0xFF1E293B);
-  
-  /// 深色主题阴影色（更深的灰蓝）
-  static const Color _darkShadow = Color(0xFF000000);
 
   // ============================================================
   // 分层阴影 - 浅色主题

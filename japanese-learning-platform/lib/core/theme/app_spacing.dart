@@ -63,11 +63,11 @@ class AppSpacing {
   // 卡片级间距
   // ============================================================
   
-  /// 卡片内边距
-  static const double cardPadding = 16.0;
+  /// 卡片内边距 - 24px（design-taste-frontend 规范）
+  static const double cardPadding = 24.0;
   
   /// 卡片间距（卡片之间的距离）
-  static const double cardGap = 12.0;
+  static const double cardGap = 16.0;
 
   // ============================================================
   // 列表项间距
