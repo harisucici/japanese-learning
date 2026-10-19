@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
-import { useLearningStore } from '../api'
+import { useLearningStore } from '../store'
 const api=useLearningStore(), router=useRouter()
 const data=ref(null),error=ref(''),loading=ref(true),starting=ref(''),theme=ref('全部')
 async function load(){loading.value=true;error.value='';try{data.value=await api.request('fun-papers')}catch(e){error.value=e.message}finally{loading.value=false}}

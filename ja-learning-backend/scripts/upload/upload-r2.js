@@ -11,7 +11,7 @@
  * 
  * 使用方法：
  * 1. 复制 .env.example 为 .env 并填入 R2 凭证
- * 2. 运行：node scripts/upload-r2.js
+ * 2. 运行：node scripts/upload/upload-r2.js
  * 
  * 需要的环境变量：
  * - R2_ACCOUNT_ID: Cloudflare Account ID

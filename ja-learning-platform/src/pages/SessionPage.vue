@@ -1,7 +1,7 @@
 <script setup>
 import { computed,onMounted,onUnmounted,ref,watch } from 'vue'
 import { useRoute,useRouter,RouterLink } from 'vue-router'
-import { assetUrl,useLearningStore } from '../api'
+import { assetUrl,useLearningStore } from '../store'
 const route=useRoute(),router=useRouter(),api=useLearningStore()
 const loading=ref(true),error=ref(''),busy=ref(false),now=ref(Date.now()),showAnswered=ref(false),serverOffset=ref(0),examAudio=ref(null),audioPlaying=ref(false),audioError=ref('')
 let timer

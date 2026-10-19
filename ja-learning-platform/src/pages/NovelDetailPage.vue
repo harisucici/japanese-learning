@@ -1,7 +1,7 @@
 <script setup>
 import { computed,onMounted,ref,watch } from 'vue'
 import { useRoute,useRouter,RouterLink } from 'vue-router'
-import { useLearningStore } from '../api'
+import { useLearningStore } from '../store'
 const route=useRoute(),router=useRouter(),api=useLearningStore()
 const lesson=ref(null),error=ref(''),loading=ref(true),starting=ref(false),pageIndex=ref(0),selectedWord=ref(null)
 async function load(){loading.value=true;error.value='';try{lesson.value=await api.request(`novel-lessons/${encodeURIComponent(route.params.id)}`);pageIndex.value=0}catch(e){error.value=e.message}finally{loading.value=false}}

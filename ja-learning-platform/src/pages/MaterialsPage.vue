@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useLearningStore } from '../api'
+import { useLearningStore } from '../store'
 const api = useLearningStore(), data = ref(null), error = ref(''), loading = ref(true), query = ref(''), collection = ref('全部'), visibleCount = ref(24)
 async function load() { loading.value = true; error.value = ''; try { data.value = await api.request('materials') } catch (e) { error.value = e.message } finally { loading.value = false } }
 onMounted(load)

@@ -5,7 +5,7 @@ const {PrismaClient}=require('@prisma/client');
 const {examSections}=require('../dist/services/exam-rules');
 const prisma=new PrismaClient();
 async function main(){
- const input=process.argv[2];if(!input)throw Error('Usage: node scripts/import-full-paper.js /absolute/path/manifest.json');
+ const input=process.argv[2];if(!input)throw Error('Usage: node scripts/import/import-full-paper.js /absolute/path/manifest.json');
  const m=JSON.parse(fs.readFileSync(input,'utf8'));const root=path.dirname(path.resolve(input));
  if(!/^[a-z0-9-]{1,100}$/.test(m.id)||!m.title||!['dated_exam','official_workbook'].includes(m.kind)||!m.reviewedBy||!m.reviewedAt)throw Error('Missing verified source/reviewer metadata');
  if(m.kind==='dated_exam'&&(!Number.isInteger(m.examYear)||m.examYear<2010||m.examYear>new Date().getFullYear()||![7,12].includes(m.examMonth)))throw Error('Dated papers require verified exam year/month');

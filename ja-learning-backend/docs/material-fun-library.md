@@ -8,4 +8,4 @@ Ten `FunPaper` collections reference 50 material-derived questions. Each questio
 
 Routes: `/fun`, `/materials`, `/materials/:id`; APIs under `/api/v1/learning/`. Fun sessions use persisted first-answer locking, automatic advance for correct answers, explanation and manual advance for wrong answers, and percent final scores. They have no claimed JLPT exam timing or scaled score.
 
-Import: `node scripts/import-material-fun.js` (local payload required; validates checksums and source quotes; idempotent upserts). Check: `node scripts/check-material-fun-flow.js`; dedicated test account is removed afterward.
+Import: `node scripts/import/import-material-fun.js` (local payload required; validates checksums and source quotes; idempotent upserts). Check: `node scripts/check/check-material-fun-flow.js`; dedicated test account is removed afterward.
