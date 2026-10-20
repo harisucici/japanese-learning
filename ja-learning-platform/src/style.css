@@ -1614,10 +1614,11 @@ footer {
 
 .history-link {
   display:inline-block;
-  margin-top:20px;
-  font-size:12px;
+  margin-top:40px;
+  font-size:14px;
+  font-weight:600;
   letter-spacing:.12em;
-  border-bottom:1px solid #e3e8da;
+  border-bottom:3px solid currentColor;
   padding-bottom:8px
 }
 
