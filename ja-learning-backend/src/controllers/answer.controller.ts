@@ -2,7 +2,7 @@ import { Response } from 'express';
 import prisma from '../config/database';
 import userPrisma from '../config/user-database';
 import { AuthRequest } from '../middleware/auth';
-import { HttpError, run, ids, state, clockSync, advance } from './_shared';
+import { HttpError, run, ids, stateAfterAnswer, clockSync, advance } from './_shared';
 import { answerSchema } from '../validators/learning.validators';
 
 export class AnswerController {
@@ -65,7 +65,7 @@ export class AnswerController {
         } else {
           await advance(db, s);
         }
-        return state(db, s.id, req.userId!);
+        return stateAfterAnswer(db, s.id, req.userId!);
       },
       { isolationLevel: 'Serializable', timeout: 30000 }
     );
@@ -83,7 +83,7 @@ export class AnswerController {
         await clockSync(db, s.id, req.userId!);
         const fresh = await db.learningSession.findUniqueOrThrow({ where: { id: s.id } });
         if (!fresh.completedAt && !(fresh.examConfig as any)?.waitingSection) await advance(db, fresh);
-        return state(db, s.id, req.userId!);
+        return stateAfterAnswer(db, s.id, req.userId!);
       },
       { isolationLevel: 'Serializable', timeout: 30000 }
     );

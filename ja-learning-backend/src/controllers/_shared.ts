@@ -191,6 +191,32 @@ export async function stateQuestions(db: Prisma.TransactionClient, id: string, u
   };
 }
 
+// answer-flow response: metadata + answers only; NO questions or explanations queries
+export async function stateAfterAnswer(db: Prisma.TransactionClient, id: string, userId: string) {
+  const session = await loadSession(db, id, userId);
+  const questionIds = ids(session.questionIds);
+  const cfg = session.examConfig as any;
+  const hide = cfg && !cfg.instantFeedback && !session.completedAt;
+  return {
+    id: session.id,
+    mode: session.mode,
+    examConfig: session.examConfig,
+    currentIndex: session.currentIndex,
+    awaitingNext: session.awaitingNext,
+    completedAt: session.completedAt,
+    serverNow: new Date().toISOString(),
+    ...points(session.answers, questionIds.length),
+    ...(hide ? { score: null, correctCount: null } : {}),
+    answers: session.answers.map(a =>
+      hide
+        ? { questionId: a.questionId, selectedOptionId: a.selectedOptionId, answeredAt: a.answeredAt }
+        : { questionId: a.questionId, selectedOptionId: a.selectedOptionId, isCorrect: a.isCorrect, answeredAt: a.answeredAt }
+    ),
+    // kept as empty array so destructuring callers remain compatible with state()
+    questions: [] as any[],
+  };
+}
+
 export async function state(db: Prisma.TransactionClient, id: string, userId: string) {
   let session = await db.learningSession.findFirst({
     where: { id, userId },
