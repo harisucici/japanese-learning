@@ -15,6 +15,7 @@ const mode = computed(() => route.query.mode === 'practice' ? 'practice' : 'exam
 
 // 状态
 const loading = ref(true)
+const loadingStep = ref('准备请求')
 const error = ref('')
 const busy = ref(false)
 const now = ref(Date.now())
@@ -82,13 +83,17 @@ function optionText(q, id) {
 }
 
 async function load() {
-  loading.value = true
+  // A newly started session already contains its questions. Render it while
+  // refreshing instead of hiding it behind a second full-page loading state.
+  loading.value = !session.value?.questions?.length
   error.value = ''
+  loadingStep.value = '请求练习数据'
   try {
     await api.loadSession(route.params.id)
+    loadingStep.value = '处理题目'
     serverOffset.value = Date.parse(api.session.serverNow) - Date.now()
   } catch (e) {
-    error.value = e.message
+    error.value = e.name === 'TimeoutError' ? '读取超时，请重试。' : e.message
   } finally {
     loading.value = false
   }
@@ -230,7 +235,7 @@ function back() {
     </div>
 
     <div class="session-body">
-      <div v-if="loading" class="state-box">正在读取练习…</div>
+      <div v-if="loading" class="state-box">正在读取练习… {{ loadingStep }} / {{ api.requestStage }}</div>
       <div v-else-if="error && !session" class="state-box error">
         {{ error }} <button @click="load">重试</button>
       </div>

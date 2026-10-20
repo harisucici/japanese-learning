@@ -63,6 +63,8 @@ export class LearningController {
   // Session management — delegated to SessionController
   startSession = sessionController.startSession;
   getSession = sessionController.getSession;
+  getSessionMetadata = sessionController.getSessionMetadata;
+  getSessionQuestions = sessionController.getSessionQuestions;
 
   // Answer flow — delegated to AnswerController
   submitAnswer = answerController.submitAnswer;

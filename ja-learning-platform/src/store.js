@@ -96,24 +96,53 @@ export const useAuthStore = defineStore('auth', {
 })
 
 export const useLearningStore = defineStore('learning', {
-  state: () => ({ guestReady: false, session: null }),
+  state: () => ({ guestReady: false, session: null, requestStage: '' }),
   actions: {
     async request(path, body, auth = false, retried = false) {
+      this.requestStage = auth ? '检查访客身份' : '发送数据请求'
       if (auth) await this.ensureGuest()
       const base = API_BASE
+      this.requestStage = '等待服务响应'
       const response = await fetch(`${base}/learning/${path}`, {
         method: body === undefined ? 'GET' : 'POST',
         credentials: 'include',
+        signal: AbortSignal.timeout(15000),
         headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
         ...(body === undefined ? {} : { body: JSON.stringify(body) })
       })
-      const data = await response.json().catch(() => ({}))
+      const expectedBytes = Number(response.headers.get('content-length'))
+      let data = {}
+      if (response.body && Number.isFinite(expectedBytes) && expectedBytes > 0) {
+        const reader = response.body.getReader()
+        const chunks = []
+        let received = 0
+        while (received < expectedBytes) {
+          this.requestStage = `读取响应内容（${response.status}，${received}/${expectedBytes} 字节）`
+          const { value, done } = await reader.read()
+          if (done) break
+          chunks.push(value)
+          received += value.byteLength
+        }
+        if (received < expectedBytes) throw new Error('练习数据传输不完整，请重试。')
+        const bytes = new Uint8Array(received)
+        let offset = 0
+        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
+        data = JSON.parse(new TextDecoder().decode(bytes))
+        reader.cancel().catch(() => {})
+      } else {
+        this.requestStage = `读取响应内容（${response.status}）`
+        data = await response.json().catch(() => ({}))
+      }
       if (auth && response.status === 401 && !retried) {
         this.guestReady = false
         await this.ensureGuest()
         return this.request(path, body, true, true)
       }
-      if (!response.ok) throw new Error(data.error || `服务请求失败（${response.status}）`)
+      if (!response.ok) {
+        const error = new Error(data.error || `服务请求失败（${response.status}）`)
+        error.status = response.status
+        throw error
+      }
       return data
     },
     async ensureGuest() {
@@ -125,7 +154,23 @@ export const useLearningStore = defineStore('learning', {
     },
     async startFun(id) { this.session = await this.request('sessions', { level: 'n5', mode: 'fun', collectionId: id }, true); return this.session },
     async startExam(level, paperId, instantFeedback) { this.session = await this.request('sessions', { level, mode: 'exam', paperId, instantFeedback }, true); return this.session },
-    async loadSession(id) { this.session = await this.request(`sessions/${encodeURIComponent(id)}`, undefined, true); return this.session },
+    async loadSession(id) {
+      const path = `sessions/${encodeURIComponent(id)}`
+      const loadParts = async () => {
+        const metadata = await this.request(`${path}/metadata`, {})
+        const questionData = await this.request(`${path}/questions`, {})
+        return { ...metadata, questions: questionData.questions }
+      }
+      try {
+        this.session = await loadParts()
+      } catch (error) {
+        if (error.status !== 401) throw error
+        this.guestReady = false
+        await this.ensureGuest()
+        this.session = await loadParts()
+      }
+      return this.session
+    },
     async answer(id, questionId, optionId) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/answers`, { questionId, optionId }, true); return this.session },
     async next(id) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/next`, {}, true); return this.session },
     async section(id, action) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/section`, { action }, true); return this.session }

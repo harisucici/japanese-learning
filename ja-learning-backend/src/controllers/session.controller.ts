@@ -85,9 +85,19 @@ export class SessionController {
     res.status(201).json(await state(userPrisma, session.id, req.userId!));
   });
 
-  getSession = run(async (req: AuthRequest, res: Response) =>
-    res.json(await state(userPrisma, req.params.id as string, req.userId!))
-  );
+  getSession = run(async (req: AuthRequest, res: Response) => {
+    res.json(await state(userPrisma, req.params.id as string, req.userId!));
+  });
+
+  getSessionMetadata = run(async (req: AuthRequest, res: Response) => {
+    const { questions: _questions, ...metadata } = await state(userPrisma, req.params.id as string, req.userId!);
+    res.json(metadata);
+  });
+
+  getSessionQuestions = run(async (req: AuthRequest, res: Response) => {
+    const { questions } = await state(userPrisma, req.params.id as string, req.userId!);
+    res.json({ questions });
+  });
 }
 
 export const sessionController = new SessionController();

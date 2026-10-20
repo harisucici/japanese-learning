@@ -499,43 +499,16 @@ button {
   color:#ffffff88
 }
 
-.challenge .card-visual {
-  background:#ad9982
-}
-
-.challenge .card-orb {
-  background:#dfbb83
-}
-
-.challenge .card-shape {
-  background:#6b5b4b;
-  transform:rotate(12deg)
-}
-
-.library .card-visual {
-  background:#737f76
-}
-
-.library .card-orb {
-  background:#ddd3b8
-}
-
-.library .card-shape {
-  background:#304d47
-}
-
-.exam .card-visual {
-  background:#a7ada5
-}
-
-.exam .card-orb {
-  background:#ede0c6
-}
-
-.exam .card-shape {
-  background:#56675e;
-  transform:rotate(20deg)
-}
+/* 首页卡片与对应详情页共用同一组景色配色。 */
+.module-card.story, .interior.story { --landscape-sky:linear-gradient(125deg,#f8e9ee 0%,#f7d8e2 60%,#e9bed0 100%); --landscape-sun:#fff3f4b8; --landscape-hill:#b76d86; }
+.module-card.challenge, .interior.challenge { --landscape-sky:linear-gradient(125deg,#e5f4d9 0%,#a8ddc6 60%,#6bbbad 100%); --landscape-sun:#fff4bcba; --landscape-hill:#318978; }
+.module-card.library, .interior.library { --landscape-sky:linear-gradient(125deg,#faefd6 0%,#efc995 58%,#cf9167 100%); --landscape-sun:#fff1c7bf; --landscape-hill:#a55d3e; }
+.module-card.exam, .interior.exam { --landscape-sky:linear-gradient(125deg,#f2f8fc 0%,#cbdfea 58%,#9ebed2 100%); --landscape-sun:#ffffffbd; --landscape-hill:#729ab3; }
+.module-card .card-visual { background:var(--landscape-sky); }
+.module-card .card-orb { background:var(--landscape-sun); box-shadow:none; }
+.module-card .card-shape { background:var(--landscape-hill); }
+.story .card-symbol { color: rgba(74, 58, 69, 0.45); }
+.exam .card-symbol { color: rgba(42, 48, 64, 0.45); }
 
 .card-info {
   padding:27px 25px 30px
@@ -2060,20 +2033,11 @@ footer {
 .interior.exam { --season-accent:#486f91; --season-ink:#34536e; --season-soft:#ecf4fa; --season-line:#c3d8e8; }
 
 .interior .interior-hero { color:#263b39; }
-.interior.story .interior-hero { background:linear-gradient(125deg,#f8e9ee 0%,#f7d8e2 60%,#e9bed0 100%); }
-.interior.challenge .interior-hero { background:linear-gradient(125deg,#e5f4d9 0%,#a8ddc6 60%,#6bbbad 100%); }
-.interior.library .interior-hero { background:linear-gradient(125deg,#faefd6 0%,#efc995 58%,#cf9167 100%); }
-.interior.exam .interior-hero { background:linear-gradient(125deg,#f2f8fc 0%,#cbdfea 58%,#9ebed2 100%); }
+.interior .interior-hero { background:var(--landscape-sky); }
 .interior .interior-art { background:none; }
 .interior .interior-orb { filter:none; }
-.interior.story .interior-orb { background:#fff3f4b8; }
-.interior.challenge .interior-orb { background:#fff4bcba; }
-.interior.library .interior-orb { background:#fff1c7bf; }
-.interior.exam .interior-orb { background:#ffffffbd; }
-.interior.story .interior-hill { background:#b76d86; }
-.interior.challenge .interior-hill { background:#318978; }
-.interior.library .interior-hill { background:#a55d3e; }
-.interior.exam .interior-hill { background:#729ab3; }
+.interior .interior-orb { background:var(--landscape-sun); }
+.interior .interior-hill { background:var(--landscape-hill); }
 .interior .interior-hero .eyebrow.light { color:var(--season-ink); }
 
 .interior .content-page .eyebrow,

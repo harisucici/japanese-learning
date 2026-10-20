@@ -19,6 +19,8 @@ router.use(authMiddleware);
 router.get('/dashboard', learningController.dashboard);
 router.post('/sessions', learningController.startSession);
 router.get('/sessions/:id', learningController.getSession);
+router.post('/sessions/:id/metadata', learningController.getSessionMetadata);
+router.post('/sessions/:id/questions', learningController.getSessionQuestions);
 router.post('/sessions/:id/answers', learningController.submitAnswer);
 router.post('/sessions/:id/next', learningController.nextQuestion);
 router.post('/sessions/:id/section', learningController.sectionAction);
