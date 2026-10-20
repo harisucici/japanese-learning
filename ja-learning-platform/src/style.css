@@ -53,7 +53,7 @@ button {
 }
 
 .site-header.on-page {
-  color:#fff
+  color:#4a3a45
 }
 
 .brand {
@@ -63,14 +63,16 @@ button {
 }
 
 .brand-mark,.footer-mark {
-  display:grid;
-  place-items:center;
+  display:block;
   width:42px;
   height:42px;
-  border:1px solid currentColor;
-  border-radius:50%;
-  font-family: 'Zen Kaku Gothic New',sans-serif;
-  font-size:22px
+  object-fit:contain;
+  flex:none
+}
+
+.site-header:not(.on-page) .brand-mark,
+.footer-mark {
+  filter:brightness(0) invert(1)
 }
 
 .brand-name {
@@ -173,8 +175,8 @@ button {
  * ============================================ */
 
 .hero {
-  height:min(860px,100vh);
-  min-height:650px;
+  height:min(760px,88svh);
+  min-height:600px;
   position:relative;
   overflow:hidden;
   background:#536b69;
@@ -277,6 +279,11 @@ button {
   z-index:1
 }
 
+.hero-copy>.eyebrow,.hero-copy h1,.hero-copy>p:not(.eyebrow) {
+  position:relative;
+  top:clamp(-103px,-12vh,-78px)
+}
+
 .hero-copy h1 {
   font:400 clamp(54px,7vw,105px)/1.33 'Zen Kaku Gothic New',sans-serif;
   letter-spacing:.16em;
@@ -305,6 +312,11 @@ button {
   margin-top:38px
 }
 
+.hero-copy .text-link {
+  position:relative;
+  top:-70px
+}
+
 .light-link {
   border-color:#fff;
   color:#fff
@@ -313,20 +325,6 @@ button {
 .text-link span {
   font-size:19px;
   line-height:0
-}
-
-.hero-side {
-  position:absolute;
-  right:5%;
-  top:50%;
-  writing-mode:vertical-rl;
-  font-size:9px;
-  letter-spacing:.25em;
-  opacity:.8
-}
-
-.hero-side span {
-  margin:18px 0
 }
 
 .hero-bottom {
@@ -715,7 +713,8 @@ footer {
 }
 
 .footer-mark {
-  display:inline-grid;
+  display:inline-block;
+  vertical-align:middle;
   margin-right:15px
 }
 
@@ -1758,21 +1757,24 @@ footer {
     height:36px
   }
   .hero {
-    min-height:680px;
-    height:90svh
+    min-height:590px;
+    height:78svh
   }
   .hero-copy {
     left:9%;
     top:33%
+  }
+  .hero-copy>.eyebrow,.hero-copy h1,.hero-copy>p:not(.eyebrow) {
+    top:-34px
+  }
+  .hero-copy .text-link {
+    top:-28px
   }
   .hero-copy h1 {
     font-size:53px
   }
   .hero-copy>p:not(.eyebrow) {
     font-size:11px
-  }
-  .hero-side {
-    display:none
   }
   .hero-bottom {
     left:9%;
@@ -1990,6 +1992,9 @@ footer {
 }
 :root[data-theme="dark"] .site-header {
   color: var(--theme-text);
+}
+:root[data-theme="dark"] .site-header.on-page {
+  color:#4a3a45;
 }
 :root[data-theme="dark"] .content-page,
 :root[data-theme="dark"] .interior-content {
