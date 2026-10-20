@@ -156,18 +156,21 @@ export const useLearningStore = defineStore('learning', {
     async startExam(level, paperId, instantFeedback) { this.session = await this.request('sessions', { level, mode: 'exam', paperId, instantFeedback }, true); return this.session },
     async loadSession(id) {
       const path = `sessions/${encodeURIComponent(id)}`
-      const loadParts = async () => {
-        const metadata = await this.request(`${path}/metadata`, {})
-        const questionData = await this.request(`${path}/questions`, {})
-        return { ...metadata, questions: questionData.questions }
+      // Fetch the complete session (metadata + questions) in a single GET
+      // request. The backend GET /sessions/:id returns the full state, so we
+      // no longer need the separate /metadata and /questions POST calls —
+      // this halves the round trips and the total bytes on the wire.
+      const loadAll = async () => {
+        const result = await this.request(path);
+        return result;
       }
       try {
-        this.session = await loadParts()
+        this.session = await loadAll()
       } catch (error) {
         if (error.status !== 401) throw error
         this.guestReady = false
         await this.ensureGuest()
-        this.session = await loadParts()
+        this.session = await loadAll()
       }
       return this.session
     },

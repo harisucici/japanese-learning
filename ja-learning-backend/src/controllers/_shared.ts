@@ -113,6 +113,84 @@ export async function advance(db: Prisma.TransactionClient, session: any) {
   }
 }
 
+async function loadSession(db: Prisma.TransactionClient, id: string, userId: string) {
+  let session = await db.learningSession.findFirst({
+    where: { id, userId },
+    include: { answers: { orderBy: { answeredAt: 'asc' } } },
+  });
+  if (!session) throw new HttpError(404, '练习不存在');
+  const initialConfig = session.examConfig as any;
+  if (!session.completedAt && initialConfig && !initialConfig.waitingSection &&
+      initialConfig.deadline && Date.now() >= Date.parse(initialConfig.deadline)) {
+    await endExamSection(db, session);
+    session = await db.learningSession.findFirst({
+      where: { id, userId },
+      include: { answers: { orderBy: { answeredAt: 'asc' } } },
+    });
+    if (!session) throw new HttpError(404, '练习不存在');
+  }
+  return session;
+}
+
+// metadata-only: session + answers + examConfig; no questions/explanations queries
+export async function stateMetadata(db: Prisma.TransactionClient, id: string, userId: string) {
+  const session = await loadSession(db, id, userId);
+  const questionIds = ids(session.questionIds);
+  const currentQuestionId = questionIds[session.currentIndex];
+  const answeredQuestionIds = session.answers.map(answer => answer.questionId);
+  const visibleQuestionIds = session.completedAt
+    ? questionIds
+    : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  const cfg = session.examConfig as any;
+  const hide = cfg && !cfg.instantFeedback && !session.completedAt;
+  return {
+    id: session.id,
+    mode: session.mode,
+    examConfig: session.examConfig,
+    currentIndex: session.currentIndex,
+    awaitingNext: session.awaitingNext,
+    completedAt: session.completedAt,
+    serverNow: new Date().toISOString(),
+    ...points(session.answers, questionIds.length),
+    ...(hide ? { score: null, correctCount: null } : {}),
+    answers: session.answers.map(a =>
+      hide
+        ? { questionId: a.questionId, selectedOptionId: a.selectedOptionId, answeredAt: a.answeredAt }
+        : { questionId: a.questionId, selectedOptionId: a.selectedOptionId, isCorrect: a.isCorrect, answeredAt: a.answeredAt }
+    ),
+    // placeholder so destructuring callers stay compatible
+    questions: [] as any[],
+  };
+}
+
+// questions-only: only queries the questions table
+export async function stateQuestions(db: Prisma.TransactionClient, id: string, userId: string) {
+  const session = await db.learningSession.findFirst({
+    where: { id, userId },
+    select: { questionIds: true, currentIndex: true, completedAt: true, answers: { select: { questionId: true } } },
+  });
+  if (!session) throw new HttpError(404, '练习不存在');
+  const questionIds = ids(session.questionIds);
+  const currentQuestionId = questionIds[session.currentIndex];
+  const answeredQuestionIds = session.answers.map(a => a.questionId);
+  const visibleQuestionIds = session.completedAt
+    ? questionIds
+    : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  const qs = await contentPrisma.question.findMany({ where: { id: { in: visibleQuestionIds } } });
+  const questionsById = new Map(qs.map(q => [q.id, q]));
+  if (questionsById.size !== visibleQuestionIds.length) throw new HttpError(409, '练习题目尚未完整入库');
+  return {
+    questions: questionIds.map(qid => {
+      const question = questionsById.get(qid);
+      if (!question) return {};
+      if (session.completedAt || qid !== currentQuestionId) {
+        return { id: qid, content: question.content, options: question.options };
+      }
+      return publicQuestion(question);
+    }),
+  };
+}
+
 export async function state(db: Prisma.TransactionClient, id: string, userId: string) {
   let session = await db.learningSession.findFirst({
     where: { id, userId },
@@ -135,6 +213,7 @@ export async function state(db: Prisma.TransactionClient, id: string, userId: st
   const visibleQuestionIds = session.completedAt
     ? questionIds
     : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  
   const [qs, es] = await Promise.all([
     contentPrisma.question.findMany({ where: { id: { in: visibleQuestionIds } } }),
     session.answers.length
