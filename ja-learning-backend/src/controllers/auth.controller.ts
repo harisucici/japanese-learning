@@ -23,7 +23,7 @@ export class AuthController {
     try {
       const parsed = registerSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-      const { username, email, password, nickname, currentLevel, targetLevel } = parsed.data;
+      const { username, email, password, nickname, currentLevel, targetLevel, inviteCode } = parsed.data;
       const cookie = req.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith('ja_session='))?.slice('ja_session='.length);
       let guestId: string | undefined;
       if (cookie) {
@@ -34,7 +34,7 @@ export class AuthController {
       }
       const result = guestId
         ? await svc.migrateFromAnonymous({ userId: guestId, anonymousId: guestId, username, email, password, nickname, currentLevel, targetLevel })
-        : await svc.register({ username, email, password, nickname, currentLevel, targetLevel });
+        : await svc.register({ username, email, password, nickname, currentLevel, targetLevel, inviteCode });
       setSessionCookie(res, result.token);
       res.status(201).json({ user: result.user });
     } catch (e: any) {

@@ -383,3 +383,18 @@ model GrammarRelation {
   @@index([fromGrammarId])
   @@index([toGrammarId])
 }
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 邀请码系统 (Invite Code)
+// 用户注册时需要有效的邀请码
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model InviteCode {
+  id        String    @id @default(uuid())
+  code      String    @unique  // 6位大写字母数字
+  used      Boolean   @default(false)
+  usedBy    String?   // 使用该邀请码注册的用户ID
+  usedAt    DateTime? // 使用时间
+  createdAt DateTime  @default(now())
+}
