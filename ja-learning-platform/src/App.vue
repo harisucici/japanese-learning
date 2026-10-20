@@ -44,7 +44,6 @@ const active = computed(() => {
       <div class="interior-hero" :class="active.class">
         <div class="interior-art"><div class="interior-orb"></div><div class="interior-hill"></div></div>
         <div class="interior-head">
-          <RouterLink to="/" class="back-link">← 返回首页</RouterLink>
           <p class="eyebrow light">{{active.en}} / {{active.num}}</p>
           <h1>{{active.title}}</h1>
           <p>{{active.desc}}</p>
