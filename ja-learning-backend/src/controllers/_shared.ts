@@ -46,12 +46,20 @@ export const ids = (value: Prisma.JsonValue): string[] => {
 };
 
 export const publicQuestion = (q: any) => {
-  const { answer, explanationId, difficulty, ...visible } = q;
-  if (visible.provenance) {
-    const { correctOption, answer: sourceAnswer, ...source } = visible.provenance;
-    visible.provenance = source;
-  }
-  return visible;
+  const provenance = q.provenance
+    ? {
+        kind: q.provenance.kind,
+        collection: q.provenance.collection,
+        passage: q.provenance.passage,
+        title: q.provenance.title,
+        sourcePage: q.provenance.sourcePage,
+      }
+    : null;
+  return {
+    id: q.id, level: q.level, type: q.type, content: q.content,
+    contentReading: q.contentReading, options: q.options, provenance,
+    ...(q.audioUrl ? { audioUrl: q.audioUrl } : {}),
+  };
 };
 
 export const points = (answers: { isCorrect: boolean }[], total: number) => ({
@@ -106,36 +114,63 @@ export async function advance(db: Prisma.TransactionClient, session: any) {
 }
 
 export async function state(db: Prisma.TransactionClient, id: string, userId: string) {
-  await clockSync(db, id, userId);
-  const session = await db.learningSession.findFirst({
+  let session = await db.learningSession.findFirst({
     where: { id, userId },
     include: { answers: { orderBy: { answeredAt: 'asc' } } },
   });
   if (!session) throw new HttpError(404, '练习不存在');
+  const initialConfig = session.examConfig as any;
+  if (!session.completedAt && initialConfig && !initialConfig.waitingSection &&
+      initialConfig.deadline && Date.now() >= Date.parse(initialConfig.deadline)) {
+    await endExamSection(db, session);
+    session = await db.learningSession.findFirst({
+      where: { id, userId },
+      include: { answers: { orderBy: { answeredAt: 'asc' } } },
+    });
+    if (!session) throw new HttpError(404, '练习不存在');
+  }
   const questionIds = ids(session.questionIds);
-  const qs = await contentPrisma.question.findMany({ where: { id: { in: questionIds } } });
-  const es = session.answers.length
-    ? await contentPrisma.explanation.findMany({ where: { questionId: { in: session.answers.map(a => a.questionId) } } })
-    : [];
-  const activity = session.collectionId
-    ? await contentPrisma.funPaper.findUnique({ where: { id: session.collectionId } })
-    : null;
+  const currentQuestionId = questionIds[session.currentIndex];
+  const answeredQuestionIds = session.answers.map(answer => answer.questionId);
+  const visibleQuestionIds = session.completedAt
+    ? questionIds
+    : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  const [qs, es] = await Promise.all([
+    contentPrisma.question.findMany({ where: { id: { in: visibleQuestionIds } } }),
+    session.answers.length
+      ? contentPrisma.explanation.findMany({ where: { questionId: { in: session.answers.map(a => a.questionId) } } })
+      : Promise.resolve([]),
+  ]);
+  const questionsById = new Map(qs.map(q => [q.id, q]));
+  const explanationsByQuestionId = new Map(es.map(e => [e.questionId, e]));
+  if (questionsById.size !== visibleQuestionIds.length) throw new HttpError(409, '练习题目尚未完整入库');
   const cfg = session.examConfig as any;
   const hide = cfg && !cfg.instantFeedback && !session.completedAt;
   return {
-    ...session,
-    activity,
+    id: session.id,
+    mode: session.mode,
+    examConfig: session.examConfig,
+    currentIndex: session.currentIndex,
+    awaitingNext: session.awaitingNext,
+    completedAt: session.completedAt,
     serverNow: new Date().toISOString(),
     ...points(session.answers, questionIds.length),
-    questions: questionIds.map(qid => publicQuestion(qs.find(q => q.id === qid))),
+    questions: questionIds.map(qid => {
+      const question = questionsById.get(qid);
+      if (!question) return {};
+      if (session.completedAt || qid !== currentQuestionId) {
+        return { id: qid, content: question.content, options: question.options };
+      }
+      return publicQuestion(question);
+    }),
     ...(hide ? { score: null, correctCount: null } : {}),
     answers: session.answers.map(a =>
       hide
         ? { questionId: a.questionId, selectedOptionId: a.selectedOptionId, answeredAt: a.answeredAt }
         : {
             ...a,
-            correctOptionId: qs.find(q => q.id === a.questionId)!.answer,
-            explanation: es.find(e => e.questionId === a.questionId) ?? null,
+            correctOptionId: questionsById.get(a.questionId)!.answer,
+            explanation: explanationsByQuestionId.get(a.questionId) ?? null,
           }
     ),
   };

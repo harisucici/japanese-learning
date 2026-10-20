@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import userPrisma from '../config/user-database';
 import { config } from '../config/env';
 import { UserService, PublicUser } from './user.service';
+import { InviteCodeService } from './invite-code.service';
 
 // 签发 JWT：payload 仅含 userId 与 token 类别
 const tokenFor = (userId: string, role: string) =>
@@ -12,6 +13,7 @@ const tokenFor = (userId: string, role: string) =>
 
 export class AuthService {
   private users = new UserService();
+  private inviteCodes = new InviteCodeService();
 
   // 登录：账户名或邮箱 + 密码
   async login(identifier: string, password: string) {
@@ -36,16 +38,28 @@ export class AuthService {
     nickname?: string;
     currentLevel?: 'n5' | 'n4' | 'n3' | 'n2' | 'n1';
     targetLevel?: 'n5' | 'n4' | 'n3' | 'n2' | 'n1';
+    inviteCode: string;
   }) {
     if (!config.userRegistrationEnabled) {
       throw Object.assign(new Error('用户注册尚未开放'), { status: 503 });
     }
+    
+    // 验证邀请码
+    const inviteCodeRecord = await this.inviteCodes.validateCode(input.inviteCode);
+    if (!inviteCodeRecord) {
+      throw Object.assign(new Error('邀请码无效或已被使用'), { status: 400 });
+    }
+    
     const user = await this.users.createUser(input);
     await userPrisma.anonymousLearner.upsert({
       where: { id: user.id },
       update: {},
       create: { id: user.id },
     });
+    
+    // 标记邀请码已使用
+    await this.inviteCodes.markAsUsed(inviteCodeRecord.id, user.id);
+    
     return { token: tokenFor(user.id, user.role), user };
   }
 

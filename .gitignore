@@ -59,6 +59,10 @@ coverage/
 .cache/
 temp/
 
+# Database (should not be in git)
+*.db
+ja-learning-backend/prisma/*.db
+
 # Vue frontend specific
 work/
 outputs/
