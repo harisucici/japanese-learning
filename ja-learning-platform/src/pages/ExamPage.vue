@@ -213,13 +213,13 @@ async function start(p) {
   color: var(--theme-text, #27302b);
 }
 .mode-options button:hover {
-  border-color: #2563EB;
-  background: rgba(37, 99, 235, 0.03);
+  border-color: var(--season-accent, #57718c);
+  background: color-mix(in srgb, var(--season-accent, #57718c) 5%, transparent);
 }
 .mode-options button.active {
-  border-color: #2563EB;
-  background: rgba(37, 99, 235, 0.06);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+  border-color: var(--season-accent, #57718c);
+  background: color-mix(in srgb, var(--season-accent, #57718c) 10%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--season-accent, #57718c) 14%, transparent);
 }
 .mode-icon {
   display: grid;
@@ -227,8 +227,8 @@ async function start(p) {
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: rgba(37, 99, 235, 0.1);
-  color: #2563EB;
+  background: color-mix(in srgb, var(--season-accent, #57718c) 13%, transparent);
+  color: var(--season-accent, #57718c);
   flex: none;
 }
 .mode-text {

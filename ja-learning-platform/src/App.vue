@@ -3,6 +3,7 @@ import { computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useAppStore, useAuthStore } from './store'
 import ThemeContext from './components/ThemeContext.vue'
+import yamaSeal from './assets/yama-seal.png'
 const route = useRoute()
 const store = useAppStore()
 const auth = useAuthStore()
@@ -30,7 +31,7 @@ const active = computed(() => {
   <!-- 主题上下文包裹层：提供主题、字号、动效等全局设置 -->
   <ThemeContext>
   <header v-if="!isSession" class="site-header" :class="{'on-page':active}">
-    <RouterLink class="brand" to="/" aria-label="山间书院，返回首页"><span class="brand-mark">山</span><span class="brand-name">山间书院<small>THE READING RETREAT</small></span></RouterLink>
+    <RouterLink class="brand" to="/" aria-label="山间书院，返回首页"><img class="brand-mark" :src="yamaSeal" alt=""><span class="brand-name">山间书院<small>THE READING RETREAT</small></span></RouterLink>
     <nav class="desktop-nav" aria-label="主导航"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin">题库管理</RouterLink><RouterLink to="/account">{{auth.user?.nickname || '我的账户'}}</RouterLink></nav>
     <button class="menu-button" type="button" @click="store.toggleMenu" :aria-expanded="store.menuOpen" aria-label="打开菜单"><span></span><span></span></button>
   </header>
@@ -40,11 +41,10 @@ const active = computed(() => {
     <div v-if="route.path === '/'">
       <component :is="Component" />
     </div>
-    <div v-else-if="active && !isSession" class="interior">
+    <div v-else-if="active && !isSession" class="interior" :class="active.class">
       <div class="interior-hero" :class="active.class">
         <div class="interior-art"><div class="interior-orb"></div><div class="interior-hill"></div></div>
         <div class="interior-head">
-          <RouterLink to="/" class="back-link">← 返回首页</RouterLink>
           <p class="eyebrow light">{{active.en}} / {{active.num}}</p>
           <h1>{{active.title}}</h1>
           <p>{{active.desc}}</p>
@@ -60,6 +60,6 @@ const active = computed(() => {
     </div>
   </router-view>
 
-  <footer v-if="!isSession"><div class="footer-top"><div><span class="footer-mark">山</span><strong>山间书院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山间书院</span><span>READ • EXPLORE • GROW</span></div></footer>
+  <footer v-if="!isSession"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt=""><strong>山间书院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山间书院</span><span>READ • EXPLORE • GROW</span></div></footer>
   </ThemeContext>
 </template>
