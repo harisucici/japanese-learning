@@ -156,23 +156,48 @@ export const useLearningStore = defineStore('learning', {
     async startExam(level, paperId, instantFeedback) { this.session = await this.request('sessions', { level, mode: 'exam', paperId, instantFeedback }, true); return this.session },
     async loadSession(id) {
       const path = `sessions/${encodeURIComponent(id)}`
-      const loadParts = async () => {
-        const metadata = await this.request(`${path}/metadata`, {})
-        const questionData = await this.request(`${path}/questions`, {})
-        return { ...metadata, questions: questionData.questions }
+      // Fetch the complete session (metadata + questions) in a single GET
+      // request. The backend GET /sessions/:id returns the full state, so we
+      // no longer need the separate /metadata and /questions POST calls —
+      // this halves the round trips and the total bytes on the wire.
+      const loadAll = async () => {
+        const result = await this.request(path);
+        return result;
       }
       try {
-        this.session = await loadParts()
+        this.session = await loadAll()
       } catch (error) {
         if (error.status !== 401) throw error
         this.guestReady = false
         await this.ensureGuest()
-        this.session = await loadParts()
+        this.session = await loadAll()
       }
       return this.session
     },
-    async answer(id, questionId, optionId) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/answers`, { questionId, optionId }, true); return this.session },
-    async next(id) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/next`, {}, true); return this.session },
-    async section(id, action) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/section`, { action }, true); return this.session }
+    async answer(id, questionId, optionId) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/answers`, { questionId, optionId }, true);
+      // preserve existing questions array if backend returned empty placeholder
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    },
+    async next(id) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/next`, {}, true);
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    },
+    async section(id, action) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/section`, { action }, true);
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    }
   }
 })

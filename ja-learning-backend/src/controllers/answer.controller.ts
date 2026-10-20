@@ -2,8 +2,21 @@ import { Response } from 'express';
 import prisma from '../config/database';
 import userPrisma from '../config/user-database';
 import { AuthRequest } from '../middleware/auth';
-import { HttpError, run, ids, state, clockSync, advance } from './_shared';
+import { HttpError, run, ids, stateAfterAnswer, clockSync, advance } from './_shared';
 import { answerSchema } from '../validators/learning.validators';
+
+const parseJsonArray = <T = any>(value: unknown): T[] => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
 
 export class AnswerController {
   submitAnswer = run(async (req: AuthRequest, res: Response) => {
@@ -24,9 +37,10 @@ export class AnswerController {
           throw new HttpError(409, '请按顺序完成当前题目');
         }
         const q = await prisma.question.findUniqueOrThrow({ where: { id: body.questionId } });
-        const typed = q.type === 'fillInBlank' && (q.options as any[]).length === 0;
+        const options = parseJsonArray(q.options);
+        const typed = q.type === 'fillInBlank' && options.length === 0;
         if (typed && (!body.optionId.trim() || body.optionId.length > 100)) throw new HttpError(400, '请填写不超过 100 字的答案');
-        if (!typed && !(q.options as any[]).some(o => o.id === body.optionId)) throw new HttpError(400, '选项无效');
+        if (!typed && !options.some((o: any) => o.id === body.optionId)) throw new HttpError(400, '选项无效');
         const correct = typed
           ? q.answer.normalize('NFKC').replace(/\s+/g, '') === body.optionId.normalize('NFKC').replace(/\s+/g, '')
           : q.answer === body.optionId;
@@ -60,12 +74,12 @@ export class AnswerController {
           });
         }
         const c = s.examConfig as any;
-        if (!correct && (!c || c.instantFeedback)) {
+        if (!c || c.instantFeedback) {
           await db.learningSession.update({ where: { id: s.id }, data: { awaitingNext: true } });
         } else {
           await advance(db, s);
         }
-        return state(db, s.id, req.userId!);
+        return stateAfterAnswer(db, s.id, req.userId!);
       },
       { isolationLevel: 'Serializable', timeout: 30000 }
     );
@@ -83,7 +97,7 @@ export class AnswerController {
         await clockSync(db, s.id, req.userId!);
         const fresh = await db.learningSession.findUniqueOrThrow({ where: { id: s.id } });
         if (!fresh.completedAt && !(fresh.examConfig as any)?.waitingSection) await advance(db, fresh);
-        return state(db, s.id, req.userId!);
+        return stateAfterAnswer(db, s.id, req.userId!);
       },
       { isolationLevel: 'Serializable', timeout: 30000 }
     );

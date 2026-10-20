@@ -4,7 +4,7 @@ import prisma from '../config/database';
 import userPrisma from '../config/user-database';
 import { examConfig } from '../services/exam-rules';
 import { AuthRequest } from '../middleware/auth';
-import { HttpError, run, ids, state } from './_shared';
+import { HttpError, run, ids, state, stateMetadata, stateQuestions } from './_shared';
 import { startSchema } from '../validators/learning.validators';
 
 const verified: Prisma.QuestionWhereInput = {
@@ -90,13 +90,11 @@ export class SessionController {
   });
 
   getSessionMetadata = run(async (req: AuthRequest, res: Response) => {
-    const { questions: _questions, ...metadata } = await state(userPrisma, req.params.id as string, req.userId!);
-    res.json(metadata);
+    res.json(await stateMetadata(userPrisma, req.params.id as string, req.userId!));
   });
 
   getSessionQuestions = run(async (req: AuthRequest, res: Response) => {
-    const { questions } = await state(userPrisma, req.params.id as string, req.userId!);
-    res.json({ questions });
+    res.json(await stateQuestions(userPrisma, req.params.id as string, req.userId!));
   });
 }
 

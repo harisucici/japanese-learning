@@ -39,10 +39,19 @@ export const run = (fn: (req: AuthRequest, res: Response) => Promise<unknown>) =
   };
 
 export const ids = (value: Prisma.JsonValue): string[] => {
-  if (!Array.isArray(value) || !value.every(item => typeof item === 'string')) {
+  let arr: unknown = value;
+  // SQLite JSON fields may come back as an encoded string; parse once.
+  if (typeof arr === 'string') {
+    try {
+      arr = JSON.parse(arr);
+    } catch {
+      throw new HttpError(500, '题目编号格式无效');
+    }
+  }
+  if (!Array.isArray(arr) || !arr.every(item => typeof item === 'string')) {
     throw new HttpError(500, '题目编号格式无效');
   }
-  return value as string[];
+  return arr as string[];
 };
 
 export const publicQuestion = (q: any) => {
@@ -113,6 +122,136 @@ export async function advance(db: Prisma.TransactionClient, session: any) {
   }
 }
 
+async function loadSession(db: Prisma.TransactionClient, id: string, userId: string) {
+  let session = await db.learningSession.findFirst({
+    where: { id, userId },
+    include: { answers: { orderBy: { answeredAt: 'asc' } } },
+  });
+  if (!session) throw new HttpError(404, '练习不存在');
+  const initialConfig = session.examConfig as any;
+  if (!session.completedAt && initialConfig && !initialConfig.waitingSection &&
+      initialConfig.deadline && Date.now() >= Date.parse(initialConfig.deadline)) {
+    await endExamSection(db, session);
+    session = await db.learningSession.findFirst({
+      where: { id, userId },
+      include: { answers: { orderBy: { answeredAt: 'asc' } } },
+    });
+    if (!session) throw new HttpError(404, '练习不存在');
+  }
+  return session;
+}
+
+// metadata-only: session + answers + examConfig; no questions/explanations queries
+export async function stateMetadata(db: Prisma.TransactionClient, id: string, userId: string) {
+  const session = await loadSession(db, id, userId);
+  const questionIds = ids(session.questionIds);
+  const currentQuestionId = questionIds[session.currentIndex];
+  const answeredQuestionIds = session.answers.map(answer => answer.questionId);
+  const visibleQuestionIds = session.completedAt
+    ? questionIds
+    : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  const cfg = session.examConfig as any;
+  const hide = cfg && !cfg.instantFeedback && !session.completedAt;
+  return {
+    id: session.id,
+    mode: session.mode,
+    examConfig: session.examConfig,
+    currentIndex: session.currentIndex,
+    awaitingNext: session.awaitingNext,
+    completedAt: session.completedAt,
+    serverNow: new Date().toISOString(),
+    ...points(session.answers, questionIds.length),
+    ...(hide ? { score: null, correctCount: null } : {}),
+    answers: session.answers.map(a =>
+      hide
+        ? { questionId: a.questionId, selectedOptionId: a.selectedOptionId, answeredAt: a.answeredAt }
+        : { questionId: a.questionId, selectedOptionId: a.selectedOptionId, isCorrect: a.isCorrect, answeredAt: a.answeredAt }
+    ),
+    // placeholder so destructuring callers stay compatible
+    questions: [] as any[],
+  };
+}
+
+// questions-only: only queries the questions table
+export async function stateQuestions(db: Prisma.TransactionClient, id: string, userId: string) {
+  const session = await db.learningSession.findFirst({
+    where: { id, userId },
+    select: { questionIds: true, currentIndex: true, completedAt: true, answers: { select: { questionId: true } } },
+  });
+  if (!session) throw new HttpError(404, '练习不存在');
+  const questionIds = ids(session.questionIds);
+  const currentQuestionId = questionIds[session.currentIndex];
+  const answeredQuestionIds = session.answers.map(a => a.questionId);
+  const visibleQuestionIds = session.completedAt
+    ? questionIds
+    : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  const qs = await contentPrisma.question.findMany({ where: { id: { in: visibleQuestionIds } } });
+  const questionsById = new Map(qs.map(q => [q.id, q]));
+  if (questionsById.size !== visibleQuestionIds.length) throw new HttpError(409, '练习题目尚未完整入库');
+  return {
+    questions: questionIds.map(qid => {
+      const question = questionsById.get(qid);
+      if (!question) return {};
+      if (session.completedAt || qid !== currentQuestionId) {
+        return { id: qid, content: question.content, options: question.options };
+      }
+      return publicQuestion(question);
+    }),
+  };
+}
+
+// answer-flow response: metadata + answers; loads questions for correctOptionId/explanation when feedback is visible
+export async function stateAfterAnswer(db: Prisma.TransactionClient, id: string, userId: string) {
+  const session = await loadSession(db, id, userId);
+  const questionIds = ids(session.questionIds);
+  const cfg = session.examConfig as any;
+  const hide = cfg && !cfg.instantFeedback && !session.completedAt;
+  const answeredQuestionIds = session.answers.map(a => a.questionId);
+  const visibleQuestionIds = session.completedAt
+    ? questionIds
+    : [...new Set([questionIds[session.currentIndex], ...answeredQuestionIds].filter(Boolean))];
+
+  const [qs, es] = await Promise.all([
+    contentPrisma.question.findMany({ where: { id: { in: visibleQuestionIds } } }),
+    !hide && session.answers.length
+      ? contentPrisma.explanation.findMany({ where: { questionId: { in: answeredQuestionIds } } })
+      : Promise.resolve([]),
+  ]);
+  const questionsById = new Map(qs.map(q => [q.id, q]));
+  const explanationsByQuestionId = new Map(es.map(e => [e.questionId, e]));
+
+  return {
+    id: session.id,
+    mode: session.mode,
+    collectionId: session.collectionId,
+    examConfig: session.examConfig,
+    currentIndex: session.currentIndex,
+    awaitingNext: session.awaitingNext,
+    completedAt: session.completedAt,
+    serverNow: new Date().toISOString(),
+    ...points(session.answers, questionIds.length),
+    ...(hide ? { score: null, correctCount: null } : {}),
+    questions: questionIds.map(qid => {
+      const question = questionsById.get(qid);
+      if (!question) return {};
+      const currentQuestionId = questionIds[session.currentIndex];
+      if (session.completedAt || qid !== currentQuestionId) {
+        return { id: qid, content: question.content, options: question.options };
+      }
+      return publicQuestion(question);
+    }),
+    answers: session.answers.map(a =>
+      hide
+        ? { questionId: a.questionId, selectedOptionId: a.selectedOptionId, answeredAt: a.answeredAt }
+        : {
+            ...a,
+            correctOptionId: questionsById.get(a.questionId)?.answer ?? null,
+            explanation: explanationsByQuestionId.get(a.questionId) ?? null,
+          }
+    ),
+  };
+}
+
 export async function state(db: Prisma.TransactionClient, id: string, userId: string) {
   let session = await db.learningSession.findFirst({
     where: { id, userId },
@@ -135,6 +274,7 @@ export async function state(db: Prisma.TransactionClient, id: string, userId: st
   const visibleQuestionIds = session.completedAt
     ? questionIds
     : [...new Set([currentQuestionId, ...answeredQuestionIds].filter(Boolean))];
+  
   const [qs, es] = await Promise.all([
     contentPrisma.question.findMany({ where: { id: { in: visibleQuestionIds } } }),
     session.answers.length
@@ -149,6 +289,7 @@ export async function state(db: Prisma.TransactionClient, id: string, userId: st
   return {
     id: session.id,
     mode: session.mode,
+    collectionId: session.collectionId,
     examConfig: session.examConfig,
     currentIndex: session.currentIndex,
     awaitingNext: session.awaitingNext,

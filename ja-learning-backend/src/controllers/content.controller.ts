@@ -12,6 +12,28 @@ const verified: Prisma.QuestionWhereInput = {
   provenance: { not: Prisma.DbNull },
 };
 
+/**
+ * Safely parse a JSON field that may be either a string or already an array.
+ * Returns [] if parsing fails or input is null/undefined.
+ */
+const parseJsonArray = <T = any>(value: unknown): T[] => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
+// Cache for novel lesson details (TTL 5 minutes)
+const novelDetailCache = new Map<string, { data: any; expires: number }>();
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+
 export class ContentController {
   catalog = run(async (_req: AuthRequest, res: Response) => {
     const groups = await prisma.question.groupBy({
@@ -60,22 +82,37 @@ export class ContentController {
 
   novelLessons = run(async (_req: AuthRequest, res: Response) => {
     const rows = await prisma.readingArticle.findMany({ orderBy: { position: 'asc' } });
+    const first = rows[0];
     res.json({
       title: '小说词汇阅读与练习',
-      attribution: rows[0]?.attribution ?? null,
-      sourceTitle: rows[0]?.sourceTitle ?? null,
-      sourcePages: rows[0]?.sourcePages ?? 0,
+      attribution: first?.attribution ?? null,
+      sourceTitle: first?.sourceTitle ?? null,
+      sourcePages: first?.sourcePages ?? 0,
       lessons: rows.map(({ pages, vocabulary, ...article }) => ({
         ...article,
-        vocabularyCount: (vocabulary as any[]).length,
+        vocabularyCount: parseJsonArray(vocabulary).length,
       })),
     });
   });
 
   novelLessonById = run(async (req: AuthRequest, res: Response) => {
-    const l = await prisma.readingArticle.findUnique({ where: { id: req.params.id as string } });
+    const id = req.params.id as string;
+    const now = Date.now();
+    const cached = novelDetailCache.get(id);
+    if (cached && cached.expires > now) {
+      res.type('application/json; charset=utf-8').json(cached.data);
+      return;
+    }
+    const l = await prisma.readingArticle.findUnique({ where: { id } });
     if (!l) throw new HttpError(404, '小说章节不存在');
-    res.json(l);
+    const { pages, vocabulary, ...rest } = l;
+    const payload = {
+      ...rest,
+      pages: parseJsonArray(pages),
+      vocabulary: parseJsonArray(vocabulary),
+    };
+    novelDetailCache.set(id, { data: payload, expires: now + CACHE_TTL_MS });
+    res.type('application/json; charset=utf-8').json(payload);
   });
 
   materials = run(async (_req: AuthRequest, res: Response) => {

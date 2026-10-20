@@ -402,8 +402,8 @@ function back() {
                 :marked="markedQuestions"
                 :current="currentNum"
                 :section-title="section?.title"
-                :section-index="exam.sectionIndex"
-                :section-total="exam.sections?.length"
+                :section-index="exam?.sectionIndex"
+                :section-total="exam?.sections?.length"
                 @jump="jumpToQuestion"
                 @toggle-mark="toggleMark"
               />
