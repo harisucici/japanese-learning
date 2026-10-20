@@ -174,8 +174,30 @@ export const useLearningStore = defineStore('learning', {
       }
       return this.session
     },
-    async answer(id, questionId, optionId) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/answers`, { questionId, optionId }, true); return this.session },
-    async next(id) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/next`, {}, true); return this.session },
-    async section(id, action) { this.session = await this.request(`sessions/${encodeURIComponent(id)}/section`, { action }, true); return this.session }
+    async answer(id, questionId, optionId) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/answers`, { questionId, optionId }, true);
+      // preserve existing questions array if backend returned empty placeholder
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    },
+    async next(id) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/next`, {}, true);
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    },
+    async section(id, action) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/section`, { action }, true);
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    }
   }
 })
