@@ -14,13 +14,14 @@ export class RecordController {
       const result = await svc.create(userId, parsed.data);
       res.status(201).json(result);
     } catch (e: any) {
-      res.status(500).json({ error: e.message });
+      res.status(e.status || 500).json({ error: e.message });
     }
   }
 
   async listByUser(req: AuthRequest, res: Response) {
     try {
-      const userId = req.params.userId as string;
+      const userId = req.userId!;
+      if (req.params.userId !== userId) return res.status(403).json({ error: 'Forbidden' });
       const records = await svc.listByUser(userId);
       res.json(records);
     } catch (e: any) {

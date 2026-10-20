@@ -45,7 +45,7 @@ python3 -m http.server 8081 --bind 127.0.0.1 --directory build/web
 
 ## 核验
 
-后端 `node scripts/check-learning-flow.js` 针对实际数据库检查重复提交、并发提交、顺序、错题锁定、持久化、隔离及 67/0/100 分结果；会删除其创建的验收账号与记录。
+后端 `node scripts/check/check-learning-flow.js` 针对实际数据库检查重复提交、并发提交、顺序、错题锁定、持久化、隔离及 67/0/100 分结果；会删除其创建的验收账号与记录。
 前端 `flutter test` 包含真实接口响应回放的布局、交互及成绩页回归测试。回放文件仅用于测试，不打入应用包。
 
 中文学习讲解为项目编写，标准答案取自官方正答表，二者明确区分。未导入的题型显示零题。
@@ -62,7 +62,7 @@ python3 -m http.server 8081 --bind 127.0.0.1 --directory build/web
 
 ### 导入完整试卷
 
-后端执行 `node scripts/import-full-paper.js /绝对路径/manifest.json`。
+后端执行 `node scripts/import/import-full-paper.js /绝对路径/manifest.json`。
 导入前题目、标准答案必须已在 Question 中逐题核验，provenance 记录原卷文件 SHA256；有考试年月的卷子还需记录 examYear/examMonth。
 Manifest 必须包含 id（小写字母、数字和连字符）、title、level、kind（dated_exam/official_workbook）、examYear/examMonth（有确切年月时）、reviewedBy、reviewedAt、sections、materials。
 每个 section 必须包含 id、minutes、expectedCount、questionIds；听力另有 audioFiles（一个完整科目的原始音频文件）。
@@ -70,4 +70,4 @@ Manifest 必须包含 id（小写字母、数字和连字符）、title、level�
 导入器检查所有科目、题量、题型、标准答案、来源年月、原始文件校验值、听力音频和对应时期时长；不补造任何缺失材料。文件复制到 data/exam-assets 后由后端提供。
 开启即时讲解还要求该卷所有题目都有讲解，缺讲解时拒绝开启而不是编造。
 
-后端 `node scripts/check-exam-flow.js` 验证历史时间规则、拒绝不完整试卷、禁止计时重置、开关隐私、到时锁科、手动开下一科及未答题计分。验收数据与账号会清理。
+后端 `node scripts/check/check-exam-flow.js` 验证历史时间规则、拒绝不完整试卷、禁止计时重置、开关隐私、到时锁科、手动开下一科及未答题计分。验收数据与账号会清理。

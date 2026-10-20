@@ -7,7 +7,7 @@ const { PrismaLibSQL } = require('@prisma/adapter-libsql');
 
 const source = process.argv[2];
 if (!source || !process.env.TURSO_URL || !process.env.TURSO_AUTH_TOKEN) {
-  console.error('Usage: node scripts/import-fun-from-sqlite-to-turso.js <historical-sqlite-export>');
+  console.error('Usage: node scripts/import/import-fun-from-sqlite-to-turso.js <historical-sqlite-export>');
   process.exit(1);
 }
 const data = JSON.parse(execFileSync('python3', [path.join(__dirname, 'export-fun-source.py'), source], {

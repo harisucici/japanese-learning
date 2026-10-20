@@ -7,118 +7,127 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// SQLite does not support enums; use String with validated values in application code
-// JLPTLevel: ungraded | n5 | n4 | n3 | n2 | n1
-// QuestionType: vocabulary | kanji | grammar | reading | listening | fillInBlank | comprehensive
-// QuestionSource: official | mock | textbook | userGenerated | aiGenerated | pastExam | custom
-// ExamRecordType: practice | exam | review
-// ReviewStatus: new_ | learning | reviewing | mastered
+// The learning models below remain in this schema for the generated Prisma
+// client and legacy migration. At runtime they use USER_TURSO_URL through
+// src/config/user-database.ts; shared question/content models use TURSO_URL.
 
-// Opaque identity only. Personal accounts live in a separate Turso database.
+// ═══════════════════════════════════════════════════════════════════════════════
+// Enum 约定 (SQLite 不支持 enum，用 String + 应用层校验)
+// 每个枚举值都在字段注释里就近说明，方便 schema 阅读者定位。
+//
+// JLPTLevel       : ungraded | n5 | n4 | n3 | n2 | n1
+// QuestionType    : vocabulary | kanji | grammar | reading | listening
+//                 | fillInBlank | comprehensive
+// QuestionSource  : official | mock | textbook | userGenerated
+//                 | aiGenerated | pastExam | custom
+// ExamRecordType  : practice | exam | review
+// ReviewStatus    : new_ | learning | reviewing | mastered
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 身份 (Identity)
+// 匿名学习者。真正的注册账号在另一张 Turso 数据库的 User 表
+// (参见 prisma/user-schema.sql)。本表只存一个不透明 ID，
+// 不持有任何邮箱/密码/姓名等 PII。
+// ═══════════════════════════════════════════════════════════════════════════════
+
 model AnonymousLearner {
-  id            String    @id @default(uuid())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
   learningSessions LearningSession[]
-  examRecords   ExamRecord[]
-  reviewItems   ReviewItem[]
+  examRecords      ExamRecord[]
+  reviewItems      ReviewItem[]
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 题目系统 (Question & Explanation)
+// ═══════════════════════════════════════════════════════════════════════════════
 
 model Question {
   id              String         @id @default(uuid())
-  level           String                              // JLPTLevel
-  type            String                              // QuestionType
+  // JLPTLevel
+  level           String
+  // QuestionType
+  type            String
   content         String
   contentReading  String?        // 题干读音（假名）
-  options         Json           // [{id, content, hint?, reading?, index}]
+  // [{id, content, hint?, reading?, index}]
+  options         Json
   answer          String         // 正确选项的 optionId
-  source          String         @default("official") // QuestionSource
-  provenance      Json?          // 官方原卷、页码、题号、答案及文件校验值
-  explanationId   String         // 关联解析 ID（与前端 Question.explanationId 一致）
-  tags            Json           @default("[]")       // String[] as JSON array
+  // QuestionSource
+  source          String         @default("official")
+  // 官方原卷、页码、题号、答案及文件校验值，结构:
+  // { origin?: string, page?: number, questionNo?: string, answer?: string, checksum?: string }
+  provenance      Json?
+  // 关联解析 ID（与前端 Explanation.questionId 一致）
+  explanationId   String
+  // String[] as JSON array，例: ["n3", "grammar", "te-form"]
+  tags            Json           @default("[]")
   difficulty      Float          @default(0.5)
   order           Int            @default(0)  // 题目顺序
+  // 反向索引：关联的词汇 / 语法知识条目（可选）
+  vocabularyId    String?
+  grammarId       String?
+  // 题目状态: draft | published | archived
+  status          String         @default("draft")
+  importedAt      DateTime?                    // 导入时间
+  publishedAt     DateTime?                    // 发布时间
+  deletedAt       DateTime?                    // 软删除时间
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
   learningAnswers LearningAnswer[]
   reviewItems     ReviewItem[]
+  vocabulary      Vocabulary?    @relation(fields: [vocabularyId], references: [id], onDelete: SetNull)
+  grammar         Grammar?       @relation(fields: [grammarId], references: [id], onDelete: SetNull)
 }
 
 model Explanation {
   id                String   @id @default(uuid())
   questionId        String   @unique // 关联的题目 ID（与前端 Explanation.questionId 一致）
   translation       String
-  wordAnalysis      Json     @default("[]")   // [{word, reading, partOfSpeech, meaning, level?, exampleSentence?, exampleTranslation?}]
+  // [{word, reading, partOfSpeech, meaning, level?, exampleSentence?, exampleTranslation?}]
+  wordAnalysis      Json     @default("[]")
   sentenceStructure String   @default("")
-  grammar           Json     @default("[]")   // [{name, connection, meaning, usage, similarGrammars, exampleSentence?, exampleTranslation?}]
-  optionAnalysis    Json     @default("[]")   // [{optionId, isCorrect, reason, detail?, pitfall?}]
-  extensions        Json     @default("[]")   // [{id, type, content, options, answer, explanation?, relatedTags}]
+  // [{name, connection, meaning, usage, similarGrammars, exampleSentence?, exampleTranslation?}]
+  grammar           Json     @default("[]")
+  // [{optionId, isCorrect, reason, detail?, pitfall?}]
+  optionAnalysis    Json     @default("[]")
+  // [{id, type, content, options, answer, explanation?, relatedTags}]
+  extensions        Json     @default("[]")
   note              String?                  // 学习重点 / 备注
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
 
-model ExamRecord {
-  id              String          @id @default(uuid())
-  userId          String
-  level           String                              // JLPTLevel
-  recordType      String                              // ExamRecordType
-  questionIds     Json                                // String[] as JSON array
-  answers         Json            // [{questionId, selectedOptionId, isCorrect}]
-  score           Int             @default(0)
-  totalQuestions  Int
-  correctCount    Int             @default(0)
-  durationMs      Int
-  completedAt     DateTime        @default(now())
-  createdAt       DateTime        @default(now())
-
-  user            AnonymousLearner @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model ReviewItem {
-  id              String        @id @default(uuid())
-  userId          String
-  questionId      String
-  level           String                            // JLPTLevel
-  type            String                            // QuestionType
-  status          String        @default("new_")     // ReviewStatus
-  reviewCount     Int           @default(0)
-  nextReviewAt    DateTime?
-  easeFactor      Float         @default(2.5)
-  intervalDays    Int           @default(0)
-  isFavorite      Boolean       @default(false)
-  isWrongAnswer   Boolean       @default(false)
-  wrongCount      Int           @default(0)
-  correctStreak   Int           @default(0)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-
-  user            AnonymousLearner @relation(fields: [userId], references: [id], onDelete: Cascade)
-  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, questionId])
-  @@index([userId, nextReviewAt])
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// 学习会话 (Learning Session)
+// 一次练习/考试会话，及其下每条答题记录。
+// ═══════════════════════════════════════════════════════════════════════════════
 
 // Database-backed practice: one immutable first answer per question and session.
 model LearningSession {
   id             String @id @default(uuid())
   userId         String
-  level          String                            // JLPTLevel
+  // JLPTLevel
+  level          String
   mode           String @default("practice")
+  // 可选的考试配置快照，结构: { timeLimitMs?, questionCount?, shuffle? }
   examConfig     Json?
   collectionId   String?
-  questionIds    Json                              // String[] as JSON array
+  // String[] as JSON array — 本次会话包含的题目 ID 列表（不可变）
+  questionIds    Json
   currentIndex   Int @default(0)
   awaitingNext   Boolean @default(false)
   completedAt    DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
   user           AnonymousLearner @relation(fields: [userId], references: [id], onDelete: Cascade)
   answers        LearningAnswer[]
+
   @@index([userId, createdAt])
 }
 
@@ -129,81 +138,248 @@ model LearningAnswer {
   selectedOptionId String
   isCorrect        Boolean
   answeredAt       DateTime @default(now())
+
   session          LearningSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  question         Question @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  question         Question        @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
   @@unique([sessionId, questionId])
   @@index([sessionId])
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// 考试记录 (Exam Record)
+// 一次答题/模考/复习的完整快照。
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model ExamRecord {
+  id              String          @id @default(uuid())
+  userId          String
+  // JLPTLevel
+  level           String
+  // ExamRecordType
+  recordType      String
+  // String[] as JSON array — 本次答题包含的题目 ID 列表
+  questionIds     Json
+  // [{questionId, selectedOptionId, isCorrect}]
+  answers         Json
+  score           Int             @default(0)
+  totalQuestions  Int
+  correctCount    Int             @default(0)
+  durationMs      Int
+  completedAt     DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+
+  user            AnonymousLearner @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 复习 (Review)
+// SM-2 风格的间隔复习项。
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model ReviewItem {
+  id              String        @id @default(uuid())
+  userId          String
+  questionId      String
+  // JLPTLevel
+  level           String
+  // QuestionType
+  type            String
+  // ReviewStatus
+  status          String        @default("new_")
+  reviewCount     Int           @default(0)
+  nextReviewAt    DateTime?
+  easeFactor      Float         @default(2.5)
+  intervalDays    Int           @default(0)
+  isFavorite      Boolean       @default(false)
+  isWrongAnswer   Boolean       @default(false)
+  wrongCount      Int           @default(0)
+  correctStreak   Int           @default(0)
+  // 最近一次答对的时间（用于统计"首次答错" vs "多次稳定掌握"）
+  lastCorrectAt   DateTime?
+  // 复习模式: 'original' = 重做原题, 'similar' = 同知识点新题
+  reviewMode      String        @default("original")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user            AnonymousLearner @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId, nextReviewAt])
+  @@index([userId, status])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 内容管理 (Content Management)
+// 试卷 / 素材 / 阅读 / 趣味闯关 / 音频对象关联。
+// ═══════════════════════════════════════════════════════════════════════════════
+
 model ExamPaper {
- id String @id
- title String
- level String                            // JLPTLevel
- kind String
- examYear Int?
- examMonth Int?
- ready Boolean @default(false)
- sections Json
- materials Json
- verificationNote String
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
+  id               String   @id
+  title            String
+  // JLPTLevel
+  level            String
+  kind             String
+  examYear         Int?
+  examMonth        Int?
+  ready            Boolean  @default(false)
+  // 试卷分块信息 [{ id, title, questionIds, ... }]
+  sections         Json
+  // 相关素材引用 [{ id, title, ... }]
+  materials        Json
+  verificationNote String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model StudyMaterial {
- audioLinks ArticleAudio[]
- id String @id
- title String
- collection String
- japanese String?
- translation String?
- textStatus String
- metadata Json
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
+  id               String   @id
+  title            String
+  collection       String
+  japanese         String?
+  translation      String?
+  textStatus       String
+  // { author?, source?, tags?, wordCount?, ... }
+  metadata         Json
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  audioLinks       ArticleAudio[]
 }
 
 // Maps an article to an external audio object ID; no media metadata or URL is stored.
 model ArticleAudio {
- materialId String
- audioId String
- position Int @default(0)
- material StudyMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
- @@id([materialId, audioId])
- @@unique([audioId])
+  materialId String
+  audioId    String
+  position   Int @default(0)
+
+  material StudyMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@id([materialId, audioId])
+  @@unique([audioId])
 }
 
 model FunPaper {
- id String @id
- title String
- description String
- theme String
- questionIds Json                          // String[] as JSON array
- materialIds Json                          // String[] as JSON array
- published Boolean @default(false)
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
+  id          String   @id
+  title       String
+  description String
+  theme       String
+  // String[] as JSON array — 关联题目 ID 列表
+  questionIds Json
+  // String[] as JSON array — 关联素材 ID 列表
+  materialIds Json
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // Reading content is hosted in Turso independently of practice paper relations.
 model ReadingArticle {
- id String @id
- title String
- category String
- position Int
- startPage Int
- endPage Int
- pages Json
- vocabulary Json
- note String
- materialId String
- paperId String
- questionCount Int @default(0)
- published Boolean @default(false)
- sourceTitle String?
- sourcePages Int @default(0)
- attribution String?
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
- @@index([position])
+  id            String   @id
+  title         String
+  category      String
+  position      Int
+  startPage     Int
+  endPage       Int
+  // 各页内容 [{pageNumber, lines: [...], images?: [...]}]
+  pages         Json
+  // 重点词汇 [{word, reading, meaning, level?}]
+  vocabulary    Json
+  note          String
+  materialId    String
+  paperId       String
+  questionCount Int      @default(0)
+  published     Boolean  @default(false)
+  sourceTitle   String?
+  sourcePages   Int      @default(0)
+  attribution   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([position])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 知识条目 (Knowledge Entries)
+// 词汇 / 语法独立知识库，便于与题目解耦、反向索引。
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model Vocabulary {
+  id               String             @id @default(uuid())
+  word             String             // 词汇（汉字/假名）
+  reading          String             // 假名读音
+  meaning          String             // 含义
+  // JLPTLevel: ungraded | n5 | n4 | n3 | n2 | n1
+  level            String
+  // 例句 [{ jp, zh, reading? }]
+  exampleSentences Json               @default("[]")
+  note             String?            // 备注
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  // 关系：作为源/目标
+  synonymsFrom     VocabularyRelation[] @relation("VocabSynonymsFrom")
+  synonymsTo       VocabularyRelation[] @relation("VocabSynonymsTo")
+  // 关联题目（反向索引）
+  questions        Question[]
+
+  @@index([level])
+}
+
+model VocabularyRelation {
+  id              String     @id @default(uuid())
+  fromVocabularyId String
+  toVocabularyId   String
+  // synonym | antonym | related
+  type            String
+  createdAt       DateTime @default(now())
+
+  fromVocabulary  Vocabulary @relation("VocabSynonymsFrom", fields: [fromVocabularyId], references: [id], onDelete: Cascade)
+  toVocabulary    Vocabulary @relation("VocabSynonymsTo", fields: [toVocabularyId], references: [id], onDelete: Cascade)
+
+  @@unique([fromVocabularyId, toVocabularyId, type])
+  @@index([fromVocabularyId])
+  @@index([toVocabularyId])
+}
+
+model Grammar {
+  id               String            @id @default(uuid())
+  name             String            // 语法名称，例: ～ても
+  structure        String            // 结构，例: V-て + も
+  meaning          String            // 含义
+  // JLPTLevel: ungraded | n5 | n4 | n3 | n2 | n1
+  level            String
+  // 用法说明 { notes, usageScenarios: [...] }
+  usage            Json
+  // 例句 [{ jp, zh, reading? }]
+  exampleSentences Json              @default("[]")
+  note             String?           // 备注
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  relationsFrom    GrammarRelation[] @relation("GrammarRelFrom")
+  relationsTo      GrammarRelation[] @relation("GrammarRelTo")
+  questions        Question[]
+
+  @@index([level])
+}
+
+model GrammarRelation {
+  id           String     @id @default(uuid())
+  fromGrammarId String
+  toGrammarId   String
+  // similar | confusable
+  type         String
+  createdAt    DateTime @default(now())
+
+  fromGrammar  Grammar @relation("GrammarRelFrom", fields: [fromGrammarId], references: [id], onDelete: Cascade)
+  toGrammar    Grammar @relation("GrammarRelTo", fields: [toGrammarId], references: [id], onDelete: Cascade)
+
+  @@unique([fromGrammarId, toGrammarId, type])
+  @@index([fromGrammarId])
+  @@index([toGrammarId])
 }

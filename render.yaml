@@ -25,7 +25,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: ENABLE_USER_REGISTRATION
-        value: "false"
+        value: "true"
       - key: AUDIO_PUBLIC_BASE_URL
         value: https://res.cloudinary.com/dfh2jvj6e/video/upload/ja-learning/audio
       # Vite embeds these values while building the browser bundle.

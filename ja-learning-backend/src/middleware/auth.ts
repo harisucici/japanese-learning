@@ -4,6 +4,7 @@ import { config } from '../config/env';
 
 export interface AuthRequest extends Request {
   userId?: string;
+  authKind?: string;
 }
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
@@ -15,8 +16,9 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
     return;
   }
   try {
-    const payload = jwt.verify(decodeURIComponent(token), config.jwtSecret) as { userId: string };
+    const payload = jwt.verify(decodeURIComponent(token), config.jwtSecret) as { userId: string; kind?: string };
     req.userId = payload.userId;
+    req.authKind = payload.kind;
     next();
   } catch (err) {
     res.status(401).json({ error: 'Invalid or expired token' });

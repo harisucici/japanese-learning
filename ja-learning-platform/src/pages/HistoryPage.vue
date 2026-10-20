@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted,ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useLearningStore } from '../api'
+import { useLearningStore } from '../store'
 const api=useLearningStore(),data=ref(null),error=ref(''),loading=ref(true)
 async function load(){loading.value=true;error.value='';try{data.value=await api.request('dashboard',undefined,true)}catch(e){error.value=e.message}finally{loading.value=false}}
 onMounted(load)

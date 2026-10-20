@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useLearningStore } from '../api'
+import { useLearningStore } from '../store'
 const api = useLearningStore()
 const data = ref(null), error = ref(''), loading = ref(true), query = ref(''), category = ref('全部')
 async function load() { loading.value = true; error.value = ''; try { data.value = await api.request('novel-lessons') } catch (e) { error.value = e.message } finally { loading.value = false } }

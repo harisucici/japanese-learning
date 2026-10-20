@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
-import { assetUrl, useLearningStore } from '../api'
+import { assetUrl, useLearningStore } from '../store'
 const route = useRoute(), api = useLearningStore(), item = ref(null), error = ref(''), loading = ref(true)
 async function load() { loading.value = true; error.value = ''; try { item.value = await api.request(`materials/${encodeURIComponent(route.params.id)}`) } catch (e) { error.value = e.message } finally { loading.value = false } }
 onMounted(load); watch(() => route.params.id, load)

@@ -8,7 +8,7 @@ const svc = new ReviewService();
 export class ReviewController {
   async listItems(req: AuthRequest, res: Response) {
     try {
-      const userId = (req.query.userId as string) || req.userId!;
+      const userId = req.userId!;
       const due = req.query.due === 'true';
       const items = await svc.listItems(userId, due);
       res.json(items);
@@ -21,10 +21,10 @@ export class ReviewController {
     try {
       const parsed = markReviewSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-      const result = await svc.mark(parsed.data.itemId, parsed.data.correct);
+      const result = await svc.mark(req.userId!, parsed.data.itemId, parsed.data.correct);
       res.json(result);
     } catch (e: any) {
-      res.status(500).json({ error: e.message });
+      res.status(e.status || 500).json({ error: e.message });
     }
   }
 

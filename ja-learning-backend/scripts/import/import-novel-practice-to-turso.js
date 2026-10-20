@@ -6,7 +6,7 @@ const { PrismaLibSQL } = require('@prisma/adapter-libsql');
 
 const source = process.argv[2];
 if (!source || !process.env.TURSO_URL || !process.env.TURSO_AUTH_TOKEN) {
-  console.error('Usage: node scripts/import-novel-practice-to-turso.js <prepared-json> (TURSO_URL and TURSO_AUTH_TOKEN required)');
+  console.error('Usage: node scripts/import/import-novel-practice-to-turso.js <prepared-json> (TURSO_URL and TURSO_AUTH_TOKEN required)');
   process.exit(1);
 }
 const data = JSON.parse(fs.readFileSync(source, 'utf8'));
