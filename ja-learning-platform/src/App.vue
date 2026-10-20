@@ -40,7 +40,7 @@ const active = computed(() => {
     <div v-if="route.path === '/'">
       <component :is="Component" />
     </div>
-    <div v-else-if="active && !isSession" class="interior">
+    <div v-else-if="active && !isSession" class="interior" :class="active.class">
       <div class="interior-hero" :class="active.class">
         <div class="interior-art"><div class="interior-orb"></div><div class="interior-hill"></div></div>
         <div class="interior-head">

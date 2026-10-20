@@ -762,6 +762,11 @@ footer {
   color:white
 }
 
+.interior-hero.story {
+  background:#f5e6e8;
+  color:#4a3a45
+}
+
 .interior-hero.challenge {
   background:#917d68
 }
@@ -771,7 +776,8 @@ footer {
 }
 
 .interior-hero.exam {
-  background:#829087
+  background:#e8eaed;
+  color:#2a3040
 }
 
 .interior-art {
@@ -2041,6 +2047,64 @@ footer {
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
+
+/* 四个学习入口依次对应春、夏、秋、冬。变量只作用于各自的页面。 */
+.interior.story { --season-accent:#a44769; --season-ink:#633449; --season-soft:#faedf1; --season-line:#e8cbd5; }
+.interior.challenge { --season-accent:#18766e; --season-ink:#215a54; --season-soft:#e8f5ee; --season-line:#b8dbcf; }
+.interior.library { --season-accent:#a35a2d; --season-ink:#74472c; --season-soft:#fbf0df; --season-line:#e8d1ac; }
+.interior.exam { --season-accent:#486f91; --season-ink:#34536e; --season-soft:#ecf4fa; --season-line:#c3d8e8; }
+
+.interior .interior-hero { color:#263b39; }
+.interior.story .interior-hero { background:linear-gradient(125deg,#f8e9ee 0%,#f7d8e2 60%,#e9bed0 100%); }
+.interior.challenge .interior-hero { background:linear-gradient(125deg,#e5f4d9 0%,#a8ddc6 60%,#6bbbad 100%); }
+.interior.library .interior-hero { background:linear-gradient(125deg,#faefd6 0%,#efc995 58%,#cf9167 100%); }
+.interior.exam .interior-hero { background:linear-gradient(125deg,#f2f8fc 0%,#cbdfea 58%,#9ebed2 100%); }
+.interior .interior-art { background:none; }
+.interior .interior-orb { filter:none; }
+.interior.story .interior-orb { background:#fff3f4b8; }
+.interior.challenge .interior-orb { background:#fff4bcba; }
+.interior.library .interior-orb { background:#fff1c7bf; }
+.interior.exam .interior-orb { background:#ffffffbd; }
+.interior.story .interior-hill { background:#b76d86; }
+.interior.challenge .interior-hill { background:#318978; }
+.interior.library .interior-hill { background:#a55d3e; }
+.interior.exam .interior-hill { background:#729ab3; }
+.interior .interior-hero .eyebrow.light { color:var(--season-ink); }
+
+.interior .content-page .eyebrow,
+.interior .content-page h2 em,
+.interior .content-page .item-index,
+.interior .content-page .list-row small,
+.interior .content-page .activity-card small,
+.interior .content-page .activity-meta,
+.interior .content-page .row-action { color:var(--season-accent); }
+.interior .content-page .section-top,
+.interior .content-page .list-row,
+.interior .content-page .activity-meta { border-color:var(--season-line); }
+.interior .content-page .source-note,
+.interior .content-page .exam-rules { background:var(--season-soft); color:var(--season-ink); }
+.interior .content-page .activity-card,
+.interior .content-page .mode-switcher { border:1px solid var(--season-line); }
+.interior .content-page .filters button { border-color:var(--season-line); color:var(--season-ink); }
+.interior .content-page .filters button:is(.chosen,:hover) { background:var(--season-accent); border-color:var(--season-accent); color:#fff; }
+.interior .content-page .primary-action { background:var(--season-accent); border-color:var(--season-accent); color:#fff; }
+.interior .content-page .secondary-action,
+.interior .content-page .load-more { border-color:var(--season-accent); color:var(--season-accent); }
+.interior .content-page .controls input:focus-visible,
+.interior .content-page button:focus-visible,
+.interior .content-page a:focus-visible { outline:2px solid var(--season-accent); outline-offset:3px; }
+
+:root[data-theme="dark"] .interior.story { --season-accent:#ef9cb7; --season-ink:#f5cbd9; --season-soft:#382832; --season-line:#69465a; }
+:root[data-theme="dark"] .interior.challenge { --season-accent:#88d7c2; --season-ink:#b9e9d8; --season-soft:#203b34; --season-line:#3d7062; }
+:root[data-theme="dark"] .interior.library { --season-accent:#edb475; --season-ink:#f2d6ae; --season-soft:#3d3027; --season-line:#79533a; }
+:root[data-theme="dark"] .interior.exam { --season-accent:#9cc8e8; --season-ink:#d0e6f4; --season-soft:#263747; --season-line:#4b6a80; }
+:root[data-theme="dark"] .interior .interior-hero { color:#263b39; }
+:root[data-theme="dark"] .interior .interior-hero .eyebrow.light { color:#344e50; }
+:root[data-theme="dark"] .interior .content-page .source-note,
+:root[data-theme="dark"] .interior .content-page .exam-rules { background:var(--season-soft); color:var(--season-ink); }
+:root[data-theme="dark"] .interior .content-page .filters button { border-color:var(--season-line); color:var(--season-ink); }
+:root[data-theme="dark"] .interior .content-page .filters button:is(.chosen,:hover) { color:#182625; }
+:root[data-theme="dark"] .interior .content-page .primary-action { color:#182625; }
 
 /* ============================================
  * 安全区 padding（手机端）
