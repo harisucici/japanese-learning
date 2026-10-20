@@ -7,11 +7,15 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "db:export:turso": "node scripts/export/export-portable-db.js",
     "db:init:users": "node scripts/infra/init-user-database.js",
+    "db:migrate:personal": "node scripts/infra/migrate-personal-data.js",
     "db:migrate:content": "node scripts/infra/migrate-content-separation.js"
   },
   "dependencies": {
@@ -32,10 +36,15 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.1",
+    "@types/supertest": "^7.2.1",
+    "jest": "^30.5.2",
     "prisma": "^6.19.3",
+    "supertest": "^7.3.1",
+    "ts-jest": "^29.4.15",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2"
   }

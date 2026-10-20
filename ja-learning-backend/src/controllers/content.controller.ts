@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
 import prisma from '../config/database';
+import userPrisma from '../config/user-database';
 import { examSections, examConfig, timingSource } from '../services/exam-rules';
 import { articleAudio } from '../services/article-audio';
 import { AuthRequest } from '../middleware/auth';
@@ -103,16 +104,16 @@ export class ContentController {
 
   dashboard = run(async (req: AuthRequest, res: Response) => {
     const [user, sessions, attempts] = await Promise.all([
-      prisma.anonymousLearner.findUniqueOrThrow({
+      userPrisma.anonymousLearner.findUniqueOrThrow({
         where: { id: req.userId },
         select: { id: true, createdAt: true },
       }),
-      prisma.learningSession.findMany({
+      userPrisma.learningSession.findMany({
         where: { userId: req.userId },
         orderBy: { createdAt: 'desc' },
         include: { answers: true },
       }),
-      prisma.learningAnswer.findMany({
+      userPrisma.learningAnswer.findMany({
         where: {
           session: {
             userId: req.userId,

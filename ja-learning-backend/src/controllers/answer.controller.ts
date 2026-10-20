@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import prisma from '../config/database';
+import userPrisma from '../config/user-database';
 import { AuthRequest } from '../middleware/auth';
 import { HttpError, run, ids, state, clockSync, advance } from './_shared';
 import { answerSchema } from '../validators/learning.validators';
@@ -7,7 +8,7 @@ import { answerSchema } from '../validators/learning.validators';
 export class AnswerController {
   submitAnswer = run(async (req: AuthRequest, res: Response) => {
     const body = answerSchema.parse(req.body);
-    const result = await prisma.$transaction(
+    const result = await userPrisma.$transaction(
       async db => {
         await clockSync(db, req.params.id as string, req.userId!);
         const s = await db.learningSession.findFirst({
@@ -22,7 +23,7 @@ export class AnswerController {
         if (s.completedAt || s.awaitingNext || ids(s.questionIds)[s.currentIndex] !== body.questionId) {
           throw new HttpError(409, '请按顺序完成当前题目');
         }
-        const q = await db.question.findUniqueOrThrow({ where: { id: body.questionId } });
+        const q = await prisma.question.findUniqueOrThrow({ where: { id: body.questionId } });
         const typed = q.type === 'fillInBlank' && (q.options as any[]).length === 0;
         if (typed && (!body.optionId.trim() || body.optionId.length > 100)) throw new HttpError(400, '请填写不超过 100 字的答案');
         if (!typed && !(q.options as any[]).some(o => o.id === body.optionId)) throw new HttpError(400, '选项无效');
@@ -37,6 +38,27 @@ export class AnswerController {
             isCorrect: correct,
           },
         });
+        if (!correct) {
+          await db.reviewItem.upsert({
+            where: { userId_questionId: { userId: req.userId!, questionId: q.id } },
+            update: {
+              isWrongAnswer: true,
+              wrongCount: { increment: 1 },
+              status: 'learning',
+              nextReviewAt: new Date(),
+            },
+            create: {
+              userId: req.userId!,
+              questionId: q.id,
+              level: q.level,
+              type: q.type,
+              status: 'learning',
+              isWrongAnswer: true,
+              wrongCount: 1,
+              nextReviewAt: new Date(),
+            },
+          });
+        }
         const c = s.examConfig as any;
         if (!correct && (!c || c.instantFeedback)) {
           await db.learningSession.update({ where: { id: s.id }, data: { awaitingNext: true } });
@@ -51,7 +73,7 @@ export class AnswerController {
   });
 
   nextQuestion = run(async (req: AuthRequest, res: Response) => {
-    const result = await prisma.$transaction(
+    const result = await userPrisma.$transaction(
       async db => {
         const s = await db.learningSession.findFirst({
           where: { id: req.params.id as string, userId: req.userId },

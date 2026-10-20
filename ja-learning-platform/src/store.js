@@ -12,12 +12,86 @@ export const assetUrl = (url) => {
   } catch { return url }
 }
 
+export async function requestResource(path, body, method = body === undefined ? 'GET' : 'POST') {
+  const response = await fetch(`${API_BASE}/${path.replace(/^\//, '')}`, {
+    method,
+    credentials: 'include',
+    headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) })
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : `服务请求失败（${response.status}）`)
+  return data
+}
+
 export const useAppStore = defineStore('app', {
   state: () => ({ menuOpen: false, selectedCategory: '全部' }),
   actions: {
     toggleMenu() { this.menuOpen = !this.menuOpen },
     closeMenu() { this.menuOpen = false },
     selectCategory(category) { this.selectedCategory = category }
+  }
+})
+
+export const useAuthStore = defineStore('auth', {
+  state: () => ({ user: null, checked: false, loading: false }),
+  actions: {
+    async request(path, body, method = 'POST') {
+      const response = await fetch(`${API_BASE}/auth/${path}`, {
+        method,
+        credentials: 'include',
+        headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) })
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const detail = data.error
+        throw new Error(typeof detail === 'string' ? detail : detail?.fieldErrors
+          ? Object.values(detail.fieldErrors).flat().join('；') : `服务请求失败（${response.status}）`)
+      }
+      return data
+    },
+    async check() {
+      if (this.checked) return this.user
+      this.loading = true
+      try {
+        const data = await this.request('me', undefined, 'GET')
+        this.user = data.user
+      } catch {
+        this.user = null
+      } finally {
+        this.checked = true
+        this.loading = false
+      }
+      return this.user
+    },
+    async login(payload) {
+      const data = await this.request('login', payload)
+      this.user = data.user
+      this.checked = true
+      useLearningStore().guestReady = false
+      return data.user
+    },
+    async register(payload) {
+      const data = await this.request('register', payload)
+      this.user = data.user
+      this.checked = true
+      useLearningStore().guestReady = false
+      return data.user
+    },
+    async saveProfile(payload) {
+      const data = await this.request('profile', payload, 'PUT')
+      this.user = data.user
+      return data.user
+    },
+    async logout() {
+      await this.request('logout', {})
+      this.user = null
+      this.checked = true
+      const learning = useLearningStore()
+      learning.session = null
+      learning.guestReady = false
+    }
   }
 })
 

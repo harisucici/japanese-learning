@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
+import contentPrisma from '../config/database';
 import { z } from 'zod';
 import { AuthRequest } from '../middleware/auth';
 
@@ -47,7 +48,7 @@ export const ids = (value: Prisma.JsonValue): string[] => {
 export const publicQuestion = (q: any) => {
   const { answer, explanationId, difficulty, ...visible } = q;
   if (visible.provenance) {
-    const { correctOption, ...source } = visible.provenance;
+    const { correctOption, answer: sourceAnswer, ...source } = visible.provenance;
     visible.provenance = source;
   }
   return visible;
@@ -112,12 +113,12 @@ export async function state(db: Prisma.TransactionClient, id: string, userId: st
   });
   if (!session) throw new HttpError(404, '练习不存在');
   const questionIds = ids(session.questionIds);
-  const qs = await db.question.findMany({ where: { id: { in: questionIds } } });
+  const qs = await contentPrisma.question.findMany({ where: { id: { in: questionIds } } });
   const es = session.answers.length
-    ? await db.explanation.findMany({ where: { questionId: { in: session.answers.map(a => a.questionId) } } })
+    ? await contentPrisma.explanation.findMany({ where: { questionId: { in: session.answers.map(a => a.questionId) } } })
     : [];
   const activity = session.collectionId
-    ? await db.funPaper.findUnique({ where: { id: session.collectionId } })
+    ? await contentPrisma.funPaper.findUnique({ where: { id: session.collectionId } })
     : null;
   const cfg = session.examConfig as any;
   const hide = cfg && !cfg.instantFeedback && !session.completedAt;

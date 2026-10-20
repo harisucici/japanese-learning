@@ -1,4 +1,5 @@
 import prisma from '../config/database';
+import userPrisma from '../config/user-database';
 
 export class RecordService {
   async create(userId: string, data: {
@@ -8,22 +9,28 @@ export class RecordService {
     answers: { questionId: string; selectedOptionId?: string; userAnswer?: string; isCorrect: boolean; timeSpent?: number }[];
     durationMs: number;
   }) {
-    const correctCount = data.answers.filter(a => a.isCorrect).length;
+    const questions = await prisma.question.findMany({ where: { id: { in: data.questionIds } } });
+    if (questions.length !== data.questionIds.length || data.answers.length !== data.questionIds.length || new Set(data.questionIds).size !== data.questionIds.length) {
+      throw Object.assign(new Error('题目或作答数量不匹配'), { status: 400 });
+    }
+    const answerById = new Map(data.answers.map(a => [a.questionId, a]));
+    const checked = questions.map(q => {
+      const answer = answerById.get(q.id);
+      if (!answer) throw Object.assign(new Error('作答缺少题目'), { status: 400 });
+      const selected = answer.selectedOptionId || answer.userAnswer || '';
+      return { questionId: q.id, selectedOptionId: selected, isCorrect: q.answer === selected, timeSpent: answer.timeSpent ?? 0 };
+    });
+    const correctCount = checked.filter(a => a.isCorrect).length;
     const score = data.questionIds.length > 0
       ? Math.round((correctCount / data.questionIds.length) * 100)
       : 0;
-    return prisma.examRecord.create({
+    return userPrisma.examRecord.create({
       data: {
         userId,
         level: data.level,
         recordType: data.recordType,
         questionIds: data.questionIds,
-        answers: data.answers.map(a => ({
-          questionId: a.questionId,
-          selectedOptionId: a.selectedOptionId || a.userAnswer,
-          isCorrect: a.isCorrect ?? false,
-          timeSpent: a.timeSpent ?? 0,
-        })) as any,
+        answers: checked as any,
         totalQuestions: data.questionIds.length,
         correctCount,
         score,
@@ -33,14 +40,14 @@ export class RecordService {
   }
 
   async listByUser(userId: string) {
-    return prisma.examRecord.findMany({
+    return userPrisma.examRecord.findMany({
       where: { userId },
       orderBy: { completedAt: 'desc' },
     });
   }
 
   async getById(id: string) {
-    return prisma.examRecord.findUnique({
+    return userPrisma.examRecord.findUnique({
       where: { id },
     });
   }

@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { config } from './config/env';
 
 import learningRoutes from './routes/learning.routes';
+import practiceRoutes from './routes/practice.routes';
 
 import authRoutes from './routes/auth.routes';
 import questionRoutes from './routes/question.routes';
@@ -12,6 +13,9 @@ import recordRoutes from './routes/record.routes';
 import reviewRoutes from './routes/review.routes';
 import explanationRoutes from './routes/explanation.routes';
 import statsRoutes from './routes/stats.routes';
+import vocabularyRoutes from './routes/vocabulary.routes';
+import grammarRoutes from './routes/grammar.routes';
+import adminRoutes from './routes/admin.routes';
 
 const app = express();
 
@@ -23,6 +27,7 @@ app.use('/exam-assets',express.static(path.join(__dirname,'../data/exam-assets')
 app.use(morgan('dev'));
 
 app.use('/api/v1/learning', learningRoutes);
+app.use('/api/v1/practice', practiceRoutes);
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/questions', questionRoutes);
@@ -30,6 +35,9 @@ app.use('/api/v1/records', recordRoutes);
 app.use('/api/v1/review', reviewRoutes);
 app.use('/api/v1/explanations', explanationRoutes);
 app.use('/api/v1/stats', statsRoutes);
+app.use('/api/v1/vocabulary', vocabularyRoutes);
+app.use('/api/v1/grammar', grammarRoutes);
+app.use('/api/v1/admin', adminRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

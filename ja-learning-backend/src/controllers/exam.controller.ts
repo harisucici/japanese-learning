@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import prisma from '../config/database';
+import userPrisma from '../config/user-database';
 import { AuthRequest } from '../middleware/auth';
 import { HttpError, run, state, clockSync, endExamSection } from './_shared';
 import { sectionActionSchema } from '../validators/learning.validators';
@@ -8,7 +9,7 @@ export class ExamController {
   sectionAction = run(async (req: AuthRequest, res: Response) => {
     const { action } = sectionActionSchema.parse(req.body);
     res.json(
-      await prisma.$transaction(
+      await userPrisma.$transaction(
         async db => {
           await clockSync(db, req.params.id as string, req.userId!);
           const s = await db.learningSession.findFirst({

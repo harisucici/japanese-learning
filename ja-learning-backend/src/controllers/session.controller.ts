@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
 import prisma from '../config/database';
+import userPrisma from '../config/user-database';
 import { examConfig } from '../services/exam-rules';
 import { AuthRequest } from '../middleware/auth';
 import { HttpError, run, ids, state } from './_shared';
@@ -24,7 +25,7 @@ export class SessionController {
         where: { id: { in: paperQuestionIds }, source: 'custom', level: 'ungraded' },
       });
       if (qs.length !== paperQuestionIds.length || !qs.length) throw new HttpError(409, '题组尚未完整入库');
-      const session = await prisma.learningSession.create({
+      const session = await userPrisma.learningSession.create({
         data: {
           userId: req.userId!,
           level: 'ungraded',
@@ -33,7 +34,7 @@ export class SessionController {
           questionIds: paperQuestionIds,
         },
       });
-      res.status(201).json(await state(prisma, session.id, req.userId!));
+      res.status(201).json(await state(userPrisma, session.id, req.userId!));
       return;
     }
     if (data.mode === 'exam') {
@@ -51,7 +52,7 @@ export class SessionController {
           throw new HttpError(400, '本卷尚有题目缺少已核验讲解，请关闭即时讲解或补齐讲解后开始');
         }
       }
-      const s = await prisma.learningSession.create({
+      const s = await userPrisma.learningSession.create({
         data: {
           userId: req.userId!,
           level: paper.level,
@@ -60,7 +61,7 @@ export class SessionController {
           examConfig: cfg,
         },
       });
-      res.status(201).json(await state(prisma, s.id, req.userId!));
+      res.status(201).json(await state(userPrisma, s.id, req.userId!));
       return;
     }
     const qs = await prisma.question.findMany({
@@ -73,7 +74,7 @@ export class SessionController {
       ...(data.limit ? { take: data.limit } : {}),
     });
     if (!qs.length) throw new HttpError(400, '该等级和题型暂无已核验题目');
-    const session = await prisma.learningSession.create({
+    const session = await userPrisma.learningSession.create({
       data: {
         userId: req.userId!,
         level: data.level,
@@ -81,11 +82,11 @@ export class SessionController {
         questionIds: qs.map(q => q.id),
       },
     });
-    res.status(201).json(await state(prisma, session.id, req.userId!));
+    res.status(201).json(await state(userPrisma, session.id, req.userId!));
   });
 
   getSession = run(async (req: AuthRequest, res: Response) =>
-    res.json(await state(prisma, req.params.id as string, req.userId!))
+    res.json(await state(userPrisma, req.params.id as string, req.userId!))
   );
 }
 

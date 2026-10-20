@@ -1,19 +1,21 @@
 import prisma from '../config/database';
+import userPrisma from '../config/user-database';
 
 export class ReviewService {
   async listItems(userId: string, due?: boolean) {
     const where: any = { userId };
     if (due) where.nextReviewAt = { lte: new Date() };
-    return prisma.reviewItem.findMany({
+    const items = await userPrisma.reviewItem.findMany({
       where,
-      include: { question: true },
       orderBy: { nextReviewAt: 'asc' },
     });
+    const questions = await prisma.question.findMany({ where: { id: { in: items.map(item => item.questionId) } } });
+    return items.map(item => ({ ...item, question: questions.find(q => q.id === item.questionId) ?? null }));
   }
 
-  async mark(itemId: string, correct: boolean) {
-    const item = await prisma.reviewItem.findUnique({ where: { id: itemId } });
-    if (!item) throw new Error('Review item not found');
+  async mark(userId: string, itemId: string, correct: boolean) {
+    const item = await userPrisma.reviewItem.findFirst({ where: { id: itemId, userId } });
+    if (!item) throw Object.assign(new Error('复习项不存在'), { status: 404 });
 
     // Simplified SM-2 algorithm
     let easeFactor = item.easeFactor;
@@ -23,6 +25,8 @@ export class ReviewService {
     let correctStreak = correct ? item.correctStreak + 1 : 0;
     let wrongCount = correct ? item.wrongCount : item.wrongCount + 1;
     let isWrongAnswer = wrongCount > 0;
+    // 答对时更新 lastCorrectAt，用于区分"首次答错"与"多次稳定掌握"
+    let lastCorrectAt = correct ? new Date() : item.lastCorrectAt;
 
     if (correct) {
       if (intervalDays === 0) intervalDays = 1;
@@ -43,8 +47,8 @@ export class ReviewService {
       ? new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
       : new Date(Date.now() + intervalDays * 24 * 60 * 60 * 1000);
 
-    return prisma.reviewItem.update({
-      where: { id: itemId },
+    return (userPrisma.reviewItem as any).update({
+      where: { id: itemId, userId },
       data: {
         easeFactor,
         intervalDays,
@@ -53,6 +57,7 @@ export class ReviewService {
         correctStreak,
         wrongCount,
         isWrongAnswer,
+        lastCorrectAt,
         nextReviewAt,
       },
     });
@@ -61,7 +66,7 @@ export class ReviewService {
   async addOrUpsert(userId: string, questionId: string, isWrong: boolean) {
     const question = await prisma.question.findUnique({ where: { id: questionId } });
     if (!question) throw new Error('Question not found');
-    return prisma.reviewItem.upsert({
+    return userPrisma.reviewItem.upsert({
       where: { userId_questionId: { userId, questionId } },
       update: {
         isWrongAnswer: isWrong || undefined,
@@ -84,7 +89,7 @@ export class ReviewService {
 
   async getDueItems(userId: string) {
     const now = new Date();
-    return prisma.reviewItem.findMany({
+    const items = await userPrisma.reviewItem.findMany({
       where: {
         userId,
         OR: [
@@ -92,8 +97,9 @@ export class ReviewService {
           { nextReviewAt: { lte: now } },
         ],
       },
-      include: { question: true },
       orderBy: { nextReviewAt: 'asc' },
     });
+    const questions = await prisma.question.findMany({ where: { id: { in: items.map(item => item.questionId) } } });
+    return items.map(item => ({ ...item, question: questions.find(q => q.id === item.questionId) ?? null }));
   }
 }

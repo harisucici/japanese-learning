@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// The learning models below remain in this schema for the generated Prisma
+// client and legacy migration. At runtime they use USER_TURSO_URL through
+// src/config/user-database.ts; shared question/content models use TURSO_URL.
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // Enum 约定 (SQLite 不支持 enum，用 String + 应用层校验)
 // 每个枚举值都在字段注释里就近说明，方便 schema 阅读者定位。
@@ -57,17 +61,27 @@ model Question {
   // 官方原卷、页码、题号、答案及文件校验值，结构:
   // { origin?: string, page?: number, questionNo?: string, answer?: string, checksum?: string }
   provenance      Json?
-  // 关联解析 ID（与前端 Question.explanationId 一致）
+  // 关联解析 ID（与前端 Explanation.questionId 一致）
   explanationId   String
   // String[] as JSON array，例: ["n3", "grammar", "te-form"]
   tags            Json           @default("[]")
   difficulty      Float          @default(0.5)
   order           Int            @default(0)  // 题目顺序
+  // 反向索引：关联的词汇 / 语法知识条目（可选）
+  vocabularyId    String?
+  grammarId       String?
+  // 题目状态: draft | published | archived
+  status          String         @default("draft")
+  importedAt      DateTime?                    // 导入时间
+  publishedAt     DateTime?                    // 发布时间
+  deletedAt       DateTime?                    // 软删除时间
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
   learningAnswers LearningAnswer[]
   reviewItems     ReviewItem[]
+  vocabulary      Vocabulary?    @relation(fields: [vocabularyId], references: [id], onDelete: SetNull)
+  grammar         Grammar?       @relation(fields: [grammarId], references: [id], onDelete: SetNull)
 }
 
 model Explanation {
@@ -184,6 +198,10 @@ model ReviewItem {
   isWrongAnswer   Boolean       @default(false)
   wrongCount      Int           @default(0)
   correctStreak   Int           @default(0)
+  // 最近一次答对的时间（用于统计"首次答错" vs "多次稳定掌握"）
+  lastCorrectAt   DateTime?
+  // 复习模式: 'original' = 重做原题, 'similar' = 同知识点新题
+  reviewMode      String        @default("original")
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -283,4 +301,85 @@ model ReadingArticle {
   updatedAt     DateTime @updatedAt
 
   @@index([position])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 知识条目 (Knowledge Entries)
+// 词汇 / 语法独立知识库，便于与题目解耦、反向索引。
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model Vocabulary {
+  id               String             @id @default(uuid())
+  word             String             // 词汇（汉字/假名）
+  reading          String             // 假名读音
+  meaning          String             // 含义
+  // JLPTLevel: ungraded | n5 | n4 | n3 | n2 | n1
+  level            String
+  // 例句 [{ jp, zh, reading? }]
+  exampleSentences Json               @default("[]")
+  note             String?            // 备注
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  // 关系：作为源/目标
+  synonymsFrom     VocabularyRelation[] @relation("VocabSynonymsFrom")
+  synonymsTo       VocabularyRelation[] @relation("VocabSynonymsTo")
+  // 关联题目（反向索引）
+  questions        Question[]
+
+  @@index([level])
+}
+
+model VocabularyRelation {
+  id              String     @id @default(uuid())
+  fromVocabularyId String
+  toVocabularyId   String
+  // synonym | antonym | related
+  type            String
+  createdAt       DateTime @default(now())
+
+  fromVocabulary  Vocabulary @relation("VocabSynonymsFrom", fields: [fromVocabularyId], references: [id], onDelete: Cascade)
+  toVocabulary    Vocabulary @relation("VocabSynonymsTo", fields: [toVocabularyId], references: [id], onDelete: Cascade)
+
+  @@unique([fromVocabularyId, toVocabularyId, type])
+  @@index([fromVocabularyId])
+  @@index([toVocabularyId])
+}
+
+model Grammar {
+  id               String            @id @default(uuid())
+  name             String            // 语法名称，例: ～ても
+  structure        String            // 结构，例: V-て + も
+  meaning          String            // 含义
+  // JLPTLevel: ungraded | n5 | n4 | n3 | n2 | n1
+  level            String
+  // 用法说明 { notes, usageScenarios: [...] }
+  usage            Json
+  // 例句 [{ jp, zh, reading? }]
+  exampleSentences Json              @default("[]")
+  note             String?           // 备注
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  relationsFrom    GrammarRelation[] @relation("GrammarRelFrom")
+  relationsTo      GrammarRelation[] @relation("GrammarRelTo")
+  questions        Question[]
+
+  @@index([level])
+}
+
+model GrammarRelation {
+  id           String     @id @default(uuid())
+  fromGrammarId String
+  toGrammarId   String
+  // similar | confusable
+  type         String
+  createdAt    DateTime @default(now())
+
+  fromGrammar  Grammar @relation("GrammarRelFrom", fields: [fromGrammarId], references: [id], onDelete: Cascade)
+  toGrammar    Grammar @relation("GrammarRelTo", fields: [toGrammarId], references: [id], onDelete: Cascade)
+
+  @@unique([fromGrammarId, toGrammarId, type])
+  @@index([fromGrammarId])
+  @@index([toGrammarId])
 }

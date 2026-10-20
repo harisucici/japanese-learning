@@ -1,0 +1,502 @@
+{
+  "items": [
+    {
+      "question": {
+        "id": "q-n5-vocab-001",
+        "level": "n5",
+        "type": "vocabulary",
+        "content": "わたしは まいあさ コーヒーを ___。",
+        "contentReading": "わたしは まいあさ コーヒーを ___。",
+        "options": [
+          { "id": "opt1", "content": "のみます", "hint": "喝" },
+          { "id": "opt2", "content": "たべます", "hint": "吃" },
+          { "id": "opt3", "content": "かいます", "hint": "买" },
+          { "id": "opt4", "content": "みます", "hint": "看" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n5-vocab-001",
+        "tags": ["n5", "vocabulary", "verbs", "daily-life"],
+        "difficulty": 0.3
+      },
+      "explanation": {
+        "id": "exp-n5-vocab-001",
+        "translation": "我每天早上都喝咖啡。",
+        "wordAnalysis": [
+          { "word": "わたし", "reading": "私", "partOfSpeech": "代词", "meaning": "我" },
+          { "word": "まいあさ", "reading": "毎朝", "partOfSpeech": "名词", "meaning": "每天早上" },
+          { "word": "コーヒー", "partOfSpeech": "名词", "meaning": "咖啡" },
+          { "word": "のみます", "reading": "飲みます", "partOfSpeech": "动词", "meaning": "喝（ます形）" }
+        ],
+        "sentenceStructure": "主语 + 时间状语 + 宾语 + 动词",
+        "grammar": [],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「のみます」是「喝」的意思，符合句意" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「たべます」是「吃」，不能用于液体", "pitfall": "初学者容易混淆吃和喝" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「かいます」是「买」，句意不符" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「みます」是「看」，句意不符" }
+        ],
+        "extensions": []
+      },
+      "vocabulary": {
+        "word": "のむ",
+        "reading": "飲む",
+        "meaning": "喝",
+        "level": "n5",
+        "exampleSentences": [
+          { "jp": "水をのみます。", "zh": "喝水。", "reading": "みずをのみます。" }
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "q-n5-grammar-001",
+        "level": "n5",
+        "type": "grammar",
+        "content": "たなかさんは 学生 ___。",
+        "contentReading": "たなかさんは がくせい ___。",
+        "options": [
+          { "id": "opt1", "content": "です" },
+          { "id": "opt2", "content": "ます" },
+          { "id": "opt3", "content": "だ" },
+          { "id": "opt4", "content": "である" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n5-grammar-001",
+        "tags": ["n5", "grammar", "copula", "basic"],
+        "difficulty": 0.2
+      },
+      "explanation": {
+        "id": "exp-n5-grammar-001",
+        "translation": "田中先生是学生。",
+        "wordAnalysis": [
+          { "word": "たなかさん", "reading": "田中さん", "partOfSpeech": "名词", "meaning": "田中先生/女士" },
+          { "word": "がくせい", "reading": "学生", "partOfSpeech": "名词", "meaning": "学生" }
+        ],
+        "sentenceStructure": "名词 + は + 名词 + です",
+        "grammar": [
+          {
+            "name": "～です",
+            "connection": "名词 + です",
+            "meaning": "是（礼貌体）",
+            "usage": "用于句尾，表示礼貌的断定。相当于中文的「是」。",
+            "similarGrammars": "「だ」（普通体）",
+            "exampleSentence": "これは本です。",
+            "exampleTranslation": "这是书。"
+          }
+        ],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「です」是礼貌体的断定助动词，用于名词谓语句" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「ます」是动词的礼貌体词尾，不能接在名词后" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「だ」是普通体，在礼貌场合不使用" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「である」是书面语的断定，口语中不使用" }
+        ],
+        "extensions": []
+      }
+    },
+    {
+      "question": {
+        "id": "q-n4-grammar-001",
+        "level": "n4",
+        "type": "grammar",
+        "content": "雨が ふっているので、かさを ___。",
+        "contentReading": "あめが ふっているので、かさを ___。",
+        "options": [
+          { "id": "opt1", "content": "もって いきましょう" },
+          { "id": "opt2", "content": "もって いく" },
+          { "id": "opt3", "content": "もちます" },
+          { "id": "opt4", "content": "もった" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n4-grammar-001",
+        "tags": ["n4", "grammar", "te-form", "suggestion"],
+        "difficulty": 0.5
+      },
+      "explanation": {
+        "id": "exp-n4-grammar-001",
+        "translation": "因为在下雨，所以带伞去吧。",
+        "wordAnalysis": [
+          { "word": "あめ", "reading": "雨", "partOfSpeech": "名词", "meaning": "雨" },
+          { "word": "ふって", "reading": "降って", "partOfSpeech": "动词", "meaning": "下（て形）" },
+          { "word": "いる", "partOfSpeech": "动词", "meaning": "表示状态" },
+          { "word": "ので", "partOfSpeech": "接续助词", "meaning": "因为" },
+          { "word": "かさ", "reading": "傘", "partOfSpeech": "名词", "meaning": "伞" }
+        ],
+        "sentenceStructure": "原因从句 + 建议/意志表达",
+        "grammar": [
+          {
+            "name": "～て いましょう",
+            "connection": "动词て形 + いましょう",
+            "meaning": "让我们做...吧（包含持续状态的建议）",
+            "usage": "表示包含说话人在内的提议或委婉的建议。「ましょう」是意志/邀请的表达。",
+            "similarGrammars": "「～ましょう」（单纯提议）",
+            "exampleSentence": "いっしょに たべましょう。",
+            "exampleTranslation": "一起吃吧。"
+          }
+        ],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「もって いきましょう」表示「带着去吧」的建议，语气自然" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「もって いく」是辞书形，句意不完整" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「もちます」虽然语法正确，但与前面的「ので」因果关系不自然" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「もった」是过去式，与句意不符" }
+        ],
+        "extensions": []
+      },
+      "grammar": {
+        "name": "～ている",
+        "structure": "V-て + いる",
+        "meaning": "表示动作正在进行或状态持续",
+        "level": "n4",
+        "usage": {
+          "notes": "用于描述正在进行的动作或已经完成的动作所导致的状态",
+          "usageScenarios": ["进行中", "结果状态", "习惯性动作"]
+        },
+        "exampleSentences": [
+          { "jp": "本を よんでいる。", "zh": "正在读书。", "reading": "ほんを よんでいる。" },
+          { "jp": "けっこん している。", "zh": "已婚（状态）。", "reading": "けっこん している。" }
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "q-n5-vocab-002",
+        "level": "n5",
+        "type": "vocabulary",
+        "content": "この くるまは ___ です。",
+        "contentReading": "この くるまは ___ です。",
+        "options": [
+          { "id": "opt1", "content": "あたらしい" },
+          { "id": "opt2", "content": "ふるい" },
+          { "id": "opt3", "content": "おおきい" },
+          { "id": "opt4", "content": "ちいさい" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n5-vocab-002",
+        "tags": ["n5", "vocabulary", "adjectives", "descriptive"],
+        "difficulty": 0.3
+      },
+      "explanation": {
+        "id": "exp-n5-vocab-002",
+        "translation": "这辆车是新的。",
+        "wordAnalysis": [
+          { "word": "この", "partOfSpeech": "连体词", "meaning": "这（近称）" },
+          { "word": "くるま", "reading": "車", "partOfSpeech": "名词", "meaning": "车" },
+          { "word": "あたらしい", "reading": "新しい", "partOfSpeech": "い形容词", "meaning": "新的" }
+        ],
+        "sentenceStructure": "指示词 + 名词 + は + い形容词 + です",
+        "grammar": [],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「あたらしい」意为「新的」，符合句意" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「ふるい」意为「旧的」，与答案不符" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「おおきい」意为「大的」，与答案不符" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「ちいさい」意为「小的」，与答案不符" }
+        ],
+        "extensions": []
+      },
+      "vocabulary": {
+        "word": "あたらしい",
+        "reading": "新しい",
+        "meaning": "新的",
+        "level": "n5",
+        "exampleSentences": [
+          { "jp": "あたらしい ほんを かいました。", "zh": "买了新书。", "reading": "あたらしい ほんを かいました。" }
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "q-n4-vocab-001",
+        "level": "n4",
+        "type": "vocabulary",
+        "content": "としょかんで 本を ___。",
+        "contentReading": "としょかんで ほんを ___。",
+        "options": [
+          { "id": "opt1", "content": "かります" },
+          { "id": "opt2", "content": "かします" },
+          { "id": "opt3", "content": "つくります" },
+          { "id": "opt4", "content": "うります" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n4-vocab-001",
+        "tags": ["n4", "vocabulary", "verbs", "place"],
+        "difficulty": 0.4
+      },
+      "explanation": {
+        "id": "exp-n4-vocab-001",
+        "translation": "在图书馆借书。",
+        "wordAnalysis": [
+          { "word": "としょかん", "reading": "図書館", "partOfSpeech": "名词", "meaning": "图书馆" },
+          { "word": "で", "partOfSpeech": "助词", "meaning": "在（表示动作场所）" },
+          { "word": "ほん", "reading": "本", "partOfSpeech": "名词", "meaning": "书" },
+          { "word": "かります", "reading": "借ります", "partOfSpeech": "动词", "meaning": "借（入）" }
+        ],
+        "sentenceStructure": "场所 + で + 宾语 + 动词",
+        "grammar": [],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「かります」是「借入」的意思，符合句意" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「かします」是「借出」，方向相反", "pitfall": "かりる（借入）和かす（借出）容易混淆" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「つくります」是「制作」，句意不符" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「うります」是「卖」，句意不符" }
+        ],
+        "extensions": []
+      },
+      "vocabulary": {
+        "word": "かりる",
+        "reading": "借りる",
+        "meaning": "借（入）",
+        "level": "n5",
+        "exampleSentences": [
+          { "jp": "ともだちに かねを かりた。", "zh": "向朋友借钱。", "reading": "ともだちに かねを かりた。" }
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "q-n3-grammar-001",
+        "level": "n3",
+        "type": "grammar",
+        "content": "努力 ___、合格 できない。",
+        "contentReading": "どりょく ___、ごうかく できない。",
+        "options": [
+          { "id": "opt1", "content": "して は" },
+          { "id": "opt2", "content": "したら" },
+          { "id": "opt3", "content": "すると" },
+          { "id": "opt4", "content": "すれば" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n3-grammar-001",
+        "tags": ["n3", "grammar", "conditional", "negative-condition"],
+        "difficulty": 0.6
+      },
+      "explanation": {
+        "id": "exp-n3-grammar-001",
+        "translation": "如果不努力的话，就无法合格。",
+        "wordAnalysis": [
+          { "word": "どりょく", "reading": "努力", "partOfSpeech": "名词/サ变动詞", "meaning": "努力" },
+          { "word": "して", "partOfSpeech": "动词", "meaning": "做（て形）" },
+          { "word": "は", "partOfSpeech": "助词", "meaning": "提示主题" },
+          { "word": "ごうかく", "reading": "合格", "partOfSpeech": "名词/サ变动詞", "meaning": "合格" },
+          { "word": "できない", "partOfSpeech": "动词", "meaning": "不能" }
+        ],
+        "sentenceStructure": "条件表达（反面条件）+ 否定结果",
+        "grammar": [
+          {
+            "name": "～て は",
+            "connection": "动词て形 + は",
+            "meaning": "如果...的话（通常用于负面结果）",
+            "usage": "表示如果做了某事，就会产生不好的结果。常与否定或消极表达搭配。",
+            "similarGrammars": "「～たら」（一般条件）",
+            "exampleSentence": "雨が 降って は、ピクニックに 行けない。",
+            "exampleTranslation": "如果下雨的话，就不能去野餐了。"
+          }
+        ],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「して は」表示反面条件，与后面的否定「できない」呼应" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「したら」是一般条件，不强调负面含义" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「すると」表示顺承，意为「于是」" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「すれば」虽然可以表示条件，但不如「ては」自然" }
+        ],
+        "extensions": []
+      }
+    },
+    {
+      "question": {
+        "id": "q-n5-vocab-003",
+        "level": "n5",
+        "type": "vocabulary",
+        "content": "きょうは ___ です。",
+        "contentReading": "きょうは ___ です。",
+        "options": [
+          { "id": "opt1", "content": "あたたかい" },
+          { "id": "opt2", "content": "つめたい" },
+          { "id": "opt3", "content": "すずしい" },
+          { "id": "opt4", "content": "さむい" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n5-vocab-003",
+        "tags": ["n5", "vocabulary", "weather", "adjectives"],
+        "difficulty": 0.3
+      },
+      "explanation": {
+        "id": "exp-n5-vocab-003",
+        "translation": "今天是温暖的。",
+        "wordAnalysis": [
+          { "word": "きょう", "reading": "今日", "partOfSpeech": "名词", "meaning": "今天" },
+          { "word": "あたたかい", "reading": "暖かい", "partOfSpeech": "い形容词", "meaning": "温暖的" }
+        ],
+        "sentenceStructure": "时间 + は + い形容词 + です",
+        "grammar": [],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「あたたかい」意为「温暖的」，符合句意" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「つめたい」意为「冰凉的」（触摸感觉）" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「すずしい」意为「凉爽的」（秋天）" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「さむい」意为「寒冷的」" }
+        ],
+        "extensions": []
+      },
+      "vocabulary": {
+        "word": "あたたかい",
+        "reading": "暖かい",
+        "meaning": "温暖的",
+        "level": "n5",
+        "exampleSentences": [
+          { "jp": "あたたかい おちゃを のみます。", "zh": "喝热茶。", "reading": "あたたかい おちゃを のみます。" }
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "q-n4-grammar-002",
+        "level": "n4",
+        "type": "grammar",
+        "content": "日本へ 行く ___、日本語を 勉強して ください。",
+        "contentReading": "にほんへ いく ___、にほんごを べんきょうして ください。",
+        "options": [
+          { "id": "opt1", "content": "まえに" },
+          { "id": "opt2", "content": "あとで" },
+          { "id": "opt3", "content": "ときに" },
+          { "id": "opt4", "content": "ながら" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n4-grammar-002",
+        "tags": ["n4", "grammar", "time-relation", "before-after"],
+        "difficulty": 0.5
+      },
+      "explanation": {
+        "id": "exp-n4-grammar-002",
+        "translation": "在去日本之前，请学习日语。",
+        "wordAnalysis": [
+          { "word": "にほん", "reading": "日本", "partOfSpeech": "名词", "meaning": "日本" },
+          { "word": "へ", "partOfSpeech": "助词", "meaning": "向（方向）" },
+          { "word": "いく", "reading": "行く", "partOfSpeech": "动词", "meaning": "去" },
+          { "word": "まえに", "reading": "前に", "partOfSpeech": "名词+助词", "meaning": "在...之前" },
+          { "word": "にほんご", "reading": "日本語", "partOfSpeech": "名词", "meaning": "日语" },
+          { "word": "べんきょう", "reading": "勉強", "partOfSpeech": "名词/サ变动詞", "meaning": "学习" }
+        ],
+        "sentenceStructure": "动词辞书形 + まえに + 主句",
+        "grammar": [
+          {
+            "name": "～まえに",
+            "connection": "动词辞书形 + まえに",
+            "meaning": "在...之前",
+            "usage": "表示在某个动作或事件之前做另一件事。",
+            "similarGrammars": "「～あとで」（在...之后）",
+            "exampleSentence": "ねる まえに、はを みがいて ください。",
+            "exampleTranslation": "请在睡觉前刷牙。"
+          }
+        ],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「まえに」表示「在去日本之前」，符合逻辑" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「あとで」表示「在去日本之后」，与建议学习日语的语境不符" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「ときに」表示「在...时候」，语义不够明确" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「ながら」表示「一边...一边...」，语法不符" }
+        ],
+        "extensions": []
+      }
+    },
+    {
+      "question": {
+        "id": "q-n5-vocab-004",
+        "level": "n5",
+        "type": "vocabulary",
+        "content": "いぬが 公園で ___。",
+        "contentReading": "いぬが こうえんで ___。",
+        "options": [
+          { "id": "opt1", "content": "あそんで います" },
+          { "id": "opt2", "content": "ねて います" },
+          { "id": "opt3", "content": "たべて います" },
+          { "id": "opt4", "content": "はいって います" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n5-vocab-004",
+        "tags": ["n5", "vocabulary", "verbs", "actions"],
+        "difficulty": 0.3
+      },
+      "explanation": {
+        "id": "exp-n5-vocab-004",
+        "translation": "狗在公园里玩。",
+        "wordAnalysis": [
+          { "word": "いぬ", "reading": "犬", "partOfSpeech": "名词", "meaning": "狗" },
+          { "word": "こうえん", "reading": "公園", "partOfSpeech": "名词", "meaning": "公园" },
+          { "word": "で", "partOfSpeech": "助词", "meaning": "在（场所）" },
+          { "word": "あそんで", "reading": "遊んで", "partOfSpeech": "动词", "meaning": "玩（て形）" },
+          { "word": "います", "partOfSpeech": "动词", "meaning": "表示进行状态" }
+        ],
+        "sentenceStructure": "主语 + 场所 + で + 动词て形 + います",
+        "grammar": [],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「あそんで います」意为「正在玩」，符合狗在公园的场景" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「ねて います」意为「正在睡觉」，与场景不符" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「たべて います」意为「正在吃」，缺少宾语" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「はいって います」意为「进入」，用法不当" }
+        ],
+        "extensions": []
+      },
+      "vocabulary": {
+        "word": "あそぶ",
+        "reading": "遊ぶ",
+        "meaning": "玩",
+        "level": "n5",
+        "exampleSentences": [
+          { "jp": "ともだちと あそびます。", "zh": "和朋友一起玩。", "reading": "ともだちと あそびます。" }
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "q-n3-vocab-001",
+        "level": "n3",
+        "type": "vocabulary",
+        "content": "彼の 提案は ___ に 思える。",
+        "contentReading": "かれの ほうあんは ___に おもえる。",
+        "options": [
+          { "id": "opt1", "content": "すばらしい" },
+          { "id": "opt2", "content": "ひどい" },
+          { "id": "opt3", "content": "つまらない" },
+          { "id": "opt4", "content": "むずかしい" }
+        ],
+        "answer": "opt1",
+        "source": "official",
+        "explanationId": "exp-n3-vocab-001",
+        "tags": ["n3", "vocabulary", "adjectives", "opinion"],
+        "difficulty": 0.6
+      },
+      "explanation": {
+        "id": "exp-n3-vocab-001",
+        "translation": "他的提议让人觉得很棒。",
+        "wordAnalysis": [
+          { "word": "かれ", "reading": "彼", "partOfSpeech": "代词", "meaning": "他" },
+          { "word": "ほうあん", "reading": "提案", "partOfSpeech": "名词", "meaning": "提议" },
+          { "word": "すばらしい", "partOfSpeech": "い形容词", "meaning": "精彩的，棒的" },
+          { "word": "おもえる", "reading": "思える", "partOfSpeech": "动词", "meaning": "觉得，认为（可能态）" }
+        ],
+        "sentenceStructure": "名词 + は + い形容词 + に + 思える",
+        "grammar": [],
+        "optionAnalysis": [
+          { "optionId": "opt1", "isCorrect": true, "reason": "「すばらしい」意为「精彩的」，正面评价" },
+          { "optionId": "opt2", "isCorrect": false, "reason": "「ひどい」意为「糟糕的」，负面评价" },
+          { "optionId": "opt3", "isCorrect": false, "reason": "「つまらない」意为「无聊的」，负面评价" },
+          { "optionId": "opt4", "isCorrect": false, "reason": "「むずかしい」意为「困难的」，语义不符" }
+        ],
+        "extensions": []
+      },
+      "vocabulary": {
+        "word": "すばらしい",
+        "reading": "素晴らしい",
+        "meaning": "精彩的，极好的",
+        "level": "n3",
+        "exampleSentences": [
+          { "jp": "すばらしい けしきですね。", "zh": "景色真美啊。", "reading": "すばらしい けしきですね。" }
+        ]
+      }
+    }
+  ]
+}
