@@ -120,11 +120,23 @@ export class ContentController {
       select: { id: true, title: true, collection: true, textStatus: true, japanese: true, audioLinks: { orderBy: { position: 'asc' } } },
       orderBy: [{ collection: 'asc' }, { id: 'asc' }],
     });
-    const items = rows.map(({ audioLinks, japanese, ...item }) => ({
-      ...item,
-      hasText: !!japanese,
-      audios: audioLinks.map(l => articleAudio(l.audioId)),
-    }));
+    const items = rows.map(({ audioLinks, japanese, ...item }) => {
+      // Filter out invalid audio IDs to prevent 500 errors
+      const validAudios = audioLinks
+        .map(l => {
+          try {
+            return articleAudio(l.audioId);
+          } catch {
+            return null;
+          }
+        })
+        .filter((a): a is NonNullable<typeof a> => a !== null);
+      return {
+        ...item,
+        hasText: !!japanese,
+        audios: validAudios,
+      };
+    });
     res.json({ items, total: items.length, audioCount: items.filter(i => i.audios.length).length });
   });
 
@@ -136,7 +148,16 @@ export class ContentController {
     if (!m) throw new HttpError(404, '素材不存在');
     const { sourcePath, ...metadata } = m.metadata as any;
     const { audioLinks, ...article } = m;
-    res.json({ ...article, metadata, audios: audioLinks.map(l => articleAudio(l.audioId)) });
+    const audios = audioLinks
+      .map(l => {
+        try {
+          return articleAudio(l.audioId);
+        } catch {
+          return null;
+        }
+      })
+      .filter((a): a is NonNullable<typeof a> => a !== null);
+    res.json({ ...article, metadata, audios });
   });
 
   dashboard = run(async (req: AuthRequest, res: Response) => {

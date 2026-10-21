@@ -62,6 +62,11 @@ export const publicQuestion = (q: any) => {
         passage: q.provenance.passage,
         title: q.provenance.title,
         sourcePage: q.provenance.sourcePage,
+        // Novel-provenance questions need these so the frontend can look up
+        // the source novel lesson and render inline furigana (ruby) for the
+        // passage excerpt. Safe to expose: they are non-secret identifiers.
+        ...(q.provenance.lessonId ? { lessonId: q.provenance.lessonId } : {}),
+        ...(q.provenance.pdfPage != null ? { pdfPage: q.provenance.pdfPage } : {}),
       }
     : null;
   return {

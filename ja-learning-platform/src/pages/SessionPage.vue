@@ -27,6 +27,9 @@ const audioLocked = ref(false) // 听力播放时锁定界面
 const audioError = ref('')
 const blankAnswer = ref('')
 
+// 小说课程缓存（用于渲染假名标注）
+const novelLessonCache = ref(new Map())
+
 // 标记题号（用户可标记需要回看的题）
 const markedQuestions = ref([])
 
@@ -39,6 +42,31 @@ let timer
 const session = computed(() => api.session?.id === route.params.id ? api.session : null)
 const questions = computed(() => session.value?.questions || [])
 const question = computed(() => questions.value[session.value?.currentIndex || 0])
+
+// 当前题目的原文段落（带假名标注）
+const questionPassageText = computed(() => {
+  const q = question.value
+  if (!q?.provenance || q.provenance.kind !== 'user_material') return ''
+  // 如果是小说类型且有 lessonId，尝试获取带假名标注的文本
+  if (q.provenance.collection === 'novel' && q.provenance.lessonId) {
+    const lesson = novelLessonCache.value.get(q.provenance.lessonId)
+    if (lesson && q.provenance.pdfPage != null) {
+      const page = lesson.pages?.find(p => p.number === q.provenance.pdfPage)
+      if (page?.readingTokens?.length) {
+        // 从 readingTokens 构建带假名标注的文本
+        // ReadingText.vue 会解析 [漢字:假名] 格式
+        return page.readingTokens.map(token => {
+          if (token.word && token.reading) {
+            return `[${token.word}:${token.reading}]`
+          }
+          return token.text || ''
+        }).join('')
+      }
+    }
+  }
+  // 回退：返回原始 passage
+  return q.provenance.passage || ''
+})
 const answer = computed(() => (session.value?.answers || []).find(a => a.questionId === question.value?.id))
 const exam = computed(() => session.value?.examConfig)
 const section = computed(() => exam.value?.sections?.[exam.value.sectionIndex])
@@ -98,6 +126,20 @@ async function load() {
     loading.value = false
   }
 }
+
+// 当题目变化时，预加载小说课程数据（用于假名标注）
+watch(question, async (q) => {
+  if (!q?.provenance || q.provenance.kind !== 'user_material') return
+  if (q.provenance.collection !== 'novel' || !q.provenance.lessonId) return
+  if (novelLessonCache.value.has(q.provenance.lessonId)) return
+  
+  try {
+    const lesson = await api.request(`novel-lessons/${encodeURIComponent(q.provenance.lessonId)}`)
+    novelLessonCache.value.set(q.provenance.lessonId, lesson)
+  } catch (e) {
+    console.warn('Failed to load novel lesson for furigana:', e)
+  }
+}, { immediate: true })
 
 onMounted(() => {
   load()
@@ -330,8 +372,8 @@ function back() {
                 </div>
 
                 <ReadingText
-                  v-if="question.provenance?.kind === 'user_material'"
-                  :text="question.provenance.passage"
+                  v-if="questionPassageText"
+                  :text="questionPassageText"
                   :title="`原文线索：${question.provenance.title}`"
                   :collapsible="true"
                   :default-open="question.provenance?.collection !== 'novel'"

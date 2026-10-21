@@ -4,7 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 
-const PDF_BASE = '/Volumes/Mac Data/Documents/附赠100篇（音频+PDF）';
+const PDF_BASE = '/Volumes/Mac Data/Documents/阅读PDF/附赠100篇（音频+PDF）';
 const MANIFEST_PATH = path.join(__dirname, '../data/audio/audio-manifest.json');
 
 function sha256File(filepath) {
