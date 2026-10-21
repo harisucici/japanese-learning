@@ -1,9 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import { useLearningStore } from '../store'
+import { requestResource } from '../store'
 
-const api = useLearningStore()
 const lastSession = ref(null)
 const dueReviews = ref(null)
 const weakPoints = ref([])
@@ -20,22 +19,36 @@ const modules = [
  */
 async function loadPersonalization() {
   try {
-    // 加载最近会话
-    const stats = await api.request('stats/me', undefined, true)
-    if (stats?.lastSession) {
-      lastSession.value = stats.lastSession
+    // 加载最近会话 — /stats/me 不返回 lastSession，先静默获取；
+    // 若后续后端扩展该字段可直接使用。
+    try {
+      const stats = await requestResource('stats/me')
+      if (stats?.lastSession) {
+        lastSession.value = stats.lastSession
+      }
+    } catch (e) {
+      console.warn('stats/me 未就绪，跳过', e)
     }
-    
-    // 加载今天到期复习
-    const reviews = await api.request('review/due', undefined, true)
-    if (reviews?.length > 0) {
-      dueReviews.value = reviews
+
+    // 加载今天到期复习 — /review/due 直接返回数组
+    try {
+      const reviews = await requestResource('review/due')
+      if (Array.isArray(reviews) && reviews.length > 0) {
+        dueReviews.value = reviews
+      }
+    } catch (e) {
+      console.warn('review/due 未就绪，跳过', e)
     }
-    
-    // 加载薄弱点
-    const mistakes = await api.request('stats/mistakes-detail', undefined, true)
-    if (mistakes && Array.isArray(mistakes)) {
-      weakPoints.value = mistakes.slice(0, 3) // 只显示前3个
+
+    // 加载薄弱点 — /stats/mistakes-detail 返回 { items, ... }
+    try {
+      const mistakes = await requestResource('stats/mistakes-detail')
+      const list = Array.isArray(mistakes) ? mistakes : (mistakes?.items || [])
+      if (list.length > 0) {
+        weakPoints.value = list.slice(0, 3)
+      }
+    } catch (e) {
+      console.warn('stats/mistakes-detail 未就绪，跳过', e)
     }
   } catch (e) {
     console.error('加载个性化数据失败:', e)
@@ -47,9 +60,8 @@ onMounted(loadPersonalization)
 
 <template>
   <section class="hero"><div class="hero-art"><div class="sky"></div><div class="sun"></div><div class="mountain back"></div><div class="mountain middle"></div><div class="mountain front"></div><div class="water"></div><div class="reeds reeds-left"></div><div class="reeds reeds-right"></div></div><div class="hero-shade"></div><div class="hero-copy"><p class="eyebrow light">A PLACE TO READ, A WAY TO GROW</p><h1>在文字里<br>遇见<span>辽阔</span></h1><p>让阅读慢下来，让想象走得更远。</p><a href="#explore" class="text-link light-link">开启探索 <span>↗</span></a></div><div class="hero-bottom">读一页书，走一段路。<span>山间书院 · THE READING RETREAT</span></div></section>
-  <section class="intro section-wrap"><div class="intro-heading"><p class="eyebrow">AN INVITATION TO EXPLORE</p><h2>在好奇心里，<br><em>找到自己的节奏。</em></h2></div><div class="intro-body"><span class="line"></span><p>故事、游戏、素材与练习，是通向阅读的四条小径。无论你从哪里出发，都可以在这里停一停，看见新的风景。</p><span class="seal">讀<br>·<br>想</span></div></section>
   
-  <!-- 个性化推荐区域 -->
+  <!-- 个性化推荐区域 - 最上方 -->
   <section class="personalized section-wrap" v-if="lastSession || dueReviews || weakPoints.length > 0">
     <div class="section-top"><p class="eyebrow">FOR YOU</p><span>个性化推荐</span></div>
     <div class="personalized-grid">
@@ -88,6 +100,9 @@ onMounted(loadPersonalization)
       </div>
     </div>
   </section>
+  
+  <!-- Intro section -->
+  <section class="intro section-wrap"><div class="intro-heading"><p class="eyebrow">AN INVITATION TO EXPLORE</p><h2>在好奇心里，<br><em>找到自己的节奏。</em></h2></div><div class="intro-body"><span class="line"></span><p>故事、游戏、素材与练习，是通向阅读的四条小径。无论你从哪里出发，都可以在这里停一停，看见新的风景。</p><span class="seal">讀<br>·<br>想</span></div></section>
   
   <section id="explore" class="explore section-wrap"><div class="section-top"><p class="eyebrow">FOUR WAYS TO BEGIN</p><span>01 — 04</span></div><div class="explore-title"><h2>循着兴趣，<em>向前走。</em></h2><p>选择一条小径，开始今天的探索。</p></div><div class="module-grid"><RouterLink v-for="m in modules" :key="m.path" :to="m.path" class="module-card" :class="m.class"><div class="card-visual"><div class="card-orb"></div><div class="card-shape"></div><div class="card-symbol">{{m.num}}</div></div><div class="card-info"><div class="card-top"><span>{{m.en}}</span><span>↗</span></div><h3>{{m.title}}</h3><p>{{m.desc}}</p><span class="card-cta">{{m.cta}} <b>—</b></span></div></RouterLink></div></section>
   <section class="quote"><div class="quote-landscape"><div class="quote-hill"></div></div><div class="quote-content"><p class="eyebrow">A MOMENT TO PAUSE</p><p class="big-quote">\"每一次翻页，<br>都是一次新的出发。\"</p><p>留一点时间给阅读，也留一点空间给自己。</p><RouterLink to="/novel" class="text-link">从故事开始 <span>↗</span></RouterLink></div></section>
