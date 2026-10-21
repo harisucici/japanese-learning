@@ -24,8 +24,15 @@ const theme = inject('theme', null)
 // 解析带假名标注的文本：格式 [漢字:かんじ] 或直接使用 <ruby>
 const parsed = computed(() => {
   if (!props.text) return ''
+  // 移除纯假名「读み先」行（仅由平假名组成、无任何汉字/标点/括号），
+  // 这些行是原始排版中位于标注行上方的注音预览，ruby 标签已包含注音信息
+  const hiraganaOnly = /^[\u3040-\u309F]+$/
+  const cleaned = props.text
+    .split('\n')
+    .filter(line => !hiraganaOnly.test(line))
+    .join('\n')
   // 匹配 [漢字:假名] 格式
-  return props.text.replace(/\[([^\]]+?):([^\]]+?)\]/g, (_, base, ruby) => {
+  return cleaned.replace(/\[([^\]]+?):([^\]]+?)\]/g, (_, base, ruby) => {
     return `<ruby>${escapeHtml(base)}<rp>(</rp><rt>${escapeHtml(ruby)}</rt><rp>)</rp></ruby>`
   })
 })
@@ -150,10 +157,10 @@ function preventCopy(e) {
   -webkit-user-select: none;
 }
 
-/* Ruby 注音优化：不重叠，行距自动调整 */
+/* Ruby 注音优化：假名紧凑显示在汉字上方 */
 .rt-content :deep(ruby) {
-  ruby-align: center;
-  display: inline;
+  ruby-position: over;
+  line-height: calc(var(--base-line-height, 2.2) + 0.6);
 }
 .rt-content :deep(rt) {
   font-size: var(--ruby-font-size, 11px);
@@ -166,11 +173,6 @@ function preventCopy(e) {
 }
 .rt-content :deep(rp) {
   display: none;
-}
-
-/* 增大基础字体行距以容纳注音 */
-.rt-content :deep(ruby) {
-  line-height: calc(var(--base-line-height, 2.2) + 0.6);
 }
 
 .rt-hint {

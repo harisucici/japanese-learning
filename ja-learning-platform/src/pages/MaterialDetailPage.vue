@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { assetUrl, useLearningStore } from '../store'
+import ReadingText from '../components/ReadingText.vue'
 const route = useRoute(), api = useLearningStore(), item = ref(null), error = ref(''), loading = ref(true)
 async function load() { loading.value = true; error.value = ''; try { item.value = await api.request(`materials/${encodeURIComponent(route.params.id)}`) } catch (e) { error.value = e.message } finally { loading.value = false } }
 onMounted(load); watch(() => route.params.id, load)
@@ -17,7 +18,7 @@ onMounted(load); watch(() => route.params.id, load)
       <p class="page-lead">在文字与声音之间，慢慢读完这一篇。</p>
       <div v-if="item.audios?.length" class="media-panel"><h3>文章配套音频</h3><div v-for="audio in item.audios" :key="audio.id"><p>{{ audio.title }}</p><audio controls preload="metadata" :src="assetUrl(audio.url)">浏览器不支持音频播放。</audio></div></div>
       <div v-else class="source-note">这篇文章目前没有配套音频。</div>
-      <article v-if="item.japanese" class="reader-page"><div class="reader-label">日语原文</div><p class="reading-text">{{ item.japanese }}</p></article>
+      <ReadingText v-if="item.japanese" :text="item.japanese" title="日语原文" :collapsible="false" :default-open="true" />
       <div v-else class="source-note">正文待整理。当前可先收听配套音频；未经核对的扫描文字不会作为原文展示。</div>
       <details v-if="item.translation" class="vocab-panel"><summary>展开中文译文</summary><p class="reading-text">{{ item.translation }}</p></details>
       <RouterLink v-if="item.textStatus === 'novel_lessons'" class="secondary-action" to="/novel">进入小说词汇</RouterLink>
