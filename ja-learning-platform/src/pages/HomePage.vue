@@ -22,6 +22,15 @@ async function loadPersonalization() {
     // 加载最近会话 — /stats/me 不返回 lastSession，先静默获取；
     // 若后续后端扩展该字段可直接使用。
     try {
+      // 检查用户是否已登录
+      const authResponse = await fetch('/api/reading/auth/me', {
+        credentials: 'include',
+        method: 'GET'
+      })
+      if (!authResponse.ok) {
+        console.log('用户未登录，跳过个性化数据加载')
+        return
+      }
       const stats = await requestResource('stats/me')
       if (stats?.lastSession) {
         lastSession.value = stats.lastSession

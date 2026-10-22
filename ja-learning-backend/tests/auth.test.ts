@@ -1,4 +1,21 @@
 // 认证系统完整测试：验证所有 API 端点
+jest.setTimeout(60000);
+
+// 降低 bcrypt 的 salt rounds，避免事务内计算时间过长导致 SQLite 流空闲超时
+jest.mock('bcryptjs', () => {
+  const actual = jest.requireActual('bcryptjs');
+  const mocked = {
+    ...actual,
+    hash: jest.fn().mockImplementation((password: string, _rounds?: number) => actual.hash(password, 4)),
+    compare: jest.fn().mockImplementation((password: string, hash: string) => actual.compare(password, hash)),
+  };
+  // bcryptjs 使用 default export
+  return {
+    __esModule: true,
+    default: mocked,
+  };
+});
+
 import request from 'supertest';
 import app from '../src/app';
 import prisma from '../src/config/database';
@@ -16,6 +33,9 @@ describe('Authentication System', () => {
 
   let authToken: string;
   let userId: string;
+  let testInviteCode: string;
+  let duplicateInviteCode: string;
+  let migrateInviteCode: string;
 
   beforeAll(async () => {
     // 确保用户数据库已初始化
@@ -23,6 +43,18 @@ describe('Authentication System', () => {
       console.warn('用户数据库未配置，跳过认证测试');
       return;
     }
+
+    // 创建测试用邀请码（必须为 8 位大写字母/数字）
+    testInviteCode = 'TEST' + Date.now().toString(36).toUpperCase().slice(-4).padStart(4, '0');
+    duplicateInviteCode = 'DUP' + (Date.now() + 1).toString(36).toUpperCase().slice(-5).padStart(5, '0');
+    migrateInviteCode = 'MIG' + (Date.now() + 2).toString(36).toUpperCase().slice(-5).padStart(5, '0');
+    await userPrisma.inviteCode.createMany({
+      data: [
+        { code: testInviteCode, used: false, createdAt: new Date() },
+        { code: duplicateInviteCode, used: false, createdAt: new Date() },
+        { code: migrateInviteCode, used: false, createdAt: new Date() },
+      ],
+    });
   });
 
   describe('POST /auth/register', () => {
@@ -31,8 +63,13 @@ describe('Authentication System', () => {
 
       const res = await request(app)
         .post('/api/v1/auth/register')
-        .send(testUser)
-        .expect(201);
+        .send({ ...testUser, inviteCode: testInviteCode });
+
+      if (res.status !== 201) {
+        console.error('Register failed:', res.status, res.body);
+      }
+
+      expect(res.status).toBe(201);
 
       expect(res.body).toHaveProperty('user');
       expect(res.body.user.email).toBe(testUser.email);
@@ -50,7 +87,7 @@ describe('Authentication System', () => {
 
       await request(app)
         .post('/api/v1/auth/register')
-        .send(testUser)
+        .send({ ...testUser, inviteCode: duplicateInviteCode })
         .expect(409);
     });
 
@@ -223,7 +260,7 @@ describe('Authentication System', () => {
       const guestCookie = guest.headers['set-cookie'][0].split(';')[0];
       const jwt = await import('jsonwebtoken');
       const payload = jwt.default.verify(decodeURIComponent(guestCookie.split('=')[1]), config.jwtSecret) as { userId: string };
-      const input = { email: `migrate-${Date.now()}@example.com`, password: 'Migrate123', nickname: '迁移用户', anonymousId: payload.userId };
+      const input = { email: `migrate-${Date.now()}@example.com`, password: 'Migrate123', nickname: '迁移用户', anonymousId: payload.userId, inviteCode: migrateInviteCode };
       const upgraded = await request(app).post('/api/v1/auth/migrate-from-anonymous').set('Cookie', guestCookie).send(input).expect(200);
       expect(upgraded.body.user.email).toBe(input.email);
       await request(app).post('/api/v1/auth/migrate-from-anonymous').set('Authorization', `Bearer ${authToken}`).send({ ...input, email: `other-${Date.now()}@example.com` }).expect(403);

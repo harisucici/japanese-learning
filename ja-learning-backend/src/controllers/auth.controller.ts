@@ -99,7 +99,8 @@ export class AuthController {
     try {
       const parsed = changePasswordSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-      await svc.changePassword(req.userId!, parsed.data.oldPassword, parsed.data.newPassword);
+      const currentPassword = parsed.data.currentPassword || parsed.data.oldPassword!;
+      await svc.changePassword(req.userId!, currentPassword, parsed.data.newPassword);
       res.json({ success: true });
     } catch (e: any) {
       res.status(e.status || 400).json({ error: e.message });

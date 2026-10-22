@@ -14,6 +14,7 @@ const busy = ref(false)
 const error = ref('')
 const notice = ref('')
 const importText = ref('')
+let loadRequestId = 0
 function readyForPublish(question) {
   const options = Array.isArray(question.options) ? question.options : []
   const analyses = Array.isArray(question.explanation?.optionAnalysis) ? question.explanation.optionAnalysis : []
@@ -25,6 +26,7 @@ function readyForPublish(question) {
 
 async function load() {
   if (auth.user?.role !== 'admin') return
+  const requestId = ++loadRequestId
   loading.value = true
   error.value = ''
   try {
@@ -32,10 +34,17 @@ async function load() {
     if (filters.level) query.set('level', filters.level)
     if (filters.status) query.set('status', filters.status)
     const data = await requestResource(`admin/questions?${query}`)
+    // 只接受最新请求的结果
+    if (requestId !== loadRequestId) return
     items.value = data.items || []
     total.value = data.total || 0
-  } catch (e) { error.value = e.message }
-  finally { loading.value = false }
+  } catch (e) {
+    if (requestId !== loadRequestId) return
+    error.value = e.message
+  }
+  finally {
+    if (requestId === loadRequestId) loading.value = false
+  }
 }
 
 async function inspect(id) {

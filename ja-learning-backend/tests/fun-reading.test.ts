@@ -5,6 +5,7 @@
 jest.setTimeout(60000);
 
 import request from 'supertest';
+import { v4 as uuidv4 } from 'uuid';
 import app from '../src/app';
 import prisma from '../src/config/database';
 import userPrisma from '../src/config/user-database';
@@ -55,9 +56,9 @@ describe('趣味阅读模块 - API测试', () => {
       return;
     }
 
-    // 创建测试用户
+    // 创建测试用户（使用有效 UUID，auth 中间件会校验 UUID 格式）
     const user = await userPrisma.anonymousLearner.create({
-      data: { id: `test-user-${Date.now()}` },
+      data: { id: uuidv4() },
     });
     testUserId = user.id;
 

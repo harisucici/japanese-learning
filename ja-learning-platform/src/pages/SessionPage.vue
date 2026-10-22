@@ -36,7 +36,8 @@ const markedQuestions = ref([])
 // 交卷确认弹窗
 const showSubmitConfirm = ref(false)
 
-let timer
+let timer = null
+let loadingInProgress = false
 
 // 计算属性
 const session = computed(() => api.session?.id === route.params.id ? api.session : null)
@@ -72,15 +73,19 @@ const exam = computed(() => session.value?.examConfig)
 const section = computed(() => exam.value?.sections?.[exam.value.sectionIndex])
 const remaining = computed(() => {
   if (!exam.value?.deadline) return '—'
+  const deadlineMs = Date.parse(exam.value.deadline)
+  if (isNaN(deadlineMs)) return '—'
   const offset = serverOffset.value
-  const seconds = Math.max(0, Math.ceil((Date.parse(exam.value.deadline) - now.value - offset) / 1000))
+  const seconds = Math.max(0, Math.ceil((deadlineMs - now.value - offset) / 1000))
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 })
 // 剩余秒数（给 TimeWarning 使用）
 const remainingSeconds = computed(() => {
   if (!exam.value?.deadline) return null
+  const deadlineMs = Date.parse(exam.value.deadline)
+  if (isNaN(deadlineMs)) return null
   const offset = serverOffset.value
-  return Math.max(0, Math.ceil((Date.parse(exam.value.deadline) - now.value - offset) / 1000))
+  return Math.max(0, Math.ceil((deadlineMs - now.value - offset) / 1000))
 })
 
 const wrong = computed(() => (session.value?.answers || []).filter(a => a.isCorrect === false))
@@ -111,6 +116,8 @@ function optionText(q, id) {
 }
 
 async function load() {
+  if (loadingInProgress) return
+  loadingInProgress = true
   // A newly started session already contains its questions. Render it while
   // refreshing instead of hiding it behind a second full-page loading state.
   loading.value = !session.value?.questions?.length
@@ -119,11 +126,17 @@ async function load() {
   try {
     await api.loadSession(route.params.id)
     loadingStep.value = '处理题目'
-    serverOffset.value = Date.parse(api.session.serverNow) - Date.now()
+    const serverNowMs = Date.parse(api.session.serverNow)
+    if (!isNaN(serverNowMs)) {
+      serverOffset.value = serverNowMs - Date.now()
+    } else {
+      serverOffset.value = 0
+    }
   } catch (e) {
     error.value = e.name === 'TimeoutError' ? '读取超时，请重试。' : e.message
   } finally {
     loading.value = false
+    loadingInProgress = false
   }
 }
 
@@ -143,16 +156,34 @@ watch(question, async (q) => {
 
 onMounted(() => {
   load()
+  if (timer) clearInterval(timer)
   timer = setInterval(() => {
     now.value = Date.now()
-    if (exam.value?.deadline && Date.parse(exam.value.deadline) <= now.value && !busy.value && session.value && !session.value.completedAt) {
-      load()
+    // Bug-F02/F06 fix: Clear the timer as soon as the deadline passes,
+    // regardless of busy state, to prevent repeated deadline checks and
+    // any downstream requests from firing indefinitely.
+    if (timer && exam.value?.deadline) {
+      const deadlineMs = Date.parse(exam.value.deadline)
+      if (!isNaN(deadlineMs) && deadlineMs <= now.value + serverOffset.value) {
+        clearInterval(timer)
+        timer = null
+        if (session.value && !session.value.completedAt) {
+          session.value.completedAt = new Date().toISOString()
+        }
+      }
     }
   }, 1000)
 })
 
-onUnmounted(() => clearInterval(timer))
-watch(() => route.params.id, load)
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+})
+watch(() => route.params.id, (newId, oldId) => {
+  if (newId && newId !== oldId) load()
+})
 
 async function act(fn) {
   busy.value = true
@@ -198,7 +229,7 @@ function cancelSubmit() {
 }
 
 // 跳转到指定题号（1-indexed）
-function jumpToQuestion(num) {
+async function jumpToQuestion(num) {
   if (audioLocked.value) return // 听力锁定时禁止跳转
   const targetIndex = num - 1
   const currentIndex = session.value?.currentIndex || 0
@@ -206,9 +237,24 @@ function jumpToQuestion(num) {
 
   const steps = targetIndex - currentIndex
   if (steps > 0) {
-    act(async () => {
+    // 向前跳转：逐步调用 next
+    await act(async () => {
       for (let i = 0; i < steps; i++) {
-        await api.next(route.params.id)
+        try {
+          await api.next(route.params.id)
+        } catch (e) {
+          // 如果中途失败，停止跳转并抛出错误
+          throw new Error(`跳转失败：${e.message}`)
+        }
+      }
+    })
+  } else {
+    // 向后跳转：通过直接设置 currentIndex 实现
+    await act(async () => {
+      try {
+        await api.jump(route.params.id, targetIndex)
+      } catch (e) {
+        throw new Error(`跳转失败：${e.message}`)
       }
     })
   }
@@ -232,11 +278,22 @@ async function playExamAudio() {
     const elapsed = Math.max(0, (now.value + serverOffset.value - Date.parse(exam.value.sectionStartedAt)) / 1000)
     if (audio.readyState < 1) {
       await new Promise((resolve, reject) => {
-        audio.addEventListener('loadedmetadata', resolve, { once: true })
-        audio.addEventListener('error', reject, { once: true })
+        const cleanup = () => {
+          audio.removeEventListener('loadedmetadata', resolve)
+          audio.removeEventListener('error', reject)
+        }
+        const onLoaded = () => { cleanup(); resolve() }
+        const onError = () => { cleanup(); reject(new Error('Audio load failed')) }
+        audio.addEventListener('loadedmetadata', onLoaded, { once: true })
+        audio.addEventListener('error', onError, { once: true })
       })
     }
-    audio.currentTime = Math.min(elapsed, Math.max(0, audio.duration - 0.1))
+    // 确保 duration 有效再设置 currentTime
+    if (audio.duration && isFinite(audio.duration)) {
+      audio.currentTime = Math.min(elapsed, Math.max(0, audio.duration - 0.1))
+    } else {
+      audio.currentTime = Math.max(0, elapsed)
+    }
     await audio.play()
     audioPlaying.value = true
     audioLocked.value = true

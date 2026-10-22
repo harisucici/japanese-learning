@@ -43,23 +43,40 @@ export class AuthService {
     if (!config.userRegistrationEnabled) {
       throw Object.assign(new Error('用户注册尚未开放'), { status: 503 });
     }
-    
+
+    // 先检查邮箱/用户名是否重复，避免消耗邀请码后才返回 409
+    const username = input.username?.trim().toLowerCase() || null;
+    const email = input.email?.trim().toLowerCase() || null;
+    if (!username && !email) throw Object.assign(new Error('请输入账户名或邮箱'), { status: 400 });
+    if (username && await this.users.findByIdentifier(username)) throw Object.assign(new Error('该账户名已被使用'), { status: 409 });
+    if (email && await this.users.findByIdentifier(email)) throw Object.assign(new Error('该邮箱已被注册'), { status: 409 });
+
     // 验证邀请码
     const inviteCodeRecord = await this.inviteCodes.validateCode(input.inviteCode);
     if (!inviteCodeRecord) {
       throw Object.assign(new Error('邀请码无效或已被使用'), { status: 400 });
     }
     
+    // 标记邀请码已使用（先快速完成，避免慢速的 createUser/bcrypt 撑爆事务空闲超时）
+    await userPrisma.inviteCode.update({
+      where: { id: inviteCodeRecord.id },
+      data: { used: true, usedAt: new Date() },
+    });
+
+    // 创建用户（bcrypt 哈希 + 远程插入，可能较慢，放在事务外）
     const user = await this.users.createUser(input);
+
+    // 创建 AnonymousLearner 记录并回填邀请码 usedBy（快速 Prisma 操作）
     await userPrisma.anonymousLearner.upsert({
       where: { id: user.id },
       update: {},
       create: { id: user.id },
     });
-    
-    // 标记邀请码已使用
-    await this.inviteCodes.markAsUsed(inviteCodeRecord.id, user.id);
-    
+    await userPrisma.inviteCode.update({
+      where: { id: inviteCodeRecord.id },
+      data: { usedBy: user.id },
+    });
+
     return { token: tokenFor(user.id, user.role), user };
   }
 

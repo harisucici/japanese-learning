@@ -58,6 +58,11 @@ function jump(num) {
 function toggleMark(num) {
   emit('toggle-mark', num)
 }
+
+function onContextMenu(e, num) {
+  e.preventDefault()
+  toggleMark(num)
+}
 </script>
 
 <template>
@@ -76,6 +81,7 @@ function toggleMark(num) {
         type="button"
         :aria-label="`第 ${item.num} 题${item.isAnswered ? '，已答' : ''}${item.isMarked ? '，已标记' : ''}${item.isCurrent ? '，当前' : ''}`"
         @click="jump(item.num)"
+        @contextmenu="onContextMenu($event, item.num)"
       >
         <span class="ac-num">{{ item.num }}</span>
         <span v-if="item.isMarked && !item.isAnswered" class="ac-mark-dot" aria-hidden="true">★</span>

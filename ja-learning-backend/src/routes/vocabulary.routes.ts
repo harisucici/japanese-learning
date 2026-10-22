@@ -4,10 +4,14 @@
  */
 import { Router } from 'express';
 import { VocabularyController } from '../controllers/vocabulary.controller';
+import { authMiddleware } from '../middleware/auth';
 import { adminMiddleware } from '../middleware/admin';
 
 const router = Router();
 const ctrl = new VocabularyController();
+
+// 所有词汇接口都需要身份认证
+router.use(authMiddleware);
 
 // 只读接口：按等级查询 / 详情 / 反向索引
 router.get('/', (req, res) => ctrl.list(req, res));

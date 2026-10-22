@@ -24,22 +24,25 @@ async function loadStats() {
       requestResource('stats/me'),
       requestResource('stats/mistakes-detail')
     ])
+    // Bug-F11: 确保 stats 数据结构正确
     statsData.value = {
       ...stats,
-      totalAnswered: stats.totalQuestions,
-      totalCorrect: stats.correctCount,
-      accuracy: stats.accuracy * 100,
+      totalAnswered: stats.totalQuestions || 0,
+      totalCorrect: stats.correctCount || 0,
+      accuracy: isFinite(stats.accuracy) ? stats.accuracy * 100 : 0,
       byType: Object.fromEntries((stats.levelStats || []).map(item => [item.level, {
-        accuracy: item.accuracy * 100,
-        total: item.totalQuestions,
-        correct: item.correctCount
+        accuracy: isFinite(item.accuracy) ? item.accuracy * 100 : 0,
+        total: item.totalQuestions || 0,
+        correct: item.correctCount || 0
       }]))
     }
-    mistakesData.value = (mistakes.items || []).map(item => ({
-      type: item.type,
-      count: item.wrongCount,
-      knowledgePoint: item.question?.type || item.type,
-      questionSnippet: item.question?.content || ''
+    // Bug-F12: 处理多种可能的 API 响应格式
+    const mistakesArray = Array.isArray(mistakes) ? mistakes : (mistakes.items || mistakes.mistakes || [])
+    mistakesData.value = mistakesArray.map(item => ({
+      type: item.type || 'unknown',
+      count: item.wrongCount || item.count || 0,
+      knowledgePoint: item.question?.type || item.type || '未分类',
+      questionSnippet: item.question?.content || item.content || ''
     }))
   } catch (e) {
     error.value = e.message
@@ -55,10 +58,20 @@ const typeAccuracy = computed(() => {
   if (!statsData.value?.byType) return []
   return Object.entries(statsData.value.byType).map(([type, data]) => ({
     type: typeMap[type] || type,
-    accuracy: data.accuracy,
-    total: data.total,
-    correct: data.correct
+    accuracy: isFinite(data.accuracy) ? data.accuracy : 0,
+    total: data.total || 0,
+    correct: data.correct || 0
   }))
+})
+
+const weakAreas = computed(() => {
+  if (!statsData.value) return []
+  return statsData.value.weakAreas || []
+})
+
+const mistakesList = computed(() => {
+  if (!mistakesData.value) return []
+  return mistakesData.value
 })
 
 /**
@@ -145,13 +158,11 @@ onMounted(loadStats)
           <div v-for="item in typeAccuracy" :key="item.type" class="type-item">
             <div class="type-header">
               <span class="type-name">{{ item.type }}</span>
+              <span class="type-stats">{{ item.correct }} / {{ item.total }} 题</span>
               <span class="type-accuracy">{{ Math.round(item.accuracy) }}%</span>
             </div>
             <div class="type-bar">
               <div class="type-bar-fill" :style="{ width: item.accuracy + '%' }"></div>
-            </div>
-            <div class="type-stats">
-              <span>答对 {{ item.correct }} / {{ item.total }} 题</span>
             </div>
           </div>
         </div>
@@ -310,16 +321,25 @@ onMounted(loadStats)
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  gap: 12px;
 }
 
 .type-name {
   font: 16px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
+  flex: 1;
+}
+
+.type-stats {
+  font-size: 13px;
+  color: #7a8279;
 }
 
 .type-accuracy {
   font: 20px 'Zen Kaku Gothic New', sans-serif;
   color: #355247;
+  min-width: 60px;
+  text-align: right;
 }
 
 .type-bar {
@@ -327,18 +347,13 @@ onMounted(loadStats)
   background: #e3e0d4;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .type-bar-fill {
   height: 100%;
   background: #355247;
   transition: width 0.3s ease;
-}
-
-.type-stats {
-  font-size: 13px;
-  color: #7a8279;
 }
 
 .mistakes-list {
