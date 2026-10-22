@@ -70,6 +70,10 @@ function requestReset() {
 }
 
 function resetPassword() {
+  if (!account.password || account.password.length < 6) {
+    error.value = '密码不能为空且长度至少为6位'
+    return Promise.resolve()
+  }
   return perform(async () => {
     await auth.request('reset-password', { token: String(route.query.token || ''), password: account.password })
     account.password = ''

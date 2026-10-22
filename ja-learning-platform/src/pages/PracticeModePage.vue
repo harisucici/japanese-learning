@@ -25,7 +25,7 @@ async function startByType(type) {
   error.value = ''
   try {
     await api.ensureGuest()
-    const session = await api.request('sessions', { level: 'n5', mode: 'fun', collectionId: `by-type-${type}` }, true)
+    const session = await api.request('sessions', { level: 'n5', mode: 'practice', type: type === 'vocab' ? 'vocabulary' : type === 'listening' ? 'listening' : type === 'reading' ? 'reading' : 'grammar' }, true)
     router.push(`/sessions/${session.id}`)
   } catch (e) {
     error.value = e.message
@@ -43,7 +43,7 @@ async function startByGrammar(grammarId) {
   error.value = ''
   try {
     await api.ensureGuest()
-    const session = await api.request('sessions', { level: 'n5', mode: 'fun', collectionId: `by-grammar-${grammarId}` }, true)
+    const session = await api.request('sessions', { level: 'n5', mode: 'practice', type: 'grammar' }, true)
     router.push(`/sessions/${session.id}`)
   } catch (e) {
     error.value = e.message
@@ -61,8 +61,8 @@ async function startMistakes() {
   error.value = ''
   try {
     await api.ensureGuest()
-    const session = await api.request('sessions', { level: 'n5', mode: 'fun', collectionId: 'mistakes' }, true)
-    router.push(`/sessions/${session.id}`)
+    router.push('/review')
+    return
   } catch (e) {
     error.value = e.message
   } finally {
@@ -81,8 +81,8 @@ async function startRandom() {
     await api.ensureGuest()
     const session = await api.request('sessions', { 
       level: randomLevel.value, 
-      mode: 'fun', 
-      collectionId: `random-${randomLevel.value}-${randomCount.value}` 
+      mode: 'practice',
+      limit: randomCount.value
     }, true)
     router.push(`/sessions/${session.id}`)
   } catch (e) {

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { validate as uuidValidate } from 'uuid';
 import { config } from '../config/env';
 
 export interface AuthRequest extends Request {
@@ -17,6 +18,10 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   }
   try {
     const payload = jwt.verify(decodeURIComponent(token), config.jwtSecret) as { userId: string; kind?: string };
+    if (!payload.userId || !uuidValidate(payload.userId)) {
+      res.status(401).json({ error: 'Invalid token payload' });
+      return;
+    }
     req.userId = payload.userId;
     req.authKind = payload.kind;
     next();

@@ -15,7 +15,7 @@ const modules = [
   { num:'03', title:'素材阅读馆', en:'LIBRARY', path:'/materials', desc:'收藏值得细读的文字，积累自己的表达。', class:'library', cta:'探索馆藏' },
   { num:'04', title:'模拟考试', en:'PRACTICE', path:'/mock-exam', desc:'在安静的练习里，遇见更从容的自己。', class:'exam', cta:'开始练习' }
 ]
-const isSession = computed(() => route.path.startsWith('/sessions/') || route.path === '/stats' || route.path === '/practice')
+const isSession = computed(() => route.path.startsWith('/sessions/') || route.path === '/sessions' || route.path === '/stats' || route.path === '/practice')
 const active = computed(() => {
   if (route.path === '/history') return {num:'05',title:'学习记录',en:'YOUR JOURNEY',class:'library'}
   if (route.path === '/stats') return {num:'06',title:'学习档案',en:'MY STATISTICS',class:'exam'}

@@ -43,6 +43,10 @@ async function load() {
   finally { if (version === loadVersion) loading.value = false }
 }
 async function start() {
+  if (!lesson.value?.paperId) {
+    error.value = '本篇尚未关联练习题'
+    return
+  }
   starting.value = true; error.value = ''
   try { const s = await api.startFun(lesson.value.paperId); router.push(`/sessions/${s.id}`) }
   catch (e) { error.value = e.message }
@@ -58,7 +62,7 @@ watch([loadTrigger, visibleCount], async (_, __, onCleanup) => {
   if (cancelled || !element || !hasMorePages.value) return
   observer = new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting && hasMorePages.value) {
-      visibleCount.value = Math.min(visibleCount.value + 2, lesson.value.pages.length)
+      visibleCount.value = Math.min(visibleCount.value + 2, lesson.value?.pages?.length || 0)
     }
   }, { rootMargin: '400px 0px' })
   observer.observe(element)
@@ -79,7 +83,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
         <div class="section-top"><p class="eyebrow">STORY / {{ lesson.category }}</p><span>{{ lesson.questionCount }} 道练习</span></div>
         <h2>{{ lesson.title }}</h2>
         <p class="page-lead">{{ lesson.note }}</p>
-        <div class="detail-actions"><button class="primary-action" :disabled="!lesson.published || starting" @click="start">{{ starting ? '正在准备…' : '开始本篇练习 ↗' }}</button></div>
+        <div class="detail-actions"><button class="primary-action" :disabled="!lesson.published || !lesson.paperId || starting" @click="start">{{ starting ? '正在准备…' : '开始本篇练习 ↗' }}</button></div>
         <p v-if="error" class="action-error" role="alert">{{ error }}</p>
       </header>
       <div class="reading-layout">

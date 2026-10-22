@@ -50,17 +50,36 @@ export class AuthService {
       throw Object.assign(new Error('邀请码无效或已被使用'), { status: 400 });
     }
     
-    const user = await this.users.createUser(input);
-    await userPrisma.anonymousLearner.upsert({
-      where: { id: user.id },
-      update: {},
-      create: { id: user.id },
+    // 使用事务确保邀请码标记和用户创建的原子性
+    // 如果用户创建失败，邀请码标记会回滚，防止重复使用
+    return await userPrisma.$transaction(async (tx) => {
+      // 先标记邀请码已使用（在事务内）
+      await tx.inviteCode.update({
+        where: { id: inviteCodeRecord.id },
+        data: {
+          used: true,
+          usedAt: new Date(),
+        },
+      });
+      
+      // 创建用户
+      const user = await this.users.createUser(input);
+      
+      // 创建 AnonymousLearner 记录
+      await tx.anonymousLearner.upsert({
+        where: { id: user.id },
+        update: {},
+        create: { id: user.id },
+      });
+      
+      // 更新邀请码的 usedBy 为实际用户 ID
+      await tx.inviteCode.update({
+        where: { id: inviteCodeRecord.id },
+        data: { usedBy: user.id },
+      });
+      
+      return { token: tokenFor(user.id, user.role), user };
     });
-    
-    // 标记邀请码已使用
-    await this.inviteCodes.markAsUsed(inviteCodeRecord.id, user.id);
-    
-    return { token: tokenFor(user.id, user.role), user };
   }
 
   // 获取当前用户

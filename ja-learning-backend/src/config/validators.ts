@@ -21,7 +21,7 @@ export const registerSchema = z.object({
   nickname: z.string().min(1, '昵称不能为空').max(50, '昵称最多 50 个字符').optional(),
   currentLevel: levelSchema.optional(),
   targetLevel: levelSchema.optional(),
-  inviteCode: z.string().length(8, '邀请码必须为8位').regex(/^[A-Z0-9]{8}$/, '邀请码只能包含大写字母和数字'),
+  inviteCode: z.string().length(8, '邀请码必须为8位').transform(v => v.toUpperCase()).pipe(z.string().regex(/^[A-Z0-9]{8}$/, '邀请码只能包含大写字母和数字')),
 }).refine(data => Boolean(data.username || data.email), { message: '请输入账户名或邮箱' });
 
 export const updateProfileSchema = z.object({

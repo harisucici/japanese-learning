@@ -37,6 +37,7 @@ const markedQuestions = ref([])
 const showSubmitConfirm = ref(false)
 
 let timer
+let loadingInProgress = false
 
 // 计算属性
 const session = computed(() => api.session?.id === route.params.id ? api.session : null)
@@ -72,15 +73,19 @@ const exam = computed(() => session.value?.examConfig)
 const section = computed(() => exam.value?.sections?.[exam.value.sectionIndex])
 const remaining = computed(() => {
   if (!exam.value?.deadline) return '—'
+  const deadlineMs = Date.parse(exam.value.deadline)
+  if (isNaN(deadlineMs)) return '—'
   const offset = serverOffset.value
-  const seconds = Math.max(0, Math.ceil((Date.parse(exam.value.deadline) - now.value - offset) / 1000))
+  const seconds = Math.max(0, Math.ceil((deadlineMs - now.value - offset) / 1000))
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 })
 // 剩余秒数（给 TimeWarning 使用）
 const remainingSeconds = computed(() => {
   if (!exam.value?.deadline) return null
+  const deadlineMs = Date.parse(exam.value.deadline)
+  if (isNaN(deadlineMs)) return null
   const offset = serverOffset.value
-  return Math.max(0, Math.ceil((Date.parse(exam.value.deadline) - now.value - offset) / 1000))
+  return Math.max(0, Math.ceil((deadlineMs - now.value - offset) / 1000))
 })
 
 const wrong = computed(() => (session.value?.answers || []).filter(a => a.isCorrect === false))
@@ -111,6 +116,8 @@ function optionText(q, id) {
 }
 
 async function load() {
+  if (loadingInProgress) return
+  loadingInProgress = true
   // A newly started session already contains its questions. Render it while
   // refreshing instead of hiding it behind a second full-page loading state.
   loading.value = !session.value?.questions?.length
@@ -124,6 +131,7 @@ async function load() {
     error.value = e.name === 'TimeoutError' ? '读取超时，请重试。' : e.message
   } finally {
     loading.value = false
+    loadingInProgress = false
   }
 }
 
@@ -143,6 +151,7 @@ watch(question, async (q) => {
 
 onMounted(() => {
   load()
+  if (timer) clearInterval(timer)
   timer = setInterval(() => {
     now.value = Date.now()
     if (exam.value?.deadline && Date.parse(exam.value.deadline) <= now.value && !busy.value && session.value && !session.value.completedAt) {

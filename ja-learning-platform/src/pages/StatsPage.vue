@@ -61,6 +61,16 @@ const typeAccuracy = computed(() => {
   }))
 })
 
+const weakAreas = computed(() => {
+  if (!statsData.value) return []
+  return statsData.value.weakAreas || []
+})
+
+const mistakesList = computed(() => {
+  if (!mistakesData.value) return []
+  return mistakesData.value
+})
+
 /**
  * 题型映射
  */
