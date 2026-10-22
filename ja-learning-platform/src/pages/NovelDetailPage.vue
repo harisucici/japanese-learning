@@ -48,9 +48,15 @@ async function start() {
     return
   }
   starting.value = true; error.value = ''
-  try { const s = await api.startFun(lesson.value.paperId); router.push(`/sessions/${s.id}`) }
-  catch (e) { error.value = e.message }
-  finally { starting.value = false }
+  try { 
+    const paperId = lesson.value.paperId
+    const s = await api.startFun(paperId)
+    router.push(`/sessions/${s.id}`) 
+  } catch (e) { 
+    error.value = e.message 
+  } finally { 
+    starting.value = false 
+  }
 }
 watch([loadTrigger, visibleCount], async (_, __, onCleanup) => {
   let cancelled = false
@@ -80,9 +86,9 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     <div v-else-if="error && !lesson" class="state-box error">{{ error }} <button @click="load">重试</button></div>
     <template v-else-if="lesson">
       <header class="story-heading">
-        <div class="section-top"><p class="eyebrow">STORY / {{ lesson.category }}</p><span>{{ lesson.questionCount }} 道练习</span></div>
-        <h2>{{ lesson.title }}</h2>
-        <p class="page-lead">{{ lesson.note }}</p>
+        <div class="section-top"><p class="eyebrow">STORY / {{ lesson.category || '未分类' }}</p><span>{{ lesson.questionCount || 0 }} 道练习</span></div>
+        <h2>{{ lesson.title || '未命名章节' }}</h2>
+        <p class="page-lead">{{ lesson.note || '' }}</p>
         <div class="detail-actions"><button class="primary-action" :disabled="!lesson.published || !lesson.paperId || starting" @click="start">{{ starting ? '正在准备…' : '开始本篇练习 ↗' }}</button></div>
         <p v-if="error" class="action-error" role="alert">{{ error }}</p>
       </header>

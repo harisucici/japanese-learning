@@ -41,8 +41,12 @@ export const resetPasswordSchema = z.object({
 });
 
 export const changePasswordSchema = z.object({
-  oldPassword: z.string().min(1, '请输入当前密码'),
+  currentPassword: z.string().min(1, '请输入当前密码'),
+  oldPassword: z.string().min(1, '请输入当前密码').optional(),
   newPassword: passwordSchema,
+}).refine(data => Boolean(data.currentPassword || data.oldPassword), {
+  message: '请输入当前密码',
+  path: ['currentPassword'],
 });
 
 export const migrateFromAnonymousSchema = z.object({

@@ -37,6 +37,11 @@ export function stopJapaneseSpeech() {
     currentSource.disconnect()
     currentSource = null
   }
+  // 关闭 AudioContext 释放资源
+  if (audioContext && audioContext.state !== 'closed') {
+    audioContext.close().catch(() => {})
+    audioContext = null
+  }
 }
 
 export async function speakJapanese(text, onStatus = () => {}) {

@@ -15,4 +15,6 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
   ],
+  // Run tests serially to avoid SQLite lock contention across test suites
+  maxWorkers: 1,
 };

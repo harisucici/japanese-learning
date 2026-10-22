@@ -11,10 +11,12 @@ const loading = ref(true)
 const busyId = ref('')
 const error = ref('')
 const tab = ref('due')
+let loadRequestId = 0
 const entries = computed(() => tab.value === 'due' ? due.value : mistakes.value)
 const labels = { vocabulary: '词汇', kanji: '汉字', grammar: '语法', reading: '阅读', listening: '听力' }
 
 async function load() {
+  const requestId = ++loadRequestId
   loading.value = true
   error.value = ''
   try {
@@ -23,10 +25,18 @@ async function load() {
       requestResource('review/due'),
       learning.request('mistakes', undefined, true)
     ])
+    // 只接受最新请求的结果
+    if (requestId !== loadRequestId) return
     due.value = Array.isArray(review) ? review : review.items || []
-    mistakes.value = wrong.items || []
-  } catch (e) { error.value = e.message }
-  finally { loading.value = false }
+    // Bug-F12: 确保 mistakes 数据格式正确
+    mistakes.value = Array.isArray(wrong) ? wrong : (wrong.items || wrong.mistakes || [])
+  } catch (e) {
+    if (requestId !== loadRequestId) return
+    error.value = e.message
+  }
+  finally {
+    if (requestId === loadRequestId) loading.value = false
+  }
 }
 
 async function retry(item) {

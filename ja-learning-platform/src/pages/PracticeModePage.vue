@@ -18,14 +18,18 @@ const randomCount = ref(10)
 
 /**
  * 按题型练习
- * 调用 /practice/by-type
+ * 调用 sessions 端点创建练习会话
  */
 async function startByType(type) {
   loading.value = true
   error.value = ''
   try {
     await api.ensureGuest()
-    const session = await api.request('sessions', { level: 'n5', mode: 'practice', type: type === 'vocab' ? 'vocabulary' : type === 'listening' ? 'listening' : type === 'reading' ? 'reading' : 'grammar' }, true)
+    const session = await api.request('sessions', { 
+      level: 'n5', 
+      mode: 'practice', 
+      type: type === 'vocab' ? 'vocabulary' : type === 'listening' ? 'listening' : type === 'reading' ? 'reading' : 'grammar' 
+    }, true)
     router.push(`/sessions/${session.id}`)
   } catch (e) {
     error.value = e.message
@@ -36,14 +40,19 @@ async function startByType(type) {
 
 /**
  * 按语法练习
- * 调用 /practice/by-grammar
+ * 调用 sessions 端点创建练习会话
  */
 async function startByGrammar(grammarId) {
   loading.value = true
   error.value = ''
   try {
     await api.ensureGuest()
-    const session = await api.request('sessions', { level: 'n5', mode: 'practice', type: 'grammar' }, true)
+    const session = await api.request('sessions', { 
+      level: 'n5', 
+      mode: 'practice', 
+      type: 'grammar', 
+      grammarId: grammarId 
+    }, true)
     router.push(`/sessions/${session.id}`)
   } catch (e) {
     error.value = e.message

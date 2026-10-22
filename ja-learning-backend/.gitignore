@@ -18,3 +18,7 @@ data/material-fun-library.json
 data/portable-export/
 data/novel-lessons.json
 data/novel-annotations.json
+
+# Test scripts with hardcoded data
+scripts/create_test_invite.js
+scripts/create_test_invite.ts

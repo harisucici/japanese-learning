@@ -81,7 +81,7 @@ export class AnswerController {
         }
         return stateAfterAnswer(db, s.id, req.userId!);
       },
-      { isolationLevel: 'Serializable', timeout: 30000 }
+      { timeout: 30000 }
     );
     res.json(result);
   });
@@ -99,7 +99,7 @@ export class AnswerController {
         if (!fresh.completedAt && !(fresh.examConfig as any)?.waitingSection) await advance(db, fresh);
         return stateAfterAnswer(db, s.id, req.userId!);
       },
-      { isolationLevel: 'Serializable', timeout: 30000 }
+      { timeout: 30000 }
     );
     res.json(result);
   });

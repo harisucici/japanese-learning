@@ -10,6 +10,7 @@ const mode = ref(route.path === '/reset-password' ? 'reset' : 'login')
 const busy = ref(false)
 const error = ref('')
 const notice = ref('')
+const showRegisterHint = ref(false)
 const account = reactive({ identifier: '', username: '', email: '', password: '', nickname: '', inviteCode: '', currentLevel: 'n5', targetLevel: 'n5' })
 const profile = reactive({ nickname: '', currentLevel: 'n5', targetLevel: 'n5' })
 const password = reactive({ oldPassword: '', newPassword: '' })
@@ -22,7 +23,13 @@ function syncProfile() {
   profile.currentLevel = auth.user.currentLevel || 'n5'
   profile.targetLevel = auth.user.targetLevel || 'n5'
 }
-onMounted(async () => { await auth.check(); syncProfile() })
+onMounted(async () => {
+  await auth.check()
+  syncProfile()
+  if (!auth.user) {
+    showRegisterHint.value = true
+  }
+})
 watch(() => auth.user, syncProfile)
 watch(() => route.path, path => { mode.value = path === '/reset-password' ? 'reset' : 'login' })
 
@@ -31,7 +38,16 @@ async function perform(action, success) {
   error.value = ''
   notice.value = ''
   try { await action(); notice.value = success || '' }
-  catch (e) { error.value = e.message || '请求失败，请重试' }
+  catch (e) {
+    const msg = e.message || '请求失败，请重试'
+    if (msg.includes('不存在') || msg.includes('无效') || msg.includes('Invalid credentials') || msg.includes('账户不存在') || msg.includes('not found')) {
+      error.value = msg
+      showRegisterHint.value = true
+    } else {
+      error.value = msg
+      showRegisterHint.value = false
+    }
+  }
   finally { busy.value = false }
 }
 
@@ -70,8 +86,9 @@ function requestReset() {
 }
 
 function resetPassword() {
-  if (!account.password || account.password.length < 6) {
-    error.value = '密码不能为空且长度至少为6位'
+  if (!account.password || account.password.length < 8) {
+    error.value = '密码不能为空且长度至少为8位'
+    showRegisterHint.value = false
     return Promise.resolve()
   }
   return perform(async () => {
@@ -84,6 +101,13 @@ function resetPassword() {
 
 function signOut() {
   return perform(async () => { await auth.logout(); mode.value = 'login' }, '已退出账户。')
+}
+
+function goToRegister() {
+  mode.value = 'register'
+  showRegisterHint.value = false
+  error.value = ''
+  notice.value = ''
 }
 </script>
 
@@ -112,11 +136,17 @@ function signOut() {
         <form v-else-if="mode === 'forgot'" @submit.prevent="requestReset"><label>注册邮箱<input v-model.trim="account.email" type="email" required autocomplete="email"></label><button class="primary-action" :disabled="busy">发送重置说明</button></form>
         <form v-else @submit.prevent="resetPassword"><div v-if="!route.query.token" class="account-message error">重置链接缺少令牌，请重新申请。</div><label>新密码<input v-model="account.password" type="password" required minlength="8" autocomplete="new-password"></label><small>至少 8 位。</small><button class="primary-action" :disabled="busy || !route.query.token">保存新密码</button></form>
         <button v-if="mode === 'login'" class="account-text-button" @click="mode = 'forgot'; error = ''; notice = ''">忘记密码？</button><button v-else-if="mode === 'forgot' || isReset" class="account-text-button" @click="mode = 'login'; error = ''; notice = ''">返回登录</button>
+        <div v-if="showRegisterHint && mode === 'login'" class="register-hint">
+          <span>还没有账户？</span>
+          <button type="button" class="register-link" @click="goToRegister">
+            立即注册 →
+          </button>
+        </div>
       </section>
     </template>
   </div>
 </template>
 
 <style scoped>
-.account-page{padding-bottom:90px}.account-intro{display:flex;align-items:center;gap:24px;margin:36px 0}.account-intro h2,.account-auth h2{font:clamp(28px,3vw,42px)/1.4 'Zen Kaku Gothic New',sans-serif;margin:6px 0}.account-intro p:last-child,.account-card>p{color:#67746a;font-size:13px;line-height:1.8}.account-monogram{width:82px;height:82px;display:grid;place-items:center;border-radius:50%;background:#355247;color:#f5f2e9;font-size:32px}.account-summary{display:grid;grid-template-columns:repeat(3,1fr);background:#eae9dc;margin:30px 0 42px}.account-summary>div{padding:22px 28px;border-right:1px solid #d5d1c3}.account-summary small{display:block;color:#69776e;font-size:11px;margin-bottom:9px}.account-summary strong{font-size:22px;color:#355247}.account-summary a{font-size:14px;border-bottom:1px solid #355247}.account-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.account-card{background:#fffdf8;border:1px solid #e2ded3;padding:clamp(25px,4vw,42px)}.account-card h3{font:25px 'Zen Kaku Gothic New',sans-serif;margin:12px 0}.account-card form{display:grid;gap:18px;margin-top:26px}.account-card label{display:block;color:#4c6154;font-size:12px}.account-card input,.account-card select{display:block;width:100%;margin-top:8px;border:1px solid #cac9bd;background:#fffdf8;color:#27302b;padding:13px 14px;font:15px 'Zen Kaku Gothic New',sans-serif}.account-card input:focus,.account-card select:focus{outline:2px solid #789887;outline-offset:2px}.account-card small{color:#788279;font-size:11px}.account-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.account-card .primary-action,.account-card .secondary-action{justify-self:start}.account-auth{width:min(560px,100%);margin:35px auto}.account-tabs{display:flex;border-bottom:1px solid #d8d5c9;margin-top:28px}.account-tabs button{border:0;background:transparent;padding:13px 26px;color:#67746a;cursor:pointer}.account-tabs button[aria-selected=true]{color:#355247;border-bottom:2px solid #355247}.account-message{padding:14px 18px;background:#e5eee5;color:#355247;margin:22px 0}.account-message.error{background:#f9eae5;color:#984d45}.account-text-button,.account-logout{border:0;background:transparent;color:#355247;border-bottom:1px solid #355247;padding:5px 0;cursor:pointer;font-size:12px;margin-top:23px}.account-logout{margin-top:38px}@media(max-width:700px){.account-columns,.account-summary{grid-template-columns:1fr}.account-summary>div{border-right:0;border-bottom:1px solid #d5d1c3}.account-intro{align-items:flex-start}.account-monogram{width:62px;height:62px;flex:none}}
+.account-page{padding-bottom:90px}.account-intro{display:flex;align-items:center;gap:24px;margin:36px 0}.account-intro h2,.account-auth h2{font:clamp(28px,3vw,42px)/1.4 'Zen Kaku Gothic New',sans-serif;margin:6px 0}.account-intro p:last-child,.account-card>p{color:#67746a;font-size:13px;line-height:1.8}.account-monogram{width:82px;height:82px;display:grid;place-items:center;border-radius:50%;background:#355247;color:#f5f2e9;font-size:32px}.account-summary{display:grid;grid-template-columns:repeat(3,1fr);background:#eae9dc;margin:30px 0 42px}.account-summary>div{padding:22px 28px;border-right:1px solid #d5d1c3}.account-summary small{display:block;color:#69776e;font-size:11px;margin-bottom:9px}.account-summary strong{font-size:22px;color:#355247}.account-summary a{font-size:14px;border-bottom:1px solid #355247}.account-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.account-card{background:#fffdf8;border:1px solid #e2ded3;padding:clamp(25px,4vw,42px)}.account-card h3{font:25px 'Zen Kaku Gothic New',sans-serif;margin:12px 0}.account-card form{display:grid;gap:18px;margin-top:26px}.account-card label{display:block;color:#4c6154;font-size:12px}.account-card input,.account-card select{display:block;width:100%;margin-top:8px;border:1px solid #cac9bd;background:#fffdf8;color:#27302b;padding:13px 14px;font:15px 'Zen Kaku Gothic New',sans-serif}.account-card input:focus,.account-card select:focus{outline:2px solid #789887;outline-offset:2px}.account-card small{color:#788279;font-size:11px}.account-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.account-card .primary-action,.account-card .secondary-action{justify-self:start}.account-auth{width:min(560px,100%);margin:35px auto}.account-tabs{display:flex;border-bottom:1px solid #d8d5c9;margin-top:28px}.account-tabs button{border:0;background:transparent;padding:13px 26px;color:#67746a;cursor:pointer}.account-tabs button[aria-selected=true]{color:#355247;border-bottom:2px solid #355247}.account-message{padding:14px 18px;background:#e5eee5;color:#355247;margin:22px 0}.account-message.error{background:#f9eae5;color:#984d45}.account-text-button,.account-logout{border:0;background:transparent;color:#355247;border-bottom:1px solid #355247;padding:5px 0;cursor:pointer;font-size:12px;margin-top:23px}.account-logout{margin-top:38px}.register-hint{margin:18px 0 0;padding:12px 16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#1e40af}.register-link{color:#2563EB;font-weight:500;background:none;border:none;cursor:pointer;padding:0;font-size:inherit}.register-link:hover{text-decoration:underline}@media(max-width:700px){.account-columns,.account-summary{grid-template-columns:1fr}.account-summary>div{border-right:0;border-bottom:1px solid #d5d1c3}.account-intro{align-items:flex-start}.account-monogram{width:62px;height:62px;flex:none}}
 </style>

@@ -7,7 +7,10 @@ export const assetUrl = (url) => {
   if (!url) return ''
   try {
     const parsed = new URL(url, window.location.origin)
-    if (['localhost', '127.0.0.1'].includes(parsed.hostname) && ['3002', '3003'].includes(parsed.port)) parsed.host = window.location.host
+    // 只在开发环境下重写端口，生产环境保持原样
+    if (import.meta.env.DEV && ['localhost', '127.0.0.1'].includes(parsed.hostname) && ['3002', '3003'].includes(parsed.port)) {
+      parsed.host = window.location.host
+    }
     return parsed.href
   } catch { return url }
 }
@@ -110,29 +113,10 @@ export const useLearningStore = defineStore('learning', {
         headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
         ...(body === undefined ? {} : { body: JSON.stringify(body) })
       })
-      const expectedBytes = Number(response.headers.get('content-length'))
+      // 直接读取 JSON，不依赖 content-length
       let data = {}
-      if (response.body && Number.isFinite(expectedBytes) && expectedBytes > 0) {
-        const reader = response.body.getReader()
-        const chunks = []
-        let received = 0
-        while (received < expectedBytes) {
-          this.requestStage = `读取响应内容（${response.status}，${received}/${expectedBytes} 字节）`
-          const { value, done } = await reader.read()
-          if (done) break
-          chunks.push(value)
-          received += value.byteLength
-        }
-        if (received < expectedBytes) throw new Error('练习数据传输不完整，请重试。')
-        const bytes = new Uint8Array(received)
-        let offset = 0
-        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
-        data = JSON.parse(new TextDecoder().decode(bytes))
-        reader.cancel().catch(() => {})
-      } else {
-        this.requestStage = `读取响应内容（${response.status}）`
-        data = await response.json().catch(() => ({}))
-      }
+      this.requestStage = `读取响应内容（${response.status}）`
+      data = await response.json().catch(() => ({}))
       if (auth && response.status === 401 && !retried) {
         this.guestReady = false
         await this.ensureGuest()
@@ -193,6 +177,14 @@ export const useLearningStore = defineStore('learning', {
     },
     async section(id, action) {
       const resp = await this.request(`sessions/${encodeURIComponent(id)}/section`, { action }, true);
+      if (this.session && resp.questions?.length === 0) {
+        resp.questions = this.session.questions;
+      }
+      this.session = resp;
+      return this.session;
+    },
+    async jump(id, targetIndex) {
+      const resp = await this.request(`sessions/${encodeURIComponent(id)}/jump`, { targetIndex }, true);
       if (this.session && resp.questions?.length === 0) {
         resp.questions = this.session.questions;
       }

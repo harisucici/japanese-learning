@@ -8,8 +8,7 @@ import { HttpError, run, ids, state, stateMetadata, stateQuestions } from './_sh
 import { startSchema } from '../validators/learning.validators';
 
 const verified: Prisma.QuestionWhereInput = {
-  source: { in: ['pastExam', 'official'] as string[] },
-  provenance: { not: Prisma.DbNull },
+  source: { in: ['pastExam', 'official', 'custom'] as string[] },
 };
 
 export class SessionController {
