@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useLearningStore } from '../store'
 const api = useLearningStore(), data = ref(null), error = ref(''), loading = ref(true), query = ref(''), collection = ref('全部'), visibleCount = ref(24)
@@ -9,15 +9,19 @@ const collections = computed(() => ['全部', ...new Set((data.value?.items || [
 const items = computed(() => (data.value?.items || []).filter(x => (collection.value === '全部' || x.collection === collection.value) && x.title.toLowerCase().includes(query.value.trim().toLowerCase())))
 const visibleItems = computed(() => items.value.slice(0, visibleCount.value))
 watch([query, collection], () => { visibleCount.value = 24 })
-function difficultyTag(item) {
-  const level = (item.level || item.collection || '').toString().toUpperCase()
-  if (/N5|初/.test(level)) return { label: 'N5', tone: 'n5' }
-  if (/N4/.test(level)) return { label: 'N4', tone: 'n4' }
-  if (/N3/.test(level)) return { label: 'N3', tone: 'n3' }
-  if (/N2/.test(level)) return { label: 'N2', tone: 'n2' }
-  if (/N1/.test(level)) return { label: 'N1', tone: 'n1' }
-  return { label: item.collection || '分类', tone: 'default' }
-}
+const loadSentinel = ref(null)
+let loadObserver
+watch(loadSentinel, (element, previous) => {
+  if (previous) loadObserver?.unobserve(previous)
+  if (!element) return
+  loadObserver ||= new IntersectionObserver(([entry]) => {
+    if (entry?.isIntersecting && visibleCount.value < items.value.length) {
+      visibleCount.value = Math.min(visibleCount.value + 24, items.value.length)
+    }
+  }, { rootMargin: '320px 0px' })
+  loadObserver.observe(element)
+})
+onBeforeUnmount(() => loadObserver?.disconnect())
 function formatDuration(seconds) {
   if (!seconds) return ''
   const mins = Math.floor(seconds / 60)
@@ -44,11 +48,6 @@ function initialOf(title) {
     <!-- 移动端骨架屏 -->
     <div v-if="loading" class="mobile-only">
       <div class="mobile-topbar">
-        <div class="mobile-header">
-          <div class="sk-block" style="width: 60px; height: 10px;"></div>
-          <div class="sk-block" style="width: 140px; height: 22px; margin-top: 6px;"></div>
-          <div class="sk-block" style="width: 180px; height: 12px; margin-top: 6px;"></div>
-        </div>
         <div class="mobile-search">
           <div class="sk-block sk-search"></div>
         </div>
@@ -90,13 +89,8 @@ function initialOf(title) {
 
       <!-- 移动端改造 -->
       <div class="mobile-only">
-        <!-- 顶部搜索栏固定 -->
+        <!-- 搜索与筛选 -->
         <div class="mobile-topbar">
-          <div class="mobile-header">
-            <p class="mobile-eyebrow">THE READING LIBRARY</p>
-            <h2 class="mobile-title">素材阅读馆</h2>
-            <p class="mobile-count">{{ data.total }} 篇文章 · {{ data.audioCount }} 篇音频</p>
-          </div>
           <div class="mobile-search">
             <label class="search-field">
               <span class="search-icon" aria-hidden="true">⌕</span>
@@ -114,9 +108,9 @@ function initialOf(title) {
           </div>
         </div>
 
-        <p class="mobile-result-count">当前显示 {{ items.length }} 篇</p>
+        <p v-if="query.trim() || collection !== '全部'" class="mobile-result-count">找到 {{ items.length }} 篇</p>
 
-        <!-- 单列大卡片列表 -->
+        <!-- 紧凑文章列表 -->
         <div class="mobile-list">
           <RouterLink
             v-for="m in visibleItems"
@@ -126,27 +120,21 @@ function initialOf(title) {
           >
             <div class="card-thumb" :aria-hidden="true">
               <span class="thumb-initial">{{ initialOf(m.title) }}</span>
-              <span v-if="m.audios?.length" class="thumb-badge">音频</span>
             </div>
             <div class="card-body">
               <h3 class="card-title">{{ m.title }}</h3>
-              <p class="card-meta">{{ m.collection }}</p>
-              <div class="card-info">
-                <span v-if="m.audios?.length" class="info-item">
-                  <span class="info-icon">♪</span>
-                  {{ formatDuration(m.audios[0]?.duration) || '有音频' }}
-                </span>
-                <span :class="['diff-tag', difficultyTag(m).tone]">{{ difficultyTag(m).label }}</span>
+              <div class="card-details">
+                <span class="card-meta">{{ m.collection }}</span>
+                <span class="info-dot" aria-hidden="true">·</span>
+                <span class="info-item">{{ m.audios?.length ? `♪ ${formatDuration(m.audios[0]?.duration) || '有音频'}` : '阅读文章' }}</span>
               </div>
-              <p class="card-desc">{{ m.hasText ? '阅读原文与听读' : '正文待整理 · 可先听读' }}</p>
             </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
           </RouterLink>
           <p v-if="!items.length" class="empty">没有找到对应文章。</p>
         </div>
 
-        <button v-if="visibleCount < items.length" class="mobile-load-more" @click="visibleCount += 24">
-          加载更多 · 已显示 {{ visibleItems.length }} / {{ items.length }} ↘
-        </button>
+        <div v-if="visibleCount < items.length" ref="loadSentinel" class="mobile-load-sentinel" aria-hidden="true"></div>
       </div>
     </template>
   </div>
@@ -170,27 +158,6 @@ function initialOf(title) {
     border-bottom: 1px solid var(--theme-border-soft, #e2ded3);
     padding-bottom: 12px;
   }
-  .mobile-header {
-    padding: 14px 16px 10px;
-  }
-  .mobile-eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    color: var(--color-primary, #2563EB);
-    margin: 0 0 6px;
-    font-weight: 600;
-  }
-  .mobile-title {
-    font: 700 22px/1.3 'Zen Kaku Gothic New', sans-serif;
-    margin: 0 0 4px;
-    color: var(--theme-text, #27302b);
-  }
-  .mobile-count {
-    font-size: 12px;
-    color: var(--theme-text-secondary, #67746a);
-    margin: 0;
-  }
-
   /* 搜索框 */
   .mobile-search {
     padding: 0 16px 10px;
@@ -259,75 +226,66 @@ function initialOf(title) {
   }
 
   .mobile-result-count {
-    padding: 10px 16px;
+    margin: 0;
+    padding: 9px 16px 5px;
     font-size: 12px;
     color: var(--theme-text-secondary, #67746a);
   }
 
-  /* 单列大卡片列表 */
+  /* 单列文章目录 */
   .mobile-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 0 16px 80px;
+    gap: 8px;
+    padding: 10px 12px 80px;
   }
   .mobile-card {
     display: flex;
-    gap: 14px;
-    padding: 14px;
-    min-height: 140px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    min-height: 72px;
     background: var(--theme-surface, #fffdf8);
     border: 1px solid var(--theme-border-soft, #e2ded3);
-    border-radius: 12px;
+    border-radius: 10px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
     touch-action: manipulation;
   }
   .mobile-card:active {
-    transform: scale(0.97);
+    transform: scale(0.985);
+    background: var(--theme-surface-alt, #f5f2e9);
   }
 
-  /* 缩略图：aspect-ratio 4/3, width 100px */
+  /* 小型纸签 */
   .card-thumb {
     flex: none;
-    width: 100px;
-    aspect-ratio: 4 / 3;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #fbf0df 0%, #a35a2d 100%);
-    color: #fffdf8;
+    width: 44px;
+    height: 50px;
+    border-radius: 5px 8px 8px 5px;
+    border-left: 3px solid #a36f52;
+    background: linear-gradient(135deg, #f7ebd8, #e8d0af);
+    color: #68482f;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
   }
   .thumb-initial {
-    font: 600 36px/1 'Zen Kaku Gothic New', sans-serif;
-  }
-  .thumb-badge {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    font-size: 12px;
-    padding: 3px 8px;
-    background: rgba(255, 253, 248, 0.9);
-    color: #74472c;
-    border-radius: 4px;
-    font-weight: 600;
+    font: 600 21px/1 'Noto Serif JP', 'Songti SC', serif;
   }
 
-  /* 右侧内容 */
   .card-body {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
   }
   .card-title {
-    font: 600 16px/1.35 'Zen Kaku Gothic New', sans-serif;
+    font: 600 15px/1.35 'Noto Serif JP', 'Songti SC', serif;
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;
@@ -336,49 +294,27 @@ function initialOf(title) {
     overflow: hidden;
   }
   .card-meta {
-    font-size: 12px;
-    color: var(--color-primary, #2563EB);
-    margin: 0;
-    font-weight: 500;
+    color: #8b6046;
   }
-  .card-info {
+  .card-details {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 11px;
   }
   .info-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
     color: var(--theme-text-secondary, #67746a);
   }
-  .info-icon {
-    font-size: 14px;
+  .info-dot {
+    color: #baa998;
   }
-  .diff-tag {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: var(--theme-surface-alt, #f5f2e9);
-    color: var(--theme-text-secondary, #67746a);
-    font-weight: 600;
-  }
-  .diff-tag.n5 { background: #e8f5ee; color: #215a54; }
-  .diff-tag.n4 { background: #ecf4fa; color: #34536e; }
-  .diff-tag.n3 { background: #fbf0df; color: #74472c; }
-  .diff-tag.n2 { background: #faedf1; color: #633449; }
-  .diff-tag.n1 { background: #355247; color: #fffdf8; }
-  .card-desc {
-    font-size: 13px;
-    color: var(--theme-text-secondary, #67746a);
-    margin: 0;
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .card-arrow {
+    flex: none;
+    color: #8b6046;
+    font-size: 18px;
+    line-height: 1;
   }
 
   .empty {
@@ -388,20 +324,8 @@ function initialOf(title) {
     font-size: 14px;
   }
 
-  .mobile-load-more {
-    display: block;
-    margin: 20px auto 40px;
-    min-height: 44px;
-    padding: 12px 32px;
-    background: transparent;
-    border: 1px solid var(--theme-border, #d1ccb8);
-    border-radius: 8px;
-    color: var(--theme-text, #27302b);
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .mobile-load-more:active {
-    background: var(--theme-surface-alt, #f5f2e9);
+  .mobile-load-sentinel {
+    height: 1px;
   }
 
   /* 触控增强 */
@@ -415,10 +339,11 @@ function initialOf(title) {
 /* 极小屏 */
 @media (max-width: 375px) {
   .card-thumb {
-    width: 88px;
+    width: 40px;
+    height: 46px;
   }
   .thumb-initial {
-    font-size: 30px;
+    font-size: 19px;
   }
   .card-title {
     font-size: 15px;
@@ -453,9 +378,9 @@ function initialOf(title) {
 
 .sk-card {
   display: flex;
-  gap: 14px;
-  padding: 14px;
-  min-height: 140px;
+  gap: 12px;
+  padding: 10px 12px;
+  min-height: 72px;
   background: var(--theme-surface, #fffdf8);
   border: 1px solid var(--theme-border-soft, #e2ded3);
   border-radius: 12px;
@@ -464,8 +389,8 @@ function initialOf(title) {
 .sk-card::before {
   content: '';
   flex: none;
-  width: 100px;
-  height: 75px;
+  width: 44px;
+  height: 50px;
   background: linear-gradient(90deg, #f0ece3 0%, #e8e3d7 50%, #f0ece3 100%);
   background-size: 800px 100%;
   animation: sk-shimmer 1.5s infinite linear;
@@ -504,5 +429,14 @@ function initialOf(title) {
       transform: translateY(0);
     }
   }
+}
+@media (max-width: 768px) {
+  .mobile-topbar { padding: 8px 0 7px; }
+  .mobile-search { padding: 0 12px 7px; }
+  .search-field { min-height: 40px; padding: 6px 10px; gap: 7px; border-radius: 7px; }
+  .search-icon { font-size: 16px; }
+  .search-field input { min-width: 0; min-height: 0 !important; height: 24px; padding: 0 !important; border: 0; border-radius: 0; font-size: 16px; line-height: 1.3; box-shadow: none; }
+  .search-field input:focus { border: 0; box-shadow: none; }
+  .mobile-filters { padding: 0 12px; }
 }
 </style>

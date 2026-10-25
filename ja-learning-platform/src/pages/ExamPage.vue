@@ -522,6 +522,10 @@ async function start(p) {
 
 /* 交错进入动画 */
 @media (max-width: 768px) {
+  .mob-mode-hint { margin: 8px 0 12px; line-height: 1.55; }
+  .mob-header { margin-bottom: 12px; }
+  .mob-level-chips { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px; }
+  .mob-chip { min-width: 0; }
   .mob-paper-card {
     opacity: 0;
     transform: translateY(16px);

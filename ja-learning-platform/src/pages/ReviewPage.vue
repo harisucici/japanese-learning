@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { requestResource, useLearningStore } from '../store'
 
@@ -14,34 +14,10 @@ const tab = ref('due')
 let loadRequestId = 0
 const entries = computed(() => tab.value === 'due' ? due.value : mistakes.value)
 const labels = { vocabulary: '词汇', kanji: '汉字', grammar: '语法', reading: '阅读', listening: '听力' }
-
-// Count-up animation for stats
-const animatedDueCount = ref(0)
-const animatedMistakesCount = ref(0)
-
-function animateCount(target, currentValue, updateFn, duration = 500) {
-  const startTime = performance.now()
-  const startValue = currentValue
-  
-  function update(currentTime) {
-    const elapsed = currentTime - startTime
-    const progress = Math.min(elapsed / duration, 1)
-    // Ease out cubic for smooth ending
-    const easeOut = 1 - Math.pow(1 - progress, 3)
-    updateFn(Math.round(startValue + (target - startValue) * easeOut))
-    
-    if (progress < 1) {
-      requestAnimationFrame(update)
-    }
-  }
-  
-  requestAnimationFrame(update)
+const displayLevel = (item) => {
+  const level = String(item.question?.level || item.level || 'N').toUpperCase()
+  return level === 'UNGRADED' ? '未评级' : level
 }
-
-watch([() => due.value.length, () => mistakes.value.length], ([newDue, newMistakes]) => {
-  animateCount(newDue, animatedDueCount.value, (val) => animatedDueCount.value = val)
-  animateCount(newMistakes, animatedMistakesCount.value, (val) => animatedMistakesCount.value = val)
-}, { immediate: true })
 
 async function load() {
   const requestId = ++loadRequestId
@@ -141,24 +117,6 @@ onMounted(load)
 
     <!-- 移动端改造 -->
     <div class="mobile-only">
-      <!-- 顶部统计区：今日到期数量 -->
-      <div class="mobile-stats">
-        <div class="stats-header">
-          <p class="stats-eyebrow">今日复习</p>
-          <h2 class="stats-title">温故，而知新</h2>
-        </div>
-        <div class="stats-cards">
-          <div class="stat-card due-card">
-            <div class="stat-number">{{ animatedDueCount }}</div>
-            <div class="stat-label">今日到期</div>
-          </div>
-          <div class="stat-card mistakes-card">
-            <div class="stat-number">{{ animatedMistakesCount }}</div>
-            <div class="stat-label">错题记录</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Tab 切换 -->
       <div class="mobile-tabs">
         <button
@@ -185,20 +143,10 @@ onMounted(load)
       <div class="mobile-body">
         <!-- 骨架屏 -->
         <div v-if="loading" class="mobile-review-skeleton" aria-hidden="true">
-          <div class="sk-stats">
-            <div v-for="n in 2" :key="n" class="sk-stat-card">
-              <div class="skeleton sk-stat-number"></div>
-              <div class="skeleton sk-stat-label"></div>
-            </div>
-          </div>
-          <div class="sk-tabs">
-            <div v-for="n in 2" :key="n" class="skeleton sk-tab"></div>
-          </div>
           <div class="sk-list">
             <div v-for="n in 3" :key="n" class="sk-review-card">
               <div class="sk-card-left">
                 <div class="skeleton sk-card-level"></div>
-                <div class="skeleton sk-card-type"></div>
               </div>
               <div class="sk-card-center">
                 <div class="skeleton sk-question"></div>
@@ -234,12 +182,13 @@ onMounted(load)
             @keydown.space.prevent="enterReview(item)"
           >
             <div class="card-left">
-              <div class="card-level">{{ (item.question?.level || item.level || 'N').toUpperCase() }}</div>
-              <div class="card-type">{{ labels[item.question?.type || item.type] || item.question?.type || item.type || '练习' }}</div>
+              <div class="card-level">{{ displayLevel(item) }}</div>
             </div>
             <div class="card-center">
               <p class="card-question">{{ item.question?.content || '题目暂不可用' }}</p>
               <div class="card-meta">
+                <span class="card-type">{{ labels[item.question?.type || item.type] || item.question?.type || item.type || '练习' }}</span>
+                <span class="meta-sep">·</span>
                 <template v-if="tab === 'due'">
                   <span class="meta-item">已复习 {{ getReviewCount(item) }} 次</span>
                 </template>
@@ -249,32 +198,12 @@ onMounted(load)
                   <span class="meta-item">{{ formatDate(item.answeredAt) }}</span>
                 </template>
               </div>
-              <p v-if="tab === 'mistakes' && item.explanation?.translation" class="card-hint">{{ item.explanation.translation }}</p>
             </div>
-            <div class="card-right">
-              <span class="card-arrow">›</span>
-            </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
           </article>
         </div>
       </div>
 
-      <!-- 底部固定操作栏 -->
-      <nav class="mobile-bottombar">
-        <RouterLink class="bottom-link" to="/practice">练习</RouterLink>
-        <RouterLink class="bottom-link" to="/stats">统计</RouterLink>
-        <button
-          v-if="tab === 'due' && due.length > 0"
-          type="button"
-          class="bottom-primary"
-          @click="due[0] && enterReview(due[0])"
-          :disabled="busyId"
-        >
-          开始复习 ({{ due.length }})
-        </button>
-        <RouterLink v-else class="bottom-primary" to="/practice">
-          开始练习 ↗
-        </RouterLink>
-      </nav>
     </div>
   </div>
 </template>
@@ -317,61 +246,15 @@ onMounted(load)
   .mobile-only { display: block; }
 
   .review-page {
-    padding-bottom: 80px;
+    padding-bottom: 22px;
     background: var(--theme-bg, #f5f2e9);
-  }
-
-  /* 顶部统计区 */
-  .mobile-stats {
-    background: linear-gradient(145deg, #355247 0%, #2a4238 100%);
-    color: #fffdf8;
-    padding: 20px 16px 24px;
-    border-radius: 0 0 20px 20px;
-  }
-  .stats-header {
-    margin-bottom: 16px;
-  }
-  .stats-eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    color: rgba(255, 253, 248, 0.7);
-    margin: 0 0 6px;
-    font-weight: 600;
-  }
-  .stats-title {
-    font: 700 22px/1.3 'Zen Kaku Gothic New', sans-serif;
-    margin: 0;
-    color: #fffdf8;
-  }
-  .stats-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .stat-card {
-    background: rgba(255, 253, 248, 0.12);
-    border: 1px solid rgba(255, 253, 248, 0.18);
-    border-radius: 12px;
-    padding: 14px;
-    backdrop-filter: blur(8px);
-  }
-  .stat-number {
-    font: 700 32px/1 'Zen Kaku Gothic New', sans-serif;
-    color: #fffdf8;
-    font-variant-numeric: tabular-nums;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: rgba(255, 253, 248, 0.8);
-    margin-top: 6px;
-    letter-spacing: 0.04em;
   }
 
   /* Tab 切换 */
   .mobile-tabs {
     display: flex;
     gap: 4px;
-    padding: 12px 16px;
+    padding: 8px 12px;
     background: var(--theme-surface, #fffdf8);
     border-bottom: 1px solid var(--theme-border-soft, #e2ded3);
     position: sticky;
@@ -418,7 +301,7 @@ onMounted(load)
 
   /* 内容区 */
   .mobile-body {
-    padding: 12px 0;
+    padding: 8px 0;
     min-height: 300px;
   }
 
@@ -471,26 +354,27 @@ onMounted(load)
   .mobile-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 0 16px;
+    gap: 8px;
+    padding: 0 12px;
   }
 
   /* 复习卡片 */
   .review-card {
     display: flex;
+    align-items: center;
     gap: 12px;
-    padding: 14px;
-    min-height: 88px;
+    padding: 10px 12px;
+    min-height: 72px;
     background: var(--theme-surface, #fffdf8);
     border: 1px solid var(--theme-border-soft, #e2ded3);
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
     touch-action: manipulation;
   }
   .review-card:active {
-    transform: scale(0.97);
-    box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);
+    transform: scale(0.985);
+    background: var(--theme-surface-alt, #f5f2e9);
   }
   .review-card:focus-visible {
     outline: 2px solid var(--color-primary, #2563EB);
@@ -500,28 +384,26 @@ onMounted(load)
   .card-left {
     flex: none;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 4px;
-    min-width: 48px;
+    width: 44px;
   }
   .card-level {
     width: 44px;
-    height: 44px;
-    border: 1px solid var(--theme-border, #d1ccb8);
-    border-radius: 50%;
+    height: 50px;
+    border: 1px solid #dfd1bc;
+    border-left: 3px solid #9b7662;
+    border-radius: 5px 8px 8px 5px;
     display: grid;
     place-items: center;
     color: var(--theme-text, #27302b);
-    font: 700 13px/1 'Zen Kaku Gothic New', sans-serif;
-    background: var(--theme-surface-alt, #f5f2e9);
+    font: 600 10px/1.15 'Noto Serif JP', 'Songti SC', serif;
+    background: linear-gradient(145deg, #f1dfca, #e7d4ba);
+    overflow-wrap: anywhere;
+    text-align: center;
+    padding: 2px;
   }
   .card-type {
-    font-size: 12px;
-    color: var(--theme-text-muted, #9a9486);
-    letter-spacing: 0.04em;
-    text-align: center;
-    margin-top: 2px;
+    color: #8b6046;
   }
 
   .card-center {
@@ -532,7 +414,7 @@ onMounted(load)
     gap: 4px;
   }
   .card-question {
-    font: 500 15px/1.45 'Zen Kaku Gothic New', sans-serif;
+    font: 500 14px/1.4 'Noto Serif JP', 'Songti SC', serif;
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;
@@ -544,11 +426,11 @@ onMounted(load)
   .card-meta {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     flex-wrap: wrap;
+    font-size: 11px;
   }
   .meta-item {
-    font-size: 12px;
     color: var(--theme-text-secondary, #67746a);
     font-variant-numeric: tabular-nums;
   }
@@ -556,155 +438,31 @@ onMounted(load)
     color: var(--theme-border, #d1ccb8);
     font-size: 12px;
   }
-  .card-hint {
-    font-size: 12px;
-    color: var(--theme-text-secondary, #67746a);
-    margin: 2px 0 0;
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .card-right {
-    flex: none;
-    display: grid;
-    place-items: center;
-    min-width: 24px;
-    align-self: center;
-  }
   .card-arrow {
-    font-size: 28px;
-    color: var(--theme-text-muted, #9a9486);
-    font-weight: 300;
+    flex: none;
+    font-size: 18px;
+    color: #8b6046;
     line-height: 1;
   }
 
-  /* 底部固定操作栏 */
-  .mobile-bottombar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    background: var(--theme-surface, #fffdf8);
-    border-top: 1px solid var(--theme-border, #d1ccb8);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 12px;
-    padding-bottom: env(safe-area-inset-bottom, 0);
-    z-index: 30;
-  }
-  .bottom-link {
-    flex: none;
-    min-height: 44px;
-    padding: 0 14px;
-    display: grid;
-    place-items: center;
-    background: transparent;
-    border: 1px solid var(--theme-border, #d1ccb8);
-    border-radius: 10px;
-    color: var(--theme-text, #27302b);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .bottom-link:active {
-    background: var(--theme-surface-alt, #f5f2e9);
-    transform: scale(0.97);
-  }
-  .bottom-primary {
-    flex: 1;
-    min-height: 44px;
-    padding: 0 16px;
-    background: var(--color-primary, #2563EB);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: grid;
-    place-items: center;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .bottom-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .bottom-primary:not(:disabled):active {
-    background: #1d4ed8;
-    transform: scale(0.97);
-  }
-}
-
-/* 极小屏 */
-@media (max-width: 375px) {
-  .stats-title {
-    font-size: 20px;
-  }
-  .stat-number {
-    font-size: 28px;
-  }
-  .card-question {
-    font-size: 14px;
-  }
 }
 
 /* ===== 骨架屏（移动端复习页） ===== */
 .mobile-review-skeleton {
-  padding: 0 16px;
+  padding: 0 12px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-.sk-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.sk-stat-card {
-  background: var(--theme-surface, #fffdf8);
-  border: 1px solid var(--theme-border-soft, #e2ded3);
-  border-radius: 12px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.sk-stat-number {
-  width: 50%;
-  height: 28px;
-  border-radius: 6px;
-}
-.sk-stat-label {
-  width: 70%;
-  height: 14px;
-}
-.sk-tabs {
-  display: flex;
-  gap: 4px;
-  padding: 8px 0;
-}
-.sk-tab {
-  flex: 1;
-  height: 44px;
-  border-radius: 10px;
 }
 .sk-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 .sk-review-card {
   display: flex;
   gap: 12px;
-  padding: 14px;
-  min-height: 88px;
+  padding: 10px 12px;
+  min-height: 72px;
   background: var(--theme-surface, #fffdf8);
   border: 1px solid var(--theme-border-soft, #e2ded3);
   border-radius: 12px;
@@ -712,20 +470,13 @@ onMounted(load)
 .sk-card-left {
   flex: none;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  min-width: 48px;
+  min-width: 44px;
 }
 .sk-card-level {
   width: 44px;
-  height: 44px;
-  border-radius: 50%;
-}
-.sk-card-type {
-  width: 36px;
-  height: 12px;
-  border-radius: 3px;
+  height: 50px;
+  border-radius: 5px 8px 8px 5px;
 }
 .sk-card-center {
   flex: 1;

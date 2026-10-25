@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useLearningStore } from '../store'
 const api=useLearningStore(), router=useRouter()
@@ -8,6 +8,12 @@ async function load(){loading.value=true;error.value='';try{data.value=await api
 onMounted(load)
 const themes=computed(()=>['全部',...new Set((data.value?.papers||[]).map(x=>x.theme))])
 const papers=computed(()=>(data.value?.papers||[]).filter(x=>theme.value==='全部'||x.theme===theme.value))
+const visibleCount = ref(6)
+watch(theme, () => { visibleCount.value = 6 })
+const mobilePapers = computed(() => theme.value === '全部'
+  ? [...papers.value].sort((a, b) => Number(a.theme === '测试') - Number(b.theme === '测试'))
+  : papers.value)
+const visibleMobilePapers = computed(() => mobilePapers.value.slice(0, visibleCount.value))
 async function start(id){starting.value=id;error.value='';try{const s=await api.startFun(id);router.push(`/sessions/${s.id}`)}catch(e){error.value=e.message}finally{starting.value=''}}
 function difficultyLevel(paper) {
   const count = paper.questionCount || 0
@@ -99,7 +105,7 @@ function initialOf(title) {
 
         <!-- 活动卡片单列大卡片 -->
         <div class="mobile-cards">
-          <article v-for="p in papers" :key="p.id" class="fun-card">
+          <article v-for="p in visibleMobilePapers" :key="p.id" class="fun-card">
             <!-- 封面 -->
             <div class="fun-cover" :aria-hidden="true">
               <span class="cover-initial">{{ initialOf(p.title) }}</span>
@@ -140,6 +146,7 @@ function initialOf(title) {
           </article>
           <p v-if="!papers.length" class="empty">当前主题暂无题组。</p>
         </div>
+        <button v-if="visibleCount < mobilePapers.length" type="button" class="mobile-load-more" @click="visibleCount += 6">继续浏览 · 已显示 {{ visibleMobilePapers.length }} / {{ mobilePapers.length }} ↘</button>
       </template>
     </div>
   </div>
@@ -504,6 +511,18 @@ function initialOf(title) {
 
 /* 交错进入动画 */
 @media (max-width: 768px) {
+  .mobile-cards { gap: 10px; padding: 12px 14px 8px; }
+  .fun-card { display: grid; grid-template-columns: 82px minmax(0, 1fr); min-height: 132px; }
+  .fun-cover { width: 82px; height: 100%; min-height: 132px; }
+  .cover-initial { font-size: 30px; }
+  .cover-badge { top: 6px; right: 5px; font-size: 10px; padding: 3px 5px; }
+  .fun-content { padding: 10px; gap: 4px; min-width: 0; }
+  .fun-title { font-size: 14px; }
+  .fun-desc { font-size: 11px; -webkit-line-clamp: 1; }
+  .fun-meta { margin-top: 0; }
+  .fun-actions { gap: 5px; margin-top: 2px; flex-wrap: nowrap; }
+  .start-btn, .read-link { min-height: 36px; padding: 7px 8px; font-size: 11px; border-radius: 7px; }
+  .mobile-load-more { display: block; width: calc(100% - 28px); min-height: 44px; margin: 8px 14px 24px; border: 1px solid var(--theme-border, #d1ccb8); border-radius: 10px; background: var(--theme-surface, #fffdf8); color: var(--theme-text, #27302b); }
   .fun-card {
     opacity: 0;
     transform: translateY(20px);

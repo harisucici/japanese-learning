@@ -12,15 +12,6 @@ const lessons = computed(() => (data.value?.lessons || []).filter(x => {
   const titleMatch = !query.value.trim() || (x.title && x.title.includes(query.value.trim()))
   return categoryMatch && titleMatch
 }))
-function difficultyTag(item) {
-  const level = (item.level || item.category || '').toString().toUpperCase()
-  if (/N5|初/.test(level)) return { label: 'N5 · 入门', tone: 'n5' }
-  if (/N4/.test(level)) return { label: 'N4 · 基础', tone: 'n4' }
-  if (/N3/.test(level)) return { label: 'N3 · 进阶', tone: 'n3' }
-  if (/N2/.test(level)) return { label: 'N2 · 中高级', tone: 'n2' }
-  if (/N1/.test(level)) return { label: 'N1 · 高级', tone: 'n1' }
-  return { label: item.category || '分类', tone: 'default' }
-}
 function initialOf(title) {
   return (title || '?').trim().charAt(0) || '?'
 }
@@ -36,7 +27,11 @@ function initialOf(title) {
     <div v-else-if="error" class="state-box error">{{ error }} <button @click="load">重试</button></div>
 
     <template v-else>
-      <div class="source-note">来源：{{ data.sourceTitle }} · {{ data.sourcePages }} 页 · 原作者：{{ data.attribution }}<br />资料标题中的等级为原作者标注；配套练习不是 JLPT 官方真题。</div>
+      <div class="source-note desktop-only">来源：{{ data.sourceTitle }} · {{ data.sourcePages }} 页 · 原作者：{{ data.attribution }}<br />资料标题中的等级为原作者标注；配套练习不是 JLPT 官方真题。</div>
+      <details class="source-note mobile-only mobile-source-note">
+        <summary>资料来源与说明</summary>
+        <p>来源：{{ data.sourceTitle }} · {{ data.sourcePages }} 页 · 原作者：{{ data.attribution }}<br />资料标题中的等级为原作者标注；配套练习不是 JLPT 官方真题。</p>
+      </details>
       
       <!-- 桌面端：沿用原有搜索+筛选 -->
       <div class="controls">
@@ -108,7 +103,7 @@ function initialOf(title) {
           >{{ c }}</button>
         </div>
 
-        <p class="mobile-count">当前显示 {{ lessons.length }} 篇</p>
+        <p v-if="query.trim() || category !== '全部'" class="mobile-count">找到 {{ lessons.length }} 篇</p>
 
         <!-- 卡片列表 -->
         <div class="mobile-list">
@@ -120,17 +115,18 @@ function initialOf(title) {
           >
             <div class="card-cover" :aria-hidden="true">
               <span class="cover-initial">{{ initialOf(item.title) }}</span>
-              <span class="cover-meta">第 {{ item.startPage }}–{{ item.endPage }} 页</span>
             </div>
             <div class="card-body">
               <h3 class="card-title">{{ item.title }}</h3>
-              <p class="card-author">{{ item.category }}</p>
-              <p class="card-excerpt">{{ item.questionCount }} 道练习 · {{ item.vocabularyCount }} 个原文词卡</p>
-              <div class="card-footer">
-                <span :class="['diff-tag', difficultyTag(item).tone]">{{ difficultyTag(item).label }}</span>
-                <span class="card-action">阅读 ↗</span>
+              <div class="card-details">
+                <span>{{ item.category }}</span>
+                <span class="meta-dot" aria-hidden="true">·</span>
+                <span>{{ item.questionCount }} 练习</span>
+                <span class="meta-dot" aria-hidden="true">·</span>
+                <span>{{ item.vocabularyCount }} 词卡</span>
               </div>
             </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
           </RouterLink>
           <p v-if="!lessons.length" class="empty">没有找到对应篇目。</p>
         </div>
@@ -151,6 +147,15 @@ function initialOf(title) {
 
 /* 移动端改造 */
 @media (max-width: 768px) {
+  .controls { display: none; }
+  .content-page > h2 { font-size: 28px; line-height: 1.3; margin: 16px 0 4px; }
+  .content-page > .page-lead { margin: 0 0 12px; line-height: 1.6; }
+  .mobile-source-note { margin: 0 0 12px; padding: 0; border: 1px solid var(--season-line); border-radius: 10px; font-size: 12px; line-height: 1.6; }
+  .mobile-source-note summary { min-height: 40px; display: flex; align-items: center; padding: 9px 12px; cursor: pointer; font-weight: 600; list-style: none; }
+  .mobile-source-note summary::-webkit-details-marker { display: none; }
+  .mobile-source-note summary::after { content: '⌄'; margin-left: auto; font-size: 18px; transition: transform .25s ease; }
+  .mobile-source-note[open] summary::after { transform: rotate(180deg); }
+  .mobile-source-note p { margin: 0; padding: 0 12px 12px; }
   .desktop-only {
     display: none;
   }
@@ -221,73 +226,64 @@ function initialOf(title) {
   }
 
   .mobile-count {
-    padding: 8px 16px;
+    margin: 0;
+    padding: 8px 12px 4px;
     font-size: 12px;
     color: var(--theme-text-secondary, #67746a);
   }
 
-  /* 卡片列表 */
+  /* 紧凑阅读目录 */
   .mobile-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 0 16px 80px;
+    gap: 8px;
+    padding: 8px 12px 80px;
   }
   .mobile-card {
     display: flex;
+    align-items: center;
     gap: 12px;
-    padding: 12px;
-    min-height: 120px;
+    padding: 10px 12px;
+    min-height: 76px;
     background: var(--theme-surface, #fffdf8);
     border: 1px solid var(--theme-border-soft, #e2ded3);
-    border-radius: 12px;
+    border-radius: 10px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
   }
   .mobile-card:active {
-    transform: scale(0.97);
+    transform: scale(0.985);
+    background: var(--theme-surface-alt, #f5f2e9);
   }
 
-  /* 封面：3/4 比例，80px 宽 */
+  /* 小型书签 */
   .card-cover {
     flex: none;
-    width: 80px;
-    aspect-ratio: 3 / 4;
-    border-radius: 8px;
-    background: linear-gradient(145deg, #e8d1ac 0%, #a35a2d 100%);
-    color: #fffdf8;
+    width: 44px;
+    height: 52px;
+    border-radius: 5px 8px 8px 5px;
+    border-left: 3px solid #9b7662;
+    background: linear-gradient(145deg, #f1dfca, #dcbca1);
+    color: #694634;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
   }
   .cover-initial {
-    font: 600 32px/1 'Zen Kaku Gothic New', sans-serif;
-  }
-  .cover-meta {
-    position: absolute;
-    bottom: 6px;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    opacity: 0.85;
-    text-align: center;
-    padding: 0 4px;
+    font: 600 21px/1 'Noto Serif JP', 'Songti SC', serif;
   }
 
-  /* 右侧内容 */
   .card-body {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
   }
   .card-title {
-    font: 600 16px/1.35 'Zen Kaku Gothic New', sans-serif;
+    font: 600 15px/1.4 'Noto Serif JP', 'Songti SC', serif;
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;
@@ -295,44 +291,22 @@ function initialOf(title) {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .card-author {
-    font-size: 12px;
-    color: var(--theme-text-secondary, #67746a);
-    margin: 0;
-  }
-  .card-excerpt {
-    font-size: 13px;
-    color: var(--theme-text-secondary, #67746a);
-    margin: 0;
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .card-footer {
-    margin-top: auto;
+  .card-details {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding-top: 6px;
-  }
-  .diff-tag {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: var(--theme-surface-alt, #f5f2e9);
+    flex-wrap: wrap;
+    gap: 5px;
     color: var(--theme-text-secondary, #67746a);
+    font-size: 11px;
   }
-  .diff-tag.n5 { background: #e8f5ee; color: #215a54; }
-  .diff-tag.n4 { background: #ecf4fa; color: #34536e; }
-  .diff-tag.n3 { background: #fbf0df; color: #74472c; }
-  .diff-tag.n2 { background: #faedf1; color: #633449; }
-  .diff-tag.n1 { background: #355247; color: #fffdf8; }
-  .card-action {
-    font-size: 12px;
-    color: var(--color-primary, #2563EB);
+  .card-details span { white-space: nowrap; }
+  .card-details span:first-child { color: #8b6046; }
+  .meta-dot { color: #baa998; }
+  .card-arrow {
+    flex: none;
+    color: #8b6046;
+    font-size: 18px;
+    line-height: 1;
   }
 
   .empty {
@@ -353,10 +327,11 @@ function initialOf(title) {
 /* 极小屏 */
 @media (max-width: 375px) {
   .card-cover {
-    width: 68px;
+    width: 40px;
+    height: 48px;
   }
   .cover-initial {
-    font-size: 26px;
+    font-size: 19px;
   }
   .card-title {
     font-size: 15px;
@@ -496,5 +471,14 @@ function initialOf(title) {
       transform: translateY(0);
     }
   }
+}
+@media (max-width: 768px) {
+  .mobile-search { padding: 5px 0 6px; border-bottom: 0; background: transparent; }
+  .mobile-list { gap: 8px; padding: 8px 12px 80px; }
+  .search-field { min-height: 40px; padding: 6px 10px; gap: 7px; border-radius: 7px; }
+  .search-icon { font-size: 16px; }
+  .search-field input { min-width: 0; min-height: 0 !important; height: 24px; padding: 0 !important; border: 0; border-radius: 0; font-size: 16px; line-height: 1.3; box-shadow: none; }
+  .search-field input:focus { border: 0; box-shadow: none; }
+  .mobile-filters { padding: 6px 0 8px; }
 }
 </style>

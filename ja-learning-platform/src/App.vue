@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useAppStore, useAuthStore } from './store'
 import ThemeContext from './components/ThemeContext.vue'
@@ -19,6 +19,23 @@ const modules = [
 ]
 const isSession = computed(() => route.path.startsWith('/sessions/') || route.path === '/sessions')
 const isMobileHidden = computed(() => isSession.value || route.path === '/admin')
+const mobileNav = [
+  { path: '/', label: '首页', mark: '山' },
+  { path: '/novel', label: '阅读', mark: '読' },
+  { path: '/materials', label: '素材', mark: '文' },
+  { path: '/review', label: '复习', mark: '習' },
+  { path: '/account', label: '我的', mark: '私' }
+]
+const showMobileNav = computed(() => !isSession.value && route.path !== '/admin' && !/^\/(novel|materials)\//.test(route.path))
+const mobileContentFirst = computed(() => ['/novel', '/materials', '/fun', '/mock-exam', '/review', '/history', '/stats', '/practice', '/admin'].includes(route.path)
+  || /^\/(novel|materials)\//.test(route.path))
+const mobileDetailPage = computed(() => /^\/(novel|materials)\//.test(route.path))
+const detailBack = computed(() => route.path.startsWith('/novel/') ? '/novel' : route.path.startsWith('/materials/') ? '/materials' : null)
+const navActive = (path) => path === '/' ? route.path === '/' : route.path === path || route.path.startsWith(`${path}/`)
+const closeMenu = () => { if (window.innerWidth <= 768) store.closeMenu() }
+const onKeydown = (event) => { if (event.key === 'Escape') closeMenu() }
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 const active = computed(() => {
   if (route.path === '/history') return {num:'05',title:'学习记录',en:'YOUR JOURNEY',class:'library'}
   if (route.path === '/stats') return {num:'06',title:'学习档案',en:'MY STATISTICS',class:'exam'}
@@ -34,19 +51,21 @@ const active = computed(() => {
   <!-- 主题上下文包裹层：提供主题、字号、动效等全局设置 -->
   <ThemeContext>
   <header v-if="!isSession" class="site-header" :class="{'on-page':active, 'mobile-compact': !isMobileHidden}">
+    <RouterLink v-if="detailBack" class="mobile-detail-back" :to="detailBack" aria-label="返回列表">‹</RouterLink>
     <RouterLink class="brand" to="/" aria-label="山间书院，返回首页"><img class="brand-mark" :src="yamaSeal" alt=""><span class="brand-name">山间书院<small>THE READING RETREAT</small></span></RouterLink>
     <nav class="desktop-nav" aria-label="主导航"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin">题库管理</RouterLink><RouterLink to="/account">{{auth.user?.nickname || '我的账户'}}</RouterLink></nav>
-    <button class="menu-button" type="button" @click="store.toggleMenu" :aria-expanded="store.menuOpen" aria-label="打开菜单"><span></span><span></span></button>
+    <button class="menu-button" type="button" @click="store.toggleMenu" :aria-expanded="store.menuOpen" :aria-label="store.menuOpen ? '关闭菜单' : '打开菜单'"><span></span><span></span></button>
   </header>
   <!-- 菜单侧滑层 -->
-  <div v-if="store.menuOpen && !isSession" class="menu-overlay open"><div class="menu-inner"><p class="eyebrow">EXPLORE THE RETREAT</p><RouterLink v-for="m in modules" :key="m.path" :to="m.path"><span>{{m.num}}</span>{{m.title}}<i>↗</i></RouterLink><RouterLink to="/review"><span>05</span>错题复习<i>↗</i></RouterLink><RouterLink to="/account"><span>06</span>{{ auth.user?.nickname || '我的账户' }}<i>↗</i></RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin"><span>07</span>题库管理<i>↗</i></RouterLink></div></div>
+  <Transition name="mobile-menu"><div v-if="store.menuOpen && !isSession" class="menu-overlay open" @click.self="closeMenu"><div class="menu-inner" role="dialog" aria-modal="true" aria-label="探索书院"><button class="mobile-menu-close" type="button" aria-label="关闭菜单" @click="closeMenu">×</button><p class="eyebrow">EXPLORE THE RETREAT</p><RouterLink v-for="m in modules" :key="m.path" :to="m.path"><span>{{m.num}}</span>{{m.title}}<i>↗</i></RouterLink><RouterLink to="/review"><span>05</span>错题复习<i>↗</i></RouterLink><RouterLink to="/account"><span>06</span>{{ auth.user?.nickname || '我的账户' }}<i>↗</i></RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin"><span>07</span>题库管理<i>↗</i></RouterLink></div></div></Transition>
 
-  <main class="app-main">
+  <main class="app-main" :class="{ 'mobile-nav-space': showMobileNav }">
   <router-view v-slot="{ Component }">
+    <Transition name="mobile-page" mode="out-in"><div :key="route.fullPath" class="route-stage">
     <div v-if="route.path === '/'">
       <component :is="Component" />
     </div>
-    <div v-else-if="active && !isSession" class="interior" :class="active.class">
+    <div v-else-if="active && !isSession" class="interior" :class="[active.class, { 'mobile-content-first': mobileContentFirst, 'mobile-detail-page': mobileDetailPage }]">
       <div class="interior-hero" :class="active.class">
         <div class="interior-art"><div class="interior-orb"></div><div class="interior-hill"></div></div>
         <div class="interior-head">
@@ -63,8 +82,15 @@ const active = computed(() => {
     <div v-else>
       <component :is="Component" />
     </div>
+    </div></Transition>
   </router-view>
   </main>
+
+  <nav v-if="showMobileNav" class="mobile-dock" aria-label="移动端主导航">
+    <RouterLink v-for="item in mobileNav" :key="item.path" :to="item.path" class="mobile-dock-item" :class="{ 'is-active': navActive(item.path) }" :aria-current="navActive(item.path) ? 'page' : undefined">
+      <span class="mobile-dock-mark" aria-hidden="true">{{ item.mark }}</span><span class="mobile-dock-label">{{ item.label }}</span>
+    </RouterLink>
+  </nav>
 
   <!-- 手势视觉反馈层 -->
   <div v-if="gestureState.backArrow" class="gesture-back-arrow" :style="{opacity: gestureState.backOpacity}">
@@ -83,6 +109,6 @@ const active = computed(() => {
     {{ gestureState.fontSize }}px
   </div>
 
-  <footer v-if="!isSession"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt=""><strong>山间书院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山间书院</span><span>READ · EXPLORE · GROW</span></div></footer>
+  <footer v-if="!isSession" :class="{ 'mobile-auth-footer': route.path === '/account' || route.path === '/reset-password' }"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt=""><strong>山间书院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山间书院</span><span>READ · EXPLORE · GROW</span></div></footer>
   </ThemeContext>
 </template>
