@@ -24,7 +24,6 @@ async function loadStats() {
       requestResource('stats/me'),
       requestResource('stats/mistakes-detail')
     ])
-    // Bug-F11: 确保 stats 数据结构正确
     statsData.value = {
       ...stats,
       totalAnswered: stats.totalQuestions || 0,
@@ -36,7 +35,6 @@ async function loadStats() {
         correct: item.correctCount || 0
       }]))
     }
-    // Bug-F12: 处理多种可能的 API 响应格式
     const mistakesArray = Array.isArray(mistakes) ? mistakes : (mistakes.items || mistakes.mistakes || [])
     mistakesData.value = mistakesArray.map(item => ({
       type: item.type || 'unknown',
@@ -85,15 +83,22 @@ const typeMap = {
   listening: '听力题'
 }
 
-/**
- * 本站仅显示实际练习正确率，不推算 JLPT 正式得分。
- */
+// 错题手风琴展开状态
+const expandedMistakes = ref(new Set())
+
+function toggleMistake(index) {
+  if (expandedMistakes.value.has(index)) {
+    expandedMistakes.value.delete(index)
+  } else {
+    expandedMistakes.value.add(index)
+  }
+}
 
 onMounted(loadStats)
 </script>
 
 <template>
-  <div class="stats-page">
+  <div class="stats-page mob-stats">
     <section class="hero-simple">
       <div class="hero-copy">
         <p class="eyebrow light">MY STATISTICS</p>
@@ -103,27 +108,38 @@ onMounted(loadStats)
     </section>
 
     <section class="stats-main section-wrap">
-      <div v-if="loading" class="state-box">正在加载统计数据…</div>
+      <!-- 骨架屏 -->
+      <div v-if="loading" class="stats-skeleton">
+        <div class="skeleton-overview">
+          <div v-for="i in 3" :key="i" class="skeleton-card"></div>
+        </div>
+        <div class="skeleton-mistakes">
+          <div v-for="i in 2" :key="i" class="skeleton-mistake-item"></div>
+        </div>
+        <div class="skeleton-suggestions">
+          <div v-for="i in 2" :key="i" class="skeleton-suggestion-item"></div>
+        </div>
+      </div>
       <div v-else-if="error" class="state-box error">{{ error }} <button @click="loadStats">重试</button></div>
       <template v-else-if="statsData">
         <!-- 概览卡片 -->
-        <div class="overview-grid">
-          <div class="overview-card">
+        <div class="mob-overview-grid">
+          <div class="mob-overview-card">
             <div class="overview-icon">📊</div>
             <div class="overview-value">{{ statsData.totalAnswered || 0 }}</div>
             <div class="overview-label">已答题数</div>
           </div>
-          <div class="overview-card">
+          <div class="mob-overview-card">
             <div class="overview-icon">✓</div>
             <div class="overview-value">{{ statsData.totalCorrect || 0 }}</div>
             <div class="overview-label">答对题数</div>
           </div>
-          <div class="overview-card">
+          <div class="mob-overview-card">
             <div class="overview-icon">%</div>
             <div class="overview-value">{{ statsData.accuracy ? Math.round(statsData.accuracy) : 0 }}%</div>
             <div class="overview-label">总体正确率</div>
           </div>
-          <div class="overview-card">
+          <div class="mob-overview-card">
             <div class="overview-icon">⏱</div>
             <div class="overview-value">{{ statsData.totalTimeSpent ? Math.round(statsData.totalTimeSpent / 60) : 0 }}</div>
             <div class="overview-label">学习时长（分钟）</div>
@@ -131,9 +147,9 @@ onMounted(loadStats)
         </div>
 
         <!-- 分数说明 -->
-        <div class="score-notice">
+        <div class="mob-score-notice">
           <h2>练习结果与正式考试成绩</h2>
-          <div class="score-types">
+          <div class="mob-score-types">
             <div class="score-type">
               <h3>练习分</h3>
               <div class="score-value">{{ statsData.totalCorrect || 0 }} / {{ statsData.totalAnswered || 0 }}</div>
@@ -141,7 +157,7 @@ onMounted(loadStats)
             </div>
             <div class="score-type">
               <h3>练习正确率</h3>
-              <div class="score-value">{{statsData.accuracy?.toFixed(1) || 0}}%</div>
+              <div class="score-value">{{ statsData.accuracy?.toFixed(1) || 0 }}%</div>
               <p>根据本站已完成练习记录计算</p>
             </div>
             <div class="score-type">
@@ -154,7 +170,7 @@ onMounted(loadStats)
 
         <!-- 题型分项正确率 -->
         <h2 class="section-title">等级练习正确率</h2>
-        <div class="type-breakdown">
+        <div class="mob-type-breakdown">
           <div v-for="item in typeAccuracy" :key="item.type" class="type-item">
             <div class="type-header">
               <span class="type-name">{{ item.type }}</span>
@@ -167,16 +183,19 @@ onMounted(loadStats)
           </div>
         </div>
 
-        <!-- 错题知识点 -->
+        <!-- 错题知识点 - 手风琴折叠 -->
         <h2 class="section-title">错题对应知识点</h2>
         <div v-if="mistakesData.length === 0" class="state-box">暂无错题记录</div>
-        <div v-else class="mistakes-list">
-          <div v-for="(mistake, index) in mistakesData" :key="index" class="mistake-card">
-            <div class="mistake-header">
-              <span class="mistake-type">{{ typeMap[mistake.type] || mistake.type }}</span>
-              <span class="mistake-count">错误 {{ mistake.count }} 次</span>
-            </div>
-            <div class="mistake-content">
+        <div v-else class="mob-mistakes-list">
+          <div v-for="(mistake, index) in mistakesData" :key="index" class="mob-mistake-card">
+            <button class="mob-mistake-header" @click="toggleMistake(index)">
+              <div class="mob-mistake-title">
+                <span class="mistake-type">{{ typeMap[mistake.type] || mistake.type }}</span>
+                <span class="mistake-count">错误 {{ mistake.count }} 次</span>
+              </div>
+              <span class="mob-mistake-toggle">{{ expandedMistakes.has(index) ? '−' : '+' }}</span>
+            </button>
+            <div v-show="expandedMistakes.has(index)" class="mob-mistake-content">
               <p><strong>知识点：</strong>{{ mistake.knowledgePoint || '未分类' }}</p>
               <p v-if="mistake.questionSnippet"><strong>题目：</strong>{{ mistake.questionSnippet }}</p>
             </div>
@@ -186,7 +205,7 @@ onMounted(loadStats)
         <!-- 优先复习建议 -->
         <h2 class="section-title">优先复习建议</h2>
         <div class="review-suggestions">
-          <div v-if="statsData.weakAreas && statsData.weakAreas.length > 0" class="suggestion-list">
+          <div v-if="statsData.weakAreas && statsData.weakAreas.length > 0" class="mob-suggestion-list">
             <div v-for="(area, index) in statsData.weakAreas.slice(0, 5)" :key="index" class="suggestion-item">
               <span class="suggestion-rank">{{ index + 1 }}</span>
               <div class="suggestion-content">
@@ -205,7 +224,7 @@ onMounted(loadStats)
 
 <style scoped>
 .hero-simple {
-  height: 300px;
+  height: 240px;
   position: relative;
   overflow: hidden;
   background: #536b69;
@@ -217,129 +236,164 @@ onMounted(loadStats)
 }
 
 .hero-copy {
-  padding: 0 5.7%;
+  padding: 0 20px;
+}
+
+.hero-copy h1 {
+  font-size: 28px;
+  margin: 8px 0;
+}
+
+.hero-copy p {
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 .stats-main {
-  padding-top: 60px;
+  padding: 40px 20px;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-.overview-grid {
+/* 概览卡片 - 移动端单列 */
+.mob-overview-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin: 0 0 60px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
-.overview-card {
+.mob-overview-card {
+  min-height: 44px !important;
   background: #fffdf8;
-  padding: 30px;
+  padding: 20px 16px;
   text-align: center;
   border: 1px solid #e3e0d4;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.mob-overview-card:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);
 }
 
 .overview-icon {
-  font-size: 32px;
-  margin-bottom: 12px;
+  font-size: 28px;
+  margin-bottom: 10px;
 }
 
 .overview-value {
-  font: 36px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 32px 'Zen Kaku Gothic New', sans-serif;
   color: #3a5b4b;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
 }
 
 .overview-label {
-  font-size: 13px;
+  font-size: 12px;
   color: #7a8279;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
-.score-notice {
+/* 分数说明 */
+.mob-score-notice {
   background: #f5f2e9;
-  padding: 40px;
-  margin: 60px 0;
+  padding: 24px 20px;
+  margin: 32px 0;
+  border-radius: 12px;
 }
 
-.score-notice h2 {
-  font: 24px 'Zen Kaku Gothic New', sans-serif;
-  margin: 0 0 30px;
+.mob-score-notice h2 {
+  font: 600 18px 'Zen Kaku Gothic New', sans-serif;
+  margin: 0 0 20px;
   color: #27302b;
 }
 
-.score-types {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+.mob-score-types {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .score-type {
   background: #fffdf8;
-  padding: 25px;
+  padding: 18px 20px;
   border-left: 3px solid #96795c;
+  border-radius: 8px;
 }
 
 .score-type h3 {
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
-  margin: 0 0 12px;
+  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  margin: 0 0 10px;
   color: #3a5b4b;
 }
 
 .score-value {
-  font: 28px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 24px 'Zen Kaku Gothic New', sans-serif;
   color: #355247;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  font-variant-numeric: tabular-nums;
 }
 
 .score-type p {
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.7;
   color: #7a8279;
   margin: 0;
 }
 
 .section-title {
-  font: 24px 'Zen Kaku Gothic New', sans-serif;
-  margin: 60px 0 30px;
+  font: 600 20px 'Zen Kaku Gothic New', sans-serif;
+  margin: 32px 0 16px;
   color: #27302b;
 }
 
-.type-breakdown {
-  display: grid;
-  gap: 25px;
-  margin: 0 0 60px;
+/* 题型分项 */
+.mob-type-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
 }
 
 .type-item {
   background: #fffdf8;
-  padding: 25px;
+  padding: 18px 20px;
   border: 1px solid #e3e0d4;
+  border-radius: 10px;
 }
 
 .type-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   gap: 12px;
 }
 
 .type-name {
-  font: 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
   flex: 1;
 }
 
 .type-stats {
-  font-size: 13px;
+  font-size: 12px;
   color: #7a8279;
 }
 
 .type-accuracy {
-  font: 20px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 18px 'Zen Kaku Gothic New', sans-serif;
   color: #355247;
-  min-width: 60px;
+  min-width: 50px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .type-bar {
@@ -347,7 +401,6 @@ onMounted(loadStats)
   background: #e3e0d4;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 0;
 }
 
 .type-bar-fill {
@@ -356,88 +409,156 @@ onMounted(loadStats)
   transition: width 0.3s ease;
 }
 
-.mistakes-list {
-  display: grid;
-  gap: 20px;
-  margin: 0 0 60px;
+/* 错题手风琴 */
+.mob-mistakes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
-.mistake-card {
+.mob-mistake-card {
   background: #fffdf8;
-  padding: 25px;
   border: 1px solid #e3e0d4;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.mistake-header {
+.mob-mistake-header {
+  min-height: 44px !important;
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  text-align: left;
+  transition: background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
+}
+
+.mob-mistake-header:active {
+  background: color-mix(in srgb, #e3e0d4 30%, transparent);
+  transform: scale(0.97);
+}
+
+.mob-mistake-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
 }
 
 .mistake-type {
-  font: 14px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 14px 'Zen Kaku Gothic New', sans-serif;
   color: #96795c;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .mistake-count {
-  font-size: 13px;
+  font-size: 12px;
   color: #a45d54;
 }
 
-.mistake-content p {
+.mob-mistake-toggle {
+  font-size: 24px;
+  font-weight: 300;
+  color: #7a8279;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mob-mistake-content {
+  padding: 0 20px 16px;
+  border-top: 1px solid #e3e0d4;
+  padding-top: 14px;
+  animation: mistakeExpand 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mistakeExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mob-mistake-content p {
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.7;
   color: #5f6b60;
   margin: 8px 0;
 }
 
-.review-suggestions {
-  margin: 0 0 60px;
+.mob-mistake-content strong {
+  color: #27302b;
 }
 
-.suggestion-list {
-  display: grid;
-  gap: 20px;
+/* 复习建议 */
+.review-suggestions {
+  margin-bottom: 40px;
+}
+
+.mob-suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .suggestion-item {
   display: flex;
-  gap: 20px;
+  gap: 14px;
   align-items: flex-start;
   background: #fffdf8;
-  padding: 25px;
+  padding: 18px 20px;
   border: 1px solid #e3e0d4;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.suggestion-item:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);
 }
 
 .suggestion-rank {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: #355247;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
   flex-shrink: 0;
 }
 
 .suggestion-content {
   flex: 1;
+  min-width: 0;
 }
 
 .suggestion-content strong {
   display: block;
-  font: 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .suggestion-content p {
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.7;
   color: #5f6b60;
   margin: 0;
 }
@@ -445,22 +566,133 @@ onMounted(loadStats)
 .suggestion-priority {
   font-size: 12px;
   color: #96795c;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
-@media (max-width: 968px) {
-  .overview-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* 骨架屏样式 */
+.stats-skeleton {
+  padding: 20px 0;
+}
+
+.skeleton-overview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.skeleton-card {
+  height: 120px;
+  background: linear-gradient(90deg, #f5f2e9 25%, #fffdf8 50%, #f5f2e9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+}
+
+.skeleton-mistakes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.skeleton-mistake-item {
+  height: 80px;
+  background: linear-gradient(90deg, #f5f2e9 25%, #fffdf8 50%, #f5f2e9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 10px;
+}
+
+.skeleton-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-suggestion-item {
+  height: 100px;
+  background: linear-gradient(90deg, #f5f2e9 25%, #fffdf8 50%, #f5f2e9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
   }
-  
-  .score-types {
-    grid-template-columns: 1fr;
+  100% {
+    background-position: -200% 0;
   }
 }
 
-@media (max-width: 640px) {
-  .overview-grid {
-    grid-template-columns: 1fr;
+/* 交错进入动画 */
+@media (max-width: 768px) {
+  .mob-timeline-item {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: item-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .mob-timeline-item:nth-child(1) { animation-delay: 0.05s; }
+  .mob-timeline-item:nth-child(2) { animation-delay: 0.1s; }
+  .mob-timeline-item:nth-child(3) { animation-delay: 0.15s; }
+  .mob-timeline-item:nth-child(4) { animation-delay: 0.2s; }
+  .mob-timeline-item:nth-child(5) { animation-delay: 0.25s; }
+
+  @keyframes item-enter {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Apple HIG: 触控区域至少 44px */
+  .mob-overview-card,
+  .overview-card,
+  .mob-mistake-header,
+  .mistake-header,
+  .accordion-header {
+    min-height: 44px;
+  }
+}
+
+/* 平板及以上 */
+@media (min-width: 768px) {
+  .stats-main {
+    padding: 60px 40px;
+    max-width: 900px;
+  }
+
+  .mob-overview-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .mob-overview-card {
+    padding: 24px 16px;
+  }
+
+  .overview-value {
+    font-size: 36px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    margin: 40px 0 20px;
+  }
+
+  .mob-score-notice {
+    padding: 32px 28px;
+    margin: 48px 0;
+  }
+
+  .mob-score-notice h2 {
+    font-size: 22px;
+  }
+
+  .mob-score-types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 }
 </style>
