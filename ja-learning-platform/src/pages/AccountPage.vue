@@ -169,7 +169,360 @@ function goToRegister() {
 </template>
 
 <style scoped>
-.account-page{padding-bottom:90px}.account-intro{display:flex;align-items:center;gap:24px;margin:36px 0}.account-intro h2,.account-auth h2{font:clamp(28px,3vw,42px)/1.4 'Zen Kaku Gothic New',sans-serif;margin:6px 0}.account-intro p:last-child,.account-card>p{color:#67746a;font-size:13px;line-height:1.8}.account-monogram{width:82px;height:82px;display:grid;place-items:center;border-radius:50%;background:#355247;color:#f5f2e9;font-size:32px}.account-summary{display:grid;grid-template-columns:repeat(3,1fr);background:#eae9dc;margin:30px 0 42px}.account-summary>div{padding:22px 28px;border-right:1px solid #d5d1c3}.account-summary small{display:block;color:#69776e;font-size:12px;margin-bottom:9px}.account-summary strong{font-size:22px;color:#355247}.account-summary a{font-size:14px;border-bottom:1px solid #355247}.account-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.account-card{background:#fffdf8;border:1px solid #e2ded3;padding:clamp(25px,4vw,42px)}.account-card h3{font:25px 'Zen Kaku Gothic New',sans-serif;margin:12px 0}.account-card form{display:grid;gap:18px;margin-top:26px}.account-card label{display:block;color:#4c6154;font-size:12px}.account-card input,.account-card select{display:block;width:100%;margin-top:8px;border:1px solid #cac9bd;background:#fffdf8;color:#27302b;padding:13px 14px;font:15px 'Zen Kaku Gothic New',sans-serif}.account-card input:focus,.account-card select:focus{outline:2px solid #789887;outline-offset:2px}.account-card small{color:#788279;font-size:12px}.account-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.account-card .primary-action,.account-card .secondary-action{justify-self:start}.account-auth{width:min(560px,100%);margin:35px auto}.account-tabs{display:flex;border-bottom:1px solid #d8d5c9;margin-top:28px}.account-tabs button{border:0;background:transparent;padding:13px 26px;color:#67746a;cursor:pointer}.account-tabs button[aria-selected=true]{color:#355247;border-bottom:2px solid #355247}.account-message{padding:14px 18px;background:#e5eee5;color:#355247;margin:22px 0}.account-message.error{background:#f9eae5;color:#984d45}.account-text-button,.account-logout{border:0;background:transparent;color:#355247;border-bottom:1px solid #355247;padding:5px 0;cursor:pointer;font-size:12px;margin-top:23px}.account-logout{margin-top:38px}.register-hint{margin:18px 0 0;padding:12px 16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#1e40af}.register-link{color:#2563EB;font-weight:500;background:none;border:none;cursor:pointer;padding:0;font-size:inherit}.register-link:hover{text-decoration:underline}@media(max-width:700px){.account-columns,.account-summary{grid-template-columns:1fr}.account-summary>div{border-right:0;border-bottom:1px solid #d5d1c3}.account-intro{align-items:flex-start}.account-monogram{width:62px;height:62px;flex:none}}
+/* ===== Design tokens ===== */
+.account-page {
+  --accent: #355247;
+  --bg: #f5f2e9;
+  --surface: #fffdf8;
+  --border: #e2ded3;
+  --border-soft: #cac9bd;
+  --text: #27302b;
+  --text-secondary: #67746a;
+  --label: #4c6154;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.account-page {
+  padding-bottom: 90px;
+  color: var(--text);
+}
+
+/* ===== Eyebrow + Page Heading (inherits content-page) ===== */
+.account-intro {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 36px 0;
+}
+.account-intro h2,
+.account-auth h2 {
+  font: clamp(28px, 3vw, 42px) / 1.4 'Zen Kaku Gothic New', sans-serif;
+  margin: 6px 0;
+  color: var(--text);
+}
+.account-intro p:last-child,
+.account-card > p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* ===== User monogram ===== */
+.account-monogram {
+  width: 82px;
+  height: 82px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font: 600 32px/1 'Zen Kaku Gothic New', sans-serif;
+  letter-spacing: 0;
+}
+
+/* ===== Summary grid ===== */
+.account-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 30px 0 42px;
+  overflow: hidden;
+}
+.account-summary > div {
+  padding: 22px 28px;
+  border-right: 1px solid var(--border);
+}
+.account-summary > div:last-child { border-right: 0; }
+.account-summary small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 9px;
+  letter-spacing: 0.05em;
+}
+.account-summary strong {
+  font: 600 22px/1.2 'Zen Kaku Gothic New', sans-serif;
+  color: var(--accent);
+}
+.account-summary a {
+  font-size: 14px;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+  text-decoration: none;
+  transition: opacity 0.3s var(--spring);
+}
+.account-summary a:hover { opacity: 0.7; }
+
+/* ===== Two-column cards ===== */
+.account-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+/* ===== Card ===== */
+.account-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(25px, 4vw, 42px);
+  transition: box-shadow 0.3s var(--spring);
+}
+.account-card:hover {
+  box-shadow: 0 8px 24px -12px rgba(53, 82, 71, 0.12);
+}
+.account-card h3 {
+  font: 600 22px/1.3 'Zen Kaku Gothic New', sans-serif;
+  margin: 12px 0;
+  color: var(--text);
+}
+
+/* ===== Forms ===== */
+.account-card form {
+  display: grid;
+  gap: 18px;
+  margin-top: 26px;
+}
+.account-card label {
+  display: block;
+  color: var(--label);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+.account-card input,
+.account-card select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  height: 48px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0 14px;
+  font: 16px/1.4 'Zen Kaku Gothic New', sans-serif;
+  transition: border-color 0.3s var(--spring),
+              box-shadow 0.3s var(--spring),
+              transform 0.2s var(--spring);
+}
+.account-card select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2367746a' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+.account-card input:focus,
+.account-card select:focus {
+  outline: 2px solid #789887;
+  outline-offset: 2px;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(53, 82, 71, 0.1);
+}
+.account-card input:active,
+.account-card select:active {
+  transform: scale(0.995);
+}
+.account-card small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ===== Two-field row ===== */
+.account-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* ===== Buttons (override global) ===== */
+.account-card .primary-action,
+.account-card .secondary-action,
+.account-auth .primary-action,
+.account-logout {
+  justify-self: start;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 8px;
+  font: 500 13px/1 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  transition: transform 0.3s var(--spring),
+              background 0.3s var(--spring),
+              color 0.3s var(--spring),
+              border-color 0.3s var(--spring),
+              box-shadow 0.3s var(--spring);
+}
+.account-card .primary-action,
+.account-auth .primary-action {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.account-card .secondary-action {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.account-card .primary-action:active,
+.account-card .secondary-action:active,
+.account-logout:active {
+  transform: scale(0.97);
+}
+.account-card .primary-action:hover,
+.account-auth .primary-action:hover {
+  box-shadow: 0 6px 18px -6px rgba(53, 82, 71, 0.4);
+}
+
+/* ===== Auth card ===== */
+.account-auth {
+  width: min(560px, 100%);
+  margin: 35px auto;
+}
+
+/* ===== Tabs ===== */
+.account-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-top: 28px;
+}
+.account-tabs button {
+  flex: 1;
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+  padding: 13px 26px;
+  color: var(--text-secondary);
+  font: 500 14px/1 'Zen Kaku Gothic New', sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.3s var(--spring),
+              border-color 0.3s var(--spring),
+              transform 0.2s var(--spring);
+}
+.account-tabs button[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+.account-tabs button:active {
+  transform: scale(0.97);
+}
+
+/* ===== Messages ===== */
+.account-message {
+  padding: 14px 18px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: var(--accent);
+  margin: 22px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.account-message.error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #c44536;
+}
+
+/* ===== Text buttons / logout ===== */
+.account-text-button,
+.account-logout {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding: 5px 0;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-top: 23px;
+  align-self: start;
+  transition: opacity 0.3s var(--spring), transform 0.2s var(--spring);
+}
+.account-logout {
+  margin-top: 38px;
+  font-size: 13px;
+  padding: 8px 0;
+}
+.account-text-button:hover,
+.account-logout:hover {
+  opacity: 0.7;
+}
+.account-text-button:active,
+.account-logout:active {
+  transform: scale(0.97);
+}
+
+/* ===== Register hint ===== */
+.register-hint {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text);
+}
+.register-link {
+  color: var(--accent);
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  font-size: inherit;
+  border-bottom: 1px solid var(--accent);
+  transition: opacity 0.3s var(--spring);
+}
+.register-link:hover { opacity: 0.7; }
+
+/* ===== Secondary action link (admin) ===== */
+.account-page .secondary-action[href] {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 24px;
+  margin: 8px 0 0;
+  border-radius: 8px;
+}
+
+/* ===== Responsive: tablet and below (≤ 768px) ===== */
+@media (max-width: 768px) {
+  .account-columns {
+    grid-template-columns: 1fr;
+  }
+  .account-summary {
+    grid-template-columns: 1fr;
+  }
+  .account-summary > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .account-summary > div:last-child {
+    border-bottom: 0;
+  }
+  .account-intro {
+    align-items: flex-start;
+  }
+  .account-monogram {
+    width: 62px;
+    height: 62px;
+    font-size: 24px;
+    flex: none;
+  }
+}
 
 /* ===== Mobile touch-friendly overrides (≤ 640px) ===== */
 @media (max-width: 640px) {
@@ -178,74 +531,29 @@ function goToRegister() {
     width: 100%;
   }
 
-  /* Inputs: ≥ 48px tall, ≥ 16px font (prevents iOS auto-zoom) */
-  .account-card input,
-  .account-card select {
-    height: 48px;
-    font-size: 16px;
-    padding: 12px 16px;
-    border-radius: 6px;
-  }
-
-  /* Buttons: ≥ 48px tall, full width, clear active state */
-  .account-card .primary-action,
-  .account-card .secondary-action,
-  .account-logout,
-  .primary-action,
-  .secondary-action {
-    min-height: 48px;
-    width: 100%;
-    justify-self: stretch;
-    font-size: 15px;
-    border-radius: 8px;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .primary-action:active,
-  .secondary-action:active,
-  .account-logout:active {
-    transform: scale(0.97);
-  }
-
-  /* Tabs: larger hit area, clearer indicator */
-  .account-tabs {
-    gap: 0;
-    margin-top: 24px;
-  }
-  .account-tabs button {
-    flex: 1;
-    min-height: 48px;
-    padding: 12px 16px;
-    font-size: 15px;
-  }
-  .account-tabs button[aria-selected="true"] {
-    border-bottom-width: 3px;
-    font-weight: 500;
-  }
-
   /* Auth card: full width on mobile */
   .account-auth {
     width: 100%;
     padding: 24px 20px;
-    border-radius: 12px;
+    margin: 24px auto;
   }
 
-  /* Two-field rows collapse on very small screens */
-  .account-fields {
-    grid-template-columns: 1fr;
+  /* Buttons: full width for easier tapping */
+  .account-card .primary-action,
+  .account-card .secondary-action,
+  .account-auth .primary-action,
+  .account-logout {
+    width: 100%;
+    justify-self: stretch;
   }
 
-  /* Logged-in summary: single column with bigger tap targets */
+  /* Logged-in summary: bigger tap targets */
   .account-summary > div {
     padding: 18px 16px;
     min-height: 56px;
   }
-  .account-summary a {
-    display: inline-block;
-    padding: 4px 0;
-  }
 
-  /* Text links / buttons need ≥ 44px tap area */
+  /* Text links need ≥ 44px tap area */
   .account-text-button {
     min-height: 44px;
     padding: 10px 0;
@@ -260,28 +568,6 @@ function goToRegister() {
   .register-link {
     padding: 8px 0;
     font-size: 14px;
-  }
-  
-  /* Spring 动画：Tab 按钮 */
-  .account-tabs button {
-    transition: color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                border-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .account-tabs button:active {
-    transform: scale(0.97);
-  }
-  
-  /* Spring 动画：输入框 focus */
-  .account-card input,
-  .account-card select {
-    transition: border-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .account-card input:focus,
-  .account-card select:focus {
-    border-color: #355247;
-    box-shadow: 0 0 0 3px rgba(53, 82, 71, 0.1);
   }
 }
 
