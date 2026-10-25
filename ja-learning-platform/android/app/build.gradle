@@ -3,6 +3,16 @@ apply plugin: 'com.android.application'
 android {
     namespace = "com.jaleaning.app"
     compileSdk = rootProject.ext.compileSdkVersion
+
+    signingConfigs {
+        release {
+            storeFile file('release-key.jks')
+            storePassword 'jalearning2026'
+            keyAlias 'release'
+            keyPassword 'jalearning2026'
+        }
+    }
+
     defaultConfig {
         applicationId "com.jaleaning.app"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -19,6 +29,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

@@ -1,4 +1,4 @@
-package com.jalearning.app;
+package com.jaleaning.app;
 
 import com.getcapacitor.BridgeActivity;
 
