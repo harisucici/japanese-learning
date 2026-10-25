@@ -114,7 +114,28 @@ function goToRegister() {
 <template>
   <div class="account-page content-page">
     <div class="section-top"><p class="eyebrow">YOUR OWN JOURNEY</p><span>账户与学习进度</span></div>
-    <div v-if="auth.loading" class="state-box">正在读取账户信息…</div>
+    <!-- 骨架屏 -->
+    <div v-if="auth.loading" class="mob-acct-skeleton" aria-hidden="true">
+      <div class="mob-acct-sk-intro">
+        <div class="skeleton mob-acct-sk-avatar"></div>
+        <div class="mob-acct-sk-text">
+          <div class="skeleton mob-acct-sk-name"></div>
+          <div class="skeleton mob-acct-sk-handle"></div>
+        </div>
+      </div>
+      <div class="mob-acct-sk-summary">
+        <div v-for="n in 3" :key="n" class="mob-acct-sk-cell">
+          <div class="skeleton mob-acct-sk-cell-label"></div>
+          <div class="skeleton mob-acct-sk-cell-value"></div>
+        </div>
+      </div>
+      <div class="mob-acct-sk-card">
+        <div class="skeleton mob-acct-sk-heading"></div>
+        <div class="skeleton mob-acct-sk-input"></div>
+        <div class="skeleton mob-acct-skinput"></div>
+        <div class="skeleton mob-acct-sk-btn"></div>
+      </div>
+    </div>
     <template v-else>
       <div v-if="error" class="account-message error" role="alert">{{ error }}</div>
       <div v-if="notice" class="account-message" role="status">{{ notice }}</div>
@@ -148,5 +169,222 @@ function goToRegister() {
 </template>
 
 <style scoped>
-.account-page{padding-bottom:90px}.account-intro{display:flex;align-items:center;gap:24px;margin:36px 0}.account-intro h2,.account-auth h2{font:clamp(28px,3vw,42px)/1.4 'Zen Kaku Gothic New',sans-serif;margin:6px 0}.account-intro p:last-child,.account-card>p{color:#67746a;font-size:13px;line-height:1.8}.account-monogram{width:82px;height:82px;display:grid;place-items:center;border-radius:50%;background:#355247;color:#f5f2e9;font-size:32px}.account-summary{display:grid;grid-template-columns:repeat(3,1fr);background:#eae9dc;margin:30px 0 42px}.account-summary>div{padding:22px 28px;border-right:1px solid #d5d1c3}.account-summary small{display:block;color:#69776e;font-size:11px;margin-bottom:9px}.account-summary strong{font-size:22px;color:#355247}.account-summary a{font-size:14px;border-bottom:1px solid #355247}.account-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.account-card{background:#fffdf8;border:1px solid #e2ded3;padding:clamp(25px,4vw,42px)}.account-card h3{font:25px 'Zen Kaku Gothic New',sans-serif;margin:12px 0}.account-card form{display:grid;gap:18px;margin-top:26px}.account-card label{display:block;color:#4c6154;font-size:12px}.account-card input,.account-card select{display:block;width:100%;margin-top:8px;border:1px solid #cac9bd;background:#fffdf8;color:#27302b;padding:13px 14px;font:15px 'Zen Kaku Gothic New',sans-serif}.account-card input:focus,.account-card select:focus{outline:2px solid #789887;outline-offset:2px}.account-card small{color:#788279;font-size:11px}.account-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.account-card .primary-action,.account-card .secondary-action{justify-self:start}.account-auth{width:min(560px,100%);margin:35px auto}.account-tabs{display:flex;border-bottom:1px solid #d8d5c9;margin-top:28px}.account-tabs button{border:0;background:transparent;padding:13px 26px;color:#67746a;cursor:pointer}.account-tabs button[aria-selected=true]{color:#355247;border-bottom:2px solid #355247}.account-message{padding:14px 18px;background:#e5eee5;color:#355247;margin:22px 0}.account-message.error{background:#f9eae5;color:#984d45}.account-text-button,.account-logout{border:0;background:transparent;color:#355247;border-bottom:1px solid #355247;padding:5px 0;cursor:pointer;font-size:12px;margin-top:23px}.account-logout{margin-top:38px}.register-hint{margin:18px 0 0;padding:12px 16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#1e40af}.register-link{color:#2563EB;font-weight:500;background:none;border:none;cursor:pointer;padding:0;font-size:inherit}.register-link:hover{text-decoration:underline}@media(max-width:700px){.account-columns,.account-summary{grid-template-columns:1fr}.account-summary>div{border-right:0;border-bottom:1px solid #d5d1c3}.account-intro{align-items:flex-start}.account-monogram{width:62px;height:62px;flex:none}}
+.account-page{padding-bottom:90px}.account-intro{display:flex;align-items:center;gap:24px;margin:36px 0}.account-intro h2,.account-auth h2{font:clamp(28px,3vw,42px)/1.4 'Zen Kaku Gothic New',sans-serif;margin:6px 0}.account-intro p:last-child,.account-card>p{color:#67746a;font-size:13px;line-height:1.8}.account-monogram{width:82px;height:82px;display:grid;place-items:center;border-radius:50%;background:#355247;color:#f5f2e9;font-size:32px}.account-summary{display:grid;grid-template-columns:repeat(3,1fr);background:#eae9dc;margin:30px 0 42px}.account-summary>div{padding:22px 28px;border-right:1px solid #d5d1c3}.account-summary small{display:block;color:#69776e;font-size:12px;margin-bottom:9px}.account-summary strong{font-size:22px;color:#355247}.account-summary a{font-size:14px;border-bottom:1px solid #355247}.account-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.account-card{background:#fffdf8;border:1px solid #e2ded3;padding:clamp(25px,4vw,42px)}.account-card h3{font:25px 'Zen Kaku Gothic New',sans-serif;margin:12px 0}.account-card form{display:grid;gap:18px;margin-top:26px}.account-card label{display:block;color:#4c6154;font-size:12px}.account-card input,.account-card select{display:block;width:100%;margin-top:8px;border:1px solid #cac9bd;background:#fffdf8;color:#27302b;padding:13px 14px;font:15px 'Zen Kaku Gothic New',sans-serif}.account-card input:focus,.account-card select:focus{outline:2px solid #789887;outline-offset:2px}.account-card small{color:#788279;font-size:12px}.account-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.account-card .primary-action,.account-card .secondary-action{justify-self:start}.account-auth{width:min(560px,100%);margin:35px auto}.account-tabs{display:flex;border-bottom:1px solid #d8d5c9;margin-top:28px}.account-tabs button{border:0;background:transparent;padding:13px 26px;color:#67746a;cursor:pointer}.account-tabs button[aria-selected=true]{color:#355247;border-bottom:2px solid #355247}.account-message{padding:14px 18px;background:#e5eee5;color:#355247;margin:22px 0}.account-message.error{background:#f9eae5;color:#984d45}.account-text-button,.account-logout{border:0;background:transparent;color:#355247;border-bottom:1px solid #355247;padding:5px 0;cursor:pointer;font-size:12px;margin-top:23px}.account-logout{margin-top:38px}.register-hint{margin:18px 0 0;padding:12px 16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#1e40af}.register-link{color:#2563EB;font-weight:500;background:none;border:none;cursor:pointer;padding:0;font-size:inherit}.register-link:hover{text-decoration:underline}@media(max-width:700px){.account-columns,.account-summary{grid-template-columns:1fr}.account-summary>div{border-right:0;border-bottom:1px solid #d5d1c3}.account-intro{align-items:flex-start}.account-monogram{width:62px;height:62px;flex:none}}
+
+/* ===== Mobile touch-friendly overrides (≤ 640px) ===== */
+@media (max-width: 640px) {
+  .account-page {
+    padding: 0 16px 60px;
+    width: 100%;
+  }
+
+  /* Inputs: ≥ 48px tall, ≥ 16px font (prevents iOS auto-zoom) */
+  .account-card input,
+  .account-card select {
+    height: 48px;
+    font-size: 16px;
+    padding: 12px 16px;
+    border-radius: 6px;
+  }
+
+  /* Buttons: ≥ 48px tall, full width, clear active state */
+  .account-card .primary-action,
+  .account-card .secondary-action,
+  .account-logout,
+  .primary-action,
+  .secondary-action {
+    min-height: 48px;
+    width: 100%;
+    justify-self: stretch;
+    font-size: 15px;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .primary-action:active,
+  .secondary-action:active,
+  .account-logout:active {
+    transform: scale(0.97);
+  }
+
+  /* Tabs: larger hit area, clearer indicator */
+  .account-tabs {
+    gap: 0;
+    margin-top: 24px;
+  }
+  .account-tabs button {
+    flex: 1;
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+  .account-tabs button[aria-selected="true"] {
+    border-bottom-width: 3px;
+    font-weight: 500;
+  }
+
+  /* Auth card: full width on mobile */
+  .account-auth {
+    width: 100%;
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+
+  /* Two-field rows collapse on very small screens */
+  .account-fields {
+    grid-template-columns: 1fr;
+  }
+
+  /* Logged-in summary: single column with bigger tap targets */
+  .account-summary > div {
+    padding: 18px 16px;
+    min-height: 56px;
+  }
+  .account-summary a {
+    display: inline-block;
+    padding: 4px 0;
+  }
+
+  /* Text links / buttons need ≥ 44px tap area */
+  .account-text-button {
+    min-height: 44px;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+
+  .register-hint {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px;
+  }
+  .register-link {
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  
+  /* Spring 动画：Tab 按钮 */
+  .account-tabs button {
+    transition: color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .account-tabs button:active {
+    transform: scale(0.97);
+  }
+  
+  /* Spring 动画：输入框 focus */
+  .account-card input,
+  .account-card select {
+    transition: border-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .account-card input:focus,
+  .account-card select:focus {
+    border-color: #355247;
+    box-shadow: 0 0 0 3px rgba(53, 82, 71, 0.1);
+  }
+}
+
+/* ===== Very small screens (≤ 380px) ===== */
+@media (max-width: 380px) {
+  .account-page {
+    padding: 0 12px 60px;
+  }
+  .account-card {
+    padding: 20px 16px;
+  }
+  .account-auth {
+    padding: 20px 16px;
+  }
+}
+
+/* ===== 骨架屏（移动端账户页） ===== */
+.mob-acct-skeleton {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.mob-acct-sk-intro {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+.mob-acct-sk-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  flex: none;
+}
+.mob-acct-sk-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mob-acct-sk-name {
+  width: 60%;
+  height: 18px;
+  border-radius: 4px;
+}
+.mob-acct-sk-handle {
+  width: 40%;
+  height: 14px;
+  border-radius: 3px;
+}
+.mob-acct-sk-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background: var(--theme-surface-alt, #f5f2e9);
+  border-radius: 12px;
+}
+.mob-acct-sk-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mob-acct-sk-cell-label {
+  width: 80%;
+  height: 12px;
+  border-radius: 3px;
+}
+.mob-acct-sk-cell-value {
+  width: 50%;
+  height: 16px;
+  border-radius: 4px;
+}
+.mob-acct-sk-card {
+  padding: 20px;
+  background: var(--theme-surface, #fffdf8);
+  border: 1px solid var(--theme-border-soft, #e2ded3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mob-acct-sk-heading {
+  width: 50%;
+  height: 18px;
+  border-radius: 4px;
+}
+.mob-acct-sk-input {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+}
+.mob-acct-skinput {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+}
+.mob-acct-sk-btn {
+  width: 120px;
+  height: 44px;
+  border-radius: 8px;
+  margin-top: 4px;
+}
 </style>

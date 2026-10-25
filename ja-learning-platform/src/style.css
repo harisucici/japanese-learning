@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 
 /* ============================================
  * 基础重置
@@ -6,10 +6,14 @@
  * ============================================ */
 
 :root {
-  font-family: 'Zen Kaku Gothic New',sans-serif;
+  font-family: 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#27302b;
   background:#f5f2e9;
-  font-synthesis:none
+  font-synthesis:none;
+  /* 设计 Token — 动效曲线 */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --touch-feedback: transform 0.1s var(--ease-spring);
 }
 
 * {
@@ -76,7 +80,7 @@ button {
 }
 
 .brand-name {
-  font-family: 'Zen Kaku Gothic New',sans-serif;
+  font-family: 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   font-size:19px;
   letter-spacing:.18em;
   line-height:1.15;
@@ -85,7 +89,7 @@ button {
 
 .brand-name small {
   display:block;
-  font:8px 'Zen Kaku Gothic New',sans-serif;
+  font:8px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.2em;
   margin-top:6px
 }
@@ -143,12 +147,12 @@ button {
   display:flex;
   align-items:center;
   border-bottom:1px solid #ffffff35;
-  font:36px 'Zen Kaku Gothic New',sans-serif;
+  font:36px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   padding:20px 0
 }
 
 .menu-inner>a span {
-  font:12px 'Zen Kaku Gothic New',sans-serif;
+  font:12px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   margin-right:30px;
   opacity:.6
 }
@@ -285,7 +289,7 @@ button {
 }
 
 .hero-copy h1 {
-  font:400 clamp(54px,7vw,105px)/1.33 'Zen Kaku Gothic New',sans-serif;
+  font:400 clamp(54px,7vw,105px)/1.33 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.16em;
   margin:27px 0 22px;
   text-shadow:0 2px 20px #14211c44
@@ -365,7 +369,7 @@ button {
 }
 
 .intro h2,.explore h2,.interior-content h2 {
-  font:400 clamp(33px,4vw,58px)/1.55 'Zen Kaku Gothic New',sans-serif;
+  font:400 clamp(33px,4vw,58px)/1.55 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.09em;
   margin:25px 0
 }
@@ -390,7 +394,7 @@ button {
 }
 
 .intro-body p {
-  font:14px/2.6 'Zen Kaku Gothic New',sans-serif;
+  font:14px/2.6 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.1em;
   max-width:350px
 }
@@ -399,7 +403,7 @@ button {
   margin-left:auto;
   border:1px solid #a88b70;
   color:#9a765a;
-  font:18px/1.2 'Zen Kaku Gothic New',sans-serif;
+  font:18px/1.2 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   padding:12px 8px;
   white-space:nowrap
 }
@@ -528,7 +532,7 @@ button {
 }
 
 .card-info h3 {
-  font:26px 'Zen Kaku Gothic New',sans-serif;
+  font:26px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.15em;
   margin:22px 0 13px
 }
@@ -565,7 +569,7 @@ button {
 }
 
 .exam-rules strong {
-  font:20px 'Zen Kaku Gothic New',sans-serif
+  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .exam-rules small {
@@ -584,7 +588,7 @@ button {
 
 .exam-clock span {
   margin-left:auto;
-  font:22px 'Zen Kaku Gothic New',sans-serif
+  font:22px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .exam-clock button {
@@ -657,7 +661,7 @@ button {
 }
 
 .big-quote {
-  font:clamp(30px,3.5vw,49px)/1.7 'Zen Kaku Gothic New',sans-serif;
+  font:clamp(30px,3.5vw,49px)/1.7 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.12em;
   margin:40px 0 24px
 }
@@ -692,7 +696,7 @@ footer {
 }
 
 .footer-top strong {
-  font:20px 'Zen Kaku Gothic New',sans-serif;
+  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.2em
 }
 
@@ -783,7 +787,7 @@ footer {
 }
 
 .interior-head h1 {
-  font:clamp(58px,7vw,92px) 'Zen Kaku Gothic New',sans-serif;
+  font:clamp(58px,7vw,92px) 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.18em;
   margin:20px 0
 }
@@ -857,7 +861,7 @@ footer {
 }
 
 .feature-copy h3 {
-  font:29px 'Zen Kaku Gothic New',sans-serif;
+  font:29px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.12em;
   margin:24px 0
 }
@@ -941,7 +945,7 @@ footer {
 }
 
 .item-list h3 {
-  font:25px 'Zen Kaku Gothic New',sans-serif;
+  font:25px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   margin:9px 0
 }
 
@@ -979,7 +983,7 @@ footer {
 }
 
 .next-path a {
-  font:21px 'Zen Kaku Gothic New',sans-serif;
+  font:21px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#364e43
 }
 
@@ -1091,7 +1095,7 @@ footer {
 }
 
 .list-row h3 {
-  font:25px 'Zen Kaku Gothic New',sans-serif;
+  font:25px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   margin:11px 0
 }
 
@@ -1124,7 +1128,7 @@ footer {
 }
 
 .activity-card h3 {
-  font:26px 'Zen Kaku Gothic New',sans-serif;
+  font:26px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   margin:16px 0
 }
 
@@ -1162,7 +1166,7 @@ footer {
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  font:12px 'Zen Kaku Gothic New',sans-serif;
+  font:12px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   letter-spacing:.08em;
   text-decoration:none;
   white-space:nowrap
@@ -1238,7 +1242,7 @@ footer {
 }
 
 .session-top strong {
-  font:18px 'Zen Kaku Gothic New',sans-serif
+  font:18px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .session-body {
@@ -1248,11 +1252,11 @@ footer {
 }
 
 .session-body h1 {
-  font:clamp(28px,3.6vw,48px)/1.5 'Zen Kaku Gothic New',sans-serif
+  font:clamp(28px,3.6vw,48px)/1.5 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .session-body h2 {
-  font:28px 'Zen Kaku Gothic New',sans-serif
+  font:28px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .session-progress {
@@ -1311,12 +1315,12 @@ footer {
   border:1px solid #cdd2c8;
   background:#fffdf8;
   color:#314b40;
-  font:16px 'Zen Kaku Gothic New',sans-serif;
+  font:16px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   cursor:pointer
 }
 
 .options button span {
-  font:14px 'Zen Kaku Gothic New',sans-serif;
+  font:14px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#9b8466;
   margin-right:20px
 }
@@ -1359,7 +1363,7 @@ footer {
 }
 
 .score-panel strong {
-  font:70px 'Zen Kaku Gothic New',sans-serif;
+  font:70px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#355a4b
 }
 
@@ -1407,12 +1411,12 @@ footer {
 
 .vocab-panel summary {
   cursor:pointer;
-  font:20px 'Zen Kaku Gothic New',sans-serif
+  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .vocab-panel summary span {
   display:block;
-  font:11px 'Zen Kaku Gothic New',sans-serif;
+  font:11px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#888;
   margin-top:8px
 }
@@ -1430,7 +1434,7 @@ footer {
 }
 
 .vocab-grid strong {
-  font:20px 'Zen Kaku Gothic New',sans-serif
+  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .vocab-grid p {
@@ -1480,7 +1484,7 @@ footer {
 
 .reading-text {
   white-space:pre-wrap;
-  font:18px/2 'Zen Kaku Gothic New',sans-serif;
+  font:18px/2 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#35473d
 }
 
@@ -1499,7 +1503,7 @@ footer {
 
 .annotated-text {
   white-space:pre-wrap;
-  font:20px/2.4 'Zen Kaku Gothic New',sans-serif
+  font:20px/2.4 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .ruby-word {
@@ -1532,7 +1536,7 @@ footer {
   color:#fff;
   padding:4px 10px;
   white-space:nowrap;
-  font:13px 'Zen Kaku Gothic New',sans-serif;
+  font:13px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   border-radius:4px
 }
 
@@ -1550,7 +1554,7 @@ footer {
 }
 
 .media-panel h3 {
-  font:20px 'Zen Kaku Gothic New',sans-serif
+  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 .media-panel audio {
@@ -1614,7 +1618,7 @@ footer {
 
 .stats-grid strong {
   display:block;
-  font:30px 'Zen Kaku Gothic New',sans-serif;
+  font:30px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   color:#3a5b4b
 }
 
@@ -1624,7 +1628,7 @@ footer {
 }
 
 .subhead {
-  font:24px 'Zen Kaku Gothic New',sans-serif;
+  font:24px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   margin:50px 0 20px
 }
 
@@ -1685,7 +1689,7 @@ footer {
   border:1px solid #c9c9bc;
   background:#fffdf8;
   color:#314b40;
-  font:17px 'Zen Kaku Gothic New',sans-serif
+  font:17px 'Noto Sans JP', 'Geist', system-ui, sans-serif
 }
 
 /* ============================================
@@ -1708,6 +1712,230 @@ footer {
   }
   .seal {
     display:none
+  }
+}
+
+/* ============================================
+ * 移动端深度重设计 (≤ 768px)
+ * Hero 压缩 + 2x2 模块网格 + 横向滚动推荐
+ * ============================================ */
+@media (max-width: 768px) {
+  /* Hero 区压缩到 40vh，保持品牌氛围但不浪费空间 */
+  .hero {
+    min-height: 40vh !important;
+    max-height: 320px !important;
+    padding: calc(var(--safe-top) + 48px) 5% 32px !important;
+    position: relative;
+  }
+
+  .hero-title {
+    font-size: 28px !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-subtitle {
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+    margin-top: 12px;
+    max-width: 90%;
+    opacity: 0.75;
+  }
+
+  .hero-cta {
+    min-height: 48px;
+    padding: 0 28px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 24px;
+    margin-top: 24px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  }
+
+  .hero-cta:active {
+    transform: scale(0.96);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+  }
+
+  /* Hero 背景装饰浮动动画 */
+  .hero-bg {
+    animation: hero-float 20s ease-in-out infinite;
+  }
+
+  @keyframes hero-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-15px) scale(1.03); }
+  }
+
+  /* 模块网格改为 2x2 */
+  .module-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    padding: 20px 4% 32px !important;
+  }
+
+  /* 模块卡片紧凑化 */
+  .module-card {
+    min-height: 140px !important;
+    padding: 18px 16px !important;
+    border-radius: 16px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-card:active {
+    transform: scale(0.96);
+  }
+
+  /* 卡片序号 — 背景装饰 */
+  .module-card-number {
+    font-size: 36px !important;
+    font-weight: 200 !important;
+    opacity: 0.08 !important;
+    line-height: 1 !important;
+    position: absolute !important;
+    right: 8px !important;
+    top: 8px !important;
+    margin: 0 !important;
+  }
+
+  /* 标题 */
+  .module-card-title {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  /* 描述 — 在 2x2 网格中简化 */
+  .module-card-desc {
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    opacity: 0.6 !important;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* CTA 按钮 */
+  .module-card-cta {
+    min-height: 36px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    font-weight: 500;
+    border-radius: 18px;
+    align-self: flex-start;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .module-card-cta:active {
+    transform: scale(0.94);
+  }
+
+  /* 交错进入动画 */
+  .module-card {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: module-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .module-card:nth-child(1) { animation-delay: 0.05s; }
+  .module-card:nth-child(2) { animation-delay: 0.1s; }
+  .module-card:nth-child(3) { animation-delay: 0.15s; }
+  .module-card:nth-child(4) { animation-delay: 0.2s; }
+
+  @keyframes module-enter {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 推荐区横向滚动 */
+  .recommend-section {
+    padding: 0 0 48px;
+  }
+
+  .recommend-header {
+    padding: 0 4% 16px;
+  }
+
+  .recommend-title {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .recommend-subtitle {
+    font-size: 12px;
+    opacity: 0.5;
+    margin-top: 4px;
+  }
+
+  .recommend-list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 4% 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .recommend-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .recommend-card {
+    flex: 0 0 260px;
+    min-height: 160px;
+    border-radius: 14px;
+    scroll-snap-align: start;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 20px;
+  }
+
+  .recommend-card:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ============================================
+ * 375px 极小屏进一步优化
+ * ============================================ */
+@media (max-width: 375px) {
+  .module-grid {
+    gap: 10px !important;
+    padding: 16px 3% 28px !important;
+  }
+
+  .module-card {
+    min-height: 130px !important;
+    padding: 14px 12px !important;
+  }
+
+  .module-card-title {
+    font-size: 15px !important;
+  }
+
+  .module-card-desc {
+    font-size: 10px !important;
+  }
+
+  .hero {
+    min-height: 35vh !important;
+  }
+
+  .hero-title {
+    font-size: 24px !important;
   }
 }
 
@@ -1912,6 +2140,12 @@ footer {
 /* ============================================
  * 主题系统：CSS 变量支持浅色/深色模式切换
  * ============================================ */
+
+/* 安全区变量 — 适配刘海屏/底部手势条 */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
 
 /* 默认（浅色）主题变量 */
 :root,
@@ -2137,5 +2371,928 @@ rp {
 @media (max-width: 640px) {
   .session-shell {
     padding-bottom: 80px; /* 给底部操作区留出空间 */
+  }
+}
+
+/* ============================================
+ * 手势视觉反馈
+ * ============================================ */
+
+/* 右滑返回箭头 */
+.gesture-back-arrow {
+  position: fixed;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--theme-surface, #fffdf8);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary, #2563EB);
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+/* 下拉刷新指示器 */
+.gesture-refresh-indicator {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--theme-surface, #fffdf8);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary, #2563EB);
+  z-index: 1000;
+  pointer-events: none;
+  animation: gesture-refresh-spin 1s linear infinite;
+}
+
+@keyframes gesture-refresh-spin {
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+/* ============================================
+ * 骨架屏 shimmer 动画
+ * 全局 .skeleton 类，用于页面加载时的占位
+ * ============================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--theme-border-soft, #e2ded3) 0%,
+    var(--theme-surface-alt, #f5f2e9) 40%,
+    var(--theme-border-soft, #e2ded3) 80%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+.skeleton-hero-title {
+  width: 60%;
+  height: 32px;
+  margin-bottom: 12px;
+}
+.skeleton-hero-subtitle {
+  width: 40%;
+  height: 16px;
+  margin-bottom: 24px;
+}
+.skeleton-hero-cta {
+  width: 100%;
+  max-width: 360px;
+  height: 52px;
+}
+.skeleton-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+.skeleton-module-card {
+  min-height: 120px;
+}
+.skeleton-recommend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+.skeleton-recommend-card {
+  min-height: 100px;
+}
+.skeleton-chips-row {
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+}
+.skeleton-chip {
+  width: 60px;
+  height: 36px;
+  flex: none;
+  border-radius: 999px;
+}
+.skeleton-card-lg {
+  min-height: 180px;
+  margin-bottom: 16px;
+}
+.skeleton-stat-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.skeleton-stat-num {
+  width: 60px;
+  height: 32px;
+}
+.skeleton-review-card {
+  min-height: 88px;
+  margin-bottom: 12px;
+}
+.skeleton-stat-grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.skeleton-stat-cell {
+  height: 80px;
+}
+.skeleton-timeline-item {
+  height: 60px;
+  margin-bottom: 12px;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton fade-out */
+.skeleton-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.skeleton-fade-leave-to {
+  opacity: 0;
+}
+
+/* 字号提示 */
+.gesture-fontsize-hint {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(37, 99, 235, 0.9);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  animation: gesture-hint-fade 2s ease;
+}
+
+@keyframes gesture-hint-fade {
+  0%, 80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 桌面端隐藏手势反馈 */
+@media (min-width: 768px) {
+  .gesture-back-arrow,
+  .gesture-refresh-indicator,
+  .gesture-fontsize-hint {
+    display: none;
+  }
+}
+
+/* 移动端全局规则 */
+@media (max-width: 768px) {
+  /* 最小字体约束 */
+  .eyebrow, small, .meta, time, .tag, .badge, .hint { font-size: max(12px, inherit); }
+  
+  /* 统一内容区卡片/列表样式 */
+  .card-grid,
+  .list-grid,
+  .content-list {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .card,
+  .list-item,
+  .content-card {
+    min-height: 88px !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  }
+
+  .card:active,
+  .list-item:active,
+  .content-card:active {
+    transform: scale(0.97);
+  }
+
+  /* 统一按钮触控标准 */
+  button,
+  .btn,
+  .action-btn,
+  [role="button"] {
+    min-height: 44px !important;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  button:active,
+  .btn:active,
+  .action-btn:active,
+  [role="button"]:active {
+    transform: scale(0.97);
+  }
+
+  /* 输入框标准 */
+  input,
+  textarea,
+  select {
+    min-height: 48px !important;
+    padding: 12px 14px !important;
+    font-size: 16px !important;
+    border-radius: 12px;
+    border: 1.5px solid rgba(0,0,0,0.08);
+    background: rgba(255,255,255,0.6);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  /* 芯片/标签标准 */
+  .chip,
+  .tag,
+  .filter-chip,
+  .category-chip,
+  .level-chip,
+  .exam-chip,
+  [class*='chip'] {
+    min-height: 44px !important;
+    padding: 0 18px !important;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 22px;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s;
+  }
+
+  .chip:active,
+  .tag:active,
+  .filter-chip:active,
+  .category-chip:active,
+  .level-chip:active {
+    transform: scale(0.94);
+  }
+
+  /* StatsPage 触控区域修复 */
+  .mob-overview-card,
+  .mob-mistake-header {
+    min-height: 44px !important;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  /* 全局触控反馈 */
+  button, a, [role="button"], .clickable {
+    transition: var(--touch-feedback);
+  }
+  button:active, a:active, [role="button"]:active {
+    transform: scale(0.97);
+  }
+  
+  /* 骨架屏 shimmer */
+  .skeleton {
+    background: linear-gradient(90deg, var(--theme-surface) 25%, var(--theme-border) 50%, var(--theme-surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  
+  /* 移动端 Header — sticky + 毛玻璃 + 安全区 */
+  .site-header {
+    position: sticky !important;
+    top: 0;
+    z-index: 50;
+    padding-top: calc(var(--safe-top) + 8px);
+    padding-bottom: 8px;
+    padding-left: 4%;
+    padding-right: 4%;
+    backdrop-filter: blur(12px) saturate(1.6);
+    -webkit-backdrop-filter: blur(12px) saturate(1.6);
+    background: rgba(245, 242, 233, 0.92);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    height: auto;
+  }
+
+  .site-header .brand-mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .site-header .brand-name {
+    font-size: 15px;
+    letter-spacing: 0.1em;
+  }
+
+  .site-header .brand-name small {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    margin-top: 1px;
+  }
+
+  .menu-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  /* 汉堡菜单图标 — 三条线 */
+  .menu-button span {
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    position: relative;
+    transition: background 0.3s var(--ease-smooth);
+    margin: 0;
+  }
+  .menu-button span::before,
+  .menu-button span::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    left: 0;
+    transition: transform 0.3s var(--ease-spring);
+  }
+  .menu-button span::before { top: -8px; }
+  .menu-button span::after { top: 8px; }
+
+  /* 菜单侧滑动画 — 从右滑入，spring 弹性 */
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: block;
+  }
+
+  .menu-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .menu-inner {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 82%;
+    max-width: 320px;
+    background: rgba(245, 242, 233, 0.98);
+    padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 24px);
+    transform: translateX(100%);
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .menu-overlay.open .menu-inner {
+    transform: translateX(0);
+  }
+
+  .menu-inner .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    opacity: 0.4;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .menu-inner a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .menu-inner a:active {
+    transform: translateX(6px) scale(0.97);
+  }
+
+  .menu-inner a span {
+    font-size: 11px;
+    opacity: 0.35;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    min-width: 24px;
+  }
+
+  .menu-inner a i {
+    margin-left: auto;
+    font-style: normal;
+    opacity: 0.25;
+    font-size: 14px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .menu-inner a:active i {
+    transform: translateX(4px);
+  }
+  /* TabBar 已移除，无需保留相关样式 */
+
+  /* 手势指示器 — 右滑返回 */
+  .gesture-back-indicator {
+    position: fixed;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--theme-surface);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-smooth), transform 0.2s var(--ease-spring);
+    z-index: 100;
+    pointer-events: none;
+  }
+  .gesture-back-indicator.visible {
+    opacity: 1;
+  }
+  .gesture-back-indicator svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* 手势指示器 — 下拉刷新 */
+  .gesture-refresh-indicator {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--theme-surface);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s var(--ease-smooth), transform 0.3s var(--ease-spring);
+    z-index: 100;
+    pointer-events: none;
+  }
+  .gesture-refresh-indicator.visible {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  .gesture-refresh-indicator.refreshing svg {
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* 手势提示 — 字号胶囊 */
+  .gesture-font-hint {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    padding: 8px 20px;
+    border-radius: 20px;
+    background: var(--theme-ink);
+    color: var(--theme-paper);
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-smooth), transform 0.3s var(--ease-spring);
+    z-index: 100;
+    pointer-events: none;
+  }
+  .gesture-font-hint.visible {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  /* 子页面 Hero 极致紧凑化 — 压缩为标题条 */
+  .interior-hero {
+    padding: calc(var(--safe-top) + 64px) 5% 20px !important;
+    min-height: auto !important;
+    height: auto !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 隐藏背景装饰 — 手机上不需要大面积装饰 */
+  .interior-art {
+    display: none !important;
+  }
+
+  /* 紧凑标题区 */
+  .interior-head {
+    max-width: 100%;
+    padding: 0;
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+
+  .interior-head .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  .interior-head h1 {
+    font-size: 24px;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+
+  .interior-head p {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.65;
+    margin-bottom: 0;
+    max-width: 85%;
+    /* 限制描述为2行，多余省略 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .interior-head .history-link {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    letter-spacing: 0.04em;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s;
+    border-bottom: none;
+    padding-bottom: 8px;
+  }
+
+  .interior-head .history-link:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  /* interior-content 紧凑化 */
+  .interior-content {
+    padding: 16px 4% 40px !important;
+  }
+
+  .section-wrap {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* 卡片列表单列 */
+  .card-grid,
+  .list-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* 卡片样式 */
+  .card,
+  .list-item {
+    min-height: 120px;
+    padding: 20px;
+    border-radius: 16px;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+  }
+
+  .card:active,
+  .list-item:active {
+    transform: scale(0.97);
+  }
+
+  /* 按钮样式 */
+  .interior-content button,
+  .interior-content .btn,
+  .interior-content .action-btn {
+    min-height: 48px;
+    padding: 0 24px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 24px;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+  }
+
+  .interior-content button:active,
+  .interior-content .btn:active,
+  .interior-content .action-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 输入框 */
+  .interior-content input,
+  .interior-content textarea,
+  .interior-content select {
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--theme-border, #e5e1d8);
+    transition: border-color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+  }
+
+  .interior-content input:focus,
+  .interior-content textarea:focus,
+  .interior-content select:focus {
+    outline: none;
+    border-color: var(--theme-primary, #2563EB);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  /* 芯片/标签 */
+  .chip,
+  .tag,
+  .filter-chip {
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 22px;
+    transition: transform 0.2s var(--ease-spring), background 0.3s;
+  }
+
+  .chip:active,
+  .tag:active,
+  .filter-chip:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ============================================
+ * 移动端 Part 2：首页 Hero + 模块卡片重设计
+ * 全屏沉浸式 Hero / 单列大卡片 / 横向滚动推荐
+ * ============================================ */
+
+/* —— Hero 区全屏沉浸式 —— */
+@media (max-width: 768px) {
+  .hero {
+    min-height: calc(100dvh - 56px - var(--safe-top));
+    padding: calc(var(--safe-top) + 56px) 5% 40px;
+  }
+
+  .hero-title {
+    font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 16px;
+    max-width: 90%;
+  }
+
+  .hero-cta {
+    min-height: 52px;
+    padding: 0 32px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 26px;
+    margin-top: 32px;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+  }
+
+  .hero-cta:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+
+  /* 背景装饰动画 */
+  .hero-bg {
+    animation: hero-float 20s ease-in-out infinite;
+  }
+
+  @keyframes hero-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+}
+
+/* —— 模块卡片单列大卡片布局 —— */
+@media (max-width: 768px) {
+  .module-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 5% 40px;
+  }
+
+  .module-card {
+    min-height: 180px;
+    padding: 28px 24px;
+    border-radius: 20px;
+    transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease-smooth);
+  }
+
+  .module-card:active {
+    transform: scale(0.97);
+  }
+
+  .module-card-number {
+    font-size: 48px;
+    font-weight: 300;
+    opacity: 0.15;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .module-card-title {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+
+  .module-card-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.7;
+    margin-bottom: 20px;
+  }
+
+  .module-card-cta {
+    min-height: 44px;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 22px;
+    transition: transform 0.3s var(--ease-spring);
+  }
+
+  .module-card-cta:active {
+    transform: scale(0.95);
+  }
+
+  /* 交错进入动画 */
+  .module-card {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: card-enter 0.6s var(--ease-smooth) forwards;
+  }
+
+  .module-card:nth-child(1) { animation-delay: 0.1s; }
+  .module-card:nth-child(2) { animation-delay: 0.2s; }
+  .module-card:nth-child(3) { animation-delay: 0.3s; }
+  .module-card:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes card-enter {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* —— 推荐区横向滚动 —— */
+@media (max-width: 768px) {
+  .recommend-section {
+    padding: 0 0 60px;
+  }
+
+  .recommend-header {
+    padding: 0 5% 24px;
+  }
+
+  .recommend-title {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .recommend-list {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 0 5%;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .recommend-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .recommend-card {
+    flex: 0 0 280px;
+    min-height: 200px;
+    border-radius: 16px;
+    scroll-snap-align: start;
+    transition: transform 0.3s var(--ease-spring);
+  }
+
+  .recommend-card:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ============================================
+ * 移动端 Part 3：全局 Footer 紧凑化
+ * ============================================ */
+@media (max-width: 768px) {
+  footer {
+    padding: 32px 5% calc(var(--safe-bottom) + 24px) !important;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .footer-top > div:first-child {
+    text-align: center;
+  }
+
+  .footer-mark {
+    width: 28px;
+    height: 28px;
+    margin: 0 auto 8px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 16px;
+    margin-top: 0;
+    grid-template-columns: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    padding: 8px 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    padding-top: 16px;
+    margin-top: 0;
+  }
+}
+
+/* ============================================
+ * 系统级 prefers-reduced-motion 支持
+ * ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

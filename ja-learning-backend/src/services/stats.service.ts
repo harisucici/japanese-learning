@@ -45,7 +45,9 @@ export class StatsService {
 
     return {
       totalQuestions,
+      totalAnswered: totalQuestions,
       correctCount,
+      totalCorrect: correctCount,
       accuracy,
       streakDays: 0,
       currentLevel: 'n5',

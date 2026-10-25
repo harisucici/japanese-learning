@@ -16,10 +16,6 @@ const error = ref('')
 const randomLevel = ref('n5')
 const randomCount = ref(10)
 
-/**
- * 按题型练习
- * 调用 sessions 端点创建练习会话
- */
 async function startByType(type) {
   loading.value = true
   error.value = ''
@@ -38,10 +34,6 @@ async function startByType(type) {
   }
 }
 
-/**
- * 按语法练习
- * 调用 sessions 端点创建练习会话
- */
 async function startByGrammar(grammarId) {
   loading.value = true
   error.value = ''
@@ -61,10 +53,6 @@ async function startByGrammar(grammarId) {
   }
 }
 
-/**
- * 错题重练
- * 调用 /practice/mistakes
- */
 async function startMistakes() {
   loading.value = true
   error.value = ''
@@ -79,10 +67,6 @@ async function startMistakes() {
   }
 }
 
-/**
- * 随机练习
- * 调用 /practice/random
- */
 async function startRandom() {
   loading.value = true
   error.value = ''
@@ -101,7 +85,6 @@ async function startRandom() {
   }
 }
 
-// 题型列表
 const questionTypes = [
   { id: 'vocab', name: '词汇', desc: '单词、读音、用法', icon: '辞' },
   { id: 'grammar', name: '语法', desc: '句型、助词、接续', icon: '文' },
@@ -109,7 +92,6 @@ const questionTypes = [
   { id: 'listening', name: '听力', desc: '对话、新闻理解', icon: '聴' }
 ]
 
-// 常用语法分类
 const grammarCategories = [
   { id: 'particles', name: '助词', desc: 'は、が、を、に、で...' },
   { id: 'conjugation', name: '动词变形', desc: 'ます形、て形、た形...' },
@@ -119,7 +101,7 @@ const grammarCategories = [
 </script>
 
 <template>
-  <div class="practice-page">
+  <div class="practice-page mob-practice">
     <section class="hero-simple">
       <div class="hero-copy">
         <p class="eyebrow light">PRACTICE MODE</p>
@@ -129,16 +111,20 @@ const grammarCategories = [
     </section>
 
     <section class="practice-main section-wrap">
-      <div v-if="error" class="state-box error">{{ error }}</div>
-
-      <!-- 按题型练习 -->
-      <h2 class="section-title">按题型练习</h2>
-      <p class="section-desc">选择你想练习的题型，系统会为你生成对应的题目</p>
-      <div class="type-grid">
+      <!-- 骨架屏 -->
+      <div v-if="loading" class="practice-skeleton">
+        <div v-for="i in 3" :key="i" class="skeleton-practice-card"></div>
+      </div>
+      <div v-else-if="error" class="state-box error">{{ error }}</div>
+      <template v-else>
+        <!-- 按题型练习 -->
+        <h2 class="section-title">按题型练习</h2>
+        <p class="section-desc">选择你想练习的题型，系统会为你生成对应的题目</p>
+      <div class="mob-type-grid">
         <button 
           v-for="type in questionTypes" 
           :key="type.id" 
-          class="type-card"
+          class="mob-type-card"
           @click="startByType(type.id)"
           :disabled="loading"
         >
@@ -154,11 +140,11 @@ const grammarCategories = [
       <!-- 按语法练习 -->
       <h2 class="section-title">按语法练习</h2>
       <p class="section-desc">针对特定语法点进行专项练习</p>
-      <div class="grammar-grid">
+      <div class="mob-grammar-grid">
         <button 
           v-for="grammar in grammarCategories" 
           :key="grammar.id" 
-          class="grammar-card"
+          class="mob-grammar-card"
           @click="startByGrammar(grammar.id)"
           :disabled="loading"
         >
@@ -171,7 +157,7 @@ const grammarCategories = [
       <!-- 错题重练 -->
       <h2 class="section-title">错题重练</h2>
       <p class="section-desc">重新练习之前做错的题目，巩固薄弱点</p>
-      <button class="mistakes-btn" @click="startMistakes" :disabled="loading">
+      <button class="mob-mistakes-btn" @click="startMistakes" :disabled="loading">
         <div class="mistakes-icon">△</div>
         <div class="mistakes-info">
           <h3>错题重练</h3>
@@ -183,8 +169,8 @@ const grammarCategories = [
       <!-- 随机练习 -->
       <h2 class="section-title">随机练习</h2>
       <p class="section-desc">设置等级和数量，开始随机练习</p>
-      <div class="random-settings">
-        <div class="setting-group">
+      <div class="mob-random-settings">
+        <div class="mob-setting-group">
           <label>难度等级</label>
           <select v-model="randomLevel" :disabled="loading">
             <option value="n5">N5 - 入门</option>
@@ -194,7 +180,7 @@ const grammarCategories = [
             <option value="n1">N1 - 高级</option>
           </select>
         </div>
-        <div class="setting-group">
+        <div class="mob-setting-group">
           <label>题目数量</label>
           <select v-model="randomCount" :disabled="loading">
             <option :value="5">5 题</option>
@@ -204,10 +190,11 @@ const grammarCategories = [
             <option :value="30">30 题</option>
           </select>
         </div>
-        <button class="random-start" @click="startRandom" :disabled="loading">
+        <button class="mob-random-start" @click="startRandom" :disabled="loading">
           开始随机练习 →
         </button>
       </div>
+      </template>
 
       <div v-if="loading" class="loading-overlay">
         <div class="loading-text">正在生成练习…</div>
@@ -218,7 +205,7 @@ const grammarCategories = [
 
 <style scoped>
 .hero-simple {
-  height: 300px;
+  height: 240px;
   position: relative;
   overflow: hidden;
   background: #536b69;
@@ -230,189 +217,217 @@ const grammarCategories = [
 }
 
 .hero-copy {
-  padding: 0 5.7%;
+  padding: 0 20px;
+}
+
+.hero-copy h1 {
+  font-size: 28px;
+  margin: 8px 0;
+}
+
+.hero-copy p {
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 .practice-main {
-  padding-top: 60px;
-  padding-bottom: 60px;
-  position: relative;
+  padding: 40px 20px;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .section-title {
-  font: 24px 'Zen Kaku Gothic New', sans-serif;
-  margin: 0 0 12px;
+  font: 600 20px 'Zen Kaku Gothic New', sans-serif;
+  margin: 0 0 8px;
   color: #27302b;
 }
 
 .section-desc {
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.7;
   color: #67746a;
-  margin: 0 0 30px;
+  margin: 0 0 24px;
 }
 
-.type-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin: 0 0 60px;
+/* 题型卡片 - 单列，120px 高 */
+.mob-type-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 40px;
 }
 
-.type-card {
+.mob-type-card {
   background: #fffdf8;
-  padding: 30px;
+  padding: 20px 24px;
   border: 1px solid #e3e0d4;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   text-align: left;
+  min-height: 120px;
+  touch-action: manipulation;
 }
 
-.type-card:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -12px rgba(37, 99, 235, 0.15);
+.mob-type-card:hover:not(:disabled) {
   border-color: #2563EB;
+  box-shadow: 0 4px 12px -4px rgba(37, 99, 235, 0.15);
 }
 
-.type-card:disabled {
+.mob-type-card:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mob-type-card:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 .type-icon {
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
   background: #2563EB;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 28px 'Zen Kaku Gothic New', sans-serif;
+  font: 24px 'Zen Kaku Gothic New', sans-serif;
   flex-shrink: 0;
 }
 
 .type-info {
   flex: 1;
+  min-width: 0;
 }
 
 .type-info h3 {
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
 
 .type-info p {
   font-size: 13px;
   color: #67746a;
   margin: 0;
+  line-height: 1.5;
 }
 
 .type-arrow {
-  font-size: 24px;
+  font-size: 20px;
   color: #2563EB;
-  transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
-.type-card:hover:not(:disabled) .type-arrow {
-  transform: translateX(6px);
+/* 语法卡片 - 单列 */
+.mob-grammar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
 }
 
-.grammar-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin: 0 0 60px;
-}
-
-.grammar-card {
+.mob-grammar-card {
   background: #fffdf8;
-  padding: 30px;
+  padding: 20px 24px;
   border: 1px solid #e3e0d4;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   text-align: left;
+  touch-action: manipulation;
 }
 
-.grammar-card:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -12px rgba(5, 150, 105, 0.15);
+.mob-grammar-card:hover:not(:disabled) {
   border-color: #059669;
+  box-shadow: 0 4px 12px -4px rgba(5, 150, 105, 0.15);
 }
 
-.grammar-card:disabled {
+.mob-grammar-card:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mob-grammar-card:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.grammar-card h3 {
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
+.mob-grammar-card h3 {
+  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
-  margin: 0 0 10px;
+  margin: 0 0 6px;
 }
 
-.grammar-card p {
+.mob-grammar-card p {
   font-size: 13px;
   color: #67746a;
-  line-height: 1.6;
-  margin: 0 0 16px;
+  line-height: 1.5;
+  margin: 0 0 10px;
 }
 
 .grammar-arrow {
   font-size: 13px;
   color: #059669;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
-.mistakes-btn {
+/* 错题重练按钮 */
+.mob-mistakes-btn {
   width: 100%;
   background: #fffdf8;
-  padding: 30px;
+  padding: 20px 24px;
   border: 1px solid #e3e0d4;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   text-align: left;
-  margin: 0 0 60px;
+  margin-bottom: 40px;
+  touch-action: manipulation;
 }
 
-.mistakes-btn:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -12px rgba(217, 119, 6, 0.15);
+.mob-mistakes-btn:hover:not(:disabled) {
   border-color: #d97706;
+  box-shadow: 0 4px 12px -4px rgba(217, 119, 6, 0.15);
 }
 
-.mistakes-btn:disabled {
+.mob-mistakes-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mob-mistakes-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 .mistakes-icon {
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
   background: #d97706;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: 28px;
   flex-shrink: 0;
 }
 
 .mistakes-info {
   flex: 1;
+  min-width: 0;
 }
 
 .mistakes-info h3 {
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
 
 .mistakes-info p {
@@ -424,64 +439,78 @@ const grammarCategories = [
 .mistakes-arrow {
   font-size: 13px;
   color: #d97706;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
 }
 
-.random-settings {
+/* 随机练习设置 */
+.mob-random-settings {
   background: #fffdf8;
-  padding: 40px;
+  padding: 24px;
   border: 1px solid #e3e0d4;
+  border-radius: 12px;
   display: flex;
-  gap: 30px;
-  align-items: flex-end;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.setting-group {
-  flex: 1;
-  min-width: 200px;
+.mob-setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.setting-group label {
-  display: block;
-  font: 14px 'Zen Kaku Gothic New', sans-serif;
+.mob-setting-group label {
+  font: 500 14px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
-  margin-bottom: 10px;
 }
 
-.setting-group select {
+.mob-setting-group select {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid #c9c9bd;
+  border-radius: 10px;
   background: #fff;
-  font: 14px 'Zen Kaku Gothic New', sans-serif;
+  font: 15px 'Zen Kaku Gothic New', sans-serif;
   color: #27302b;
   cursor: pointer;
+  min-height: 48px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2367746a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
 }
 
-.setting-group select:disabled {
+.mob-setting-group select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.random-start {
-  padding: 14px 30px;
+.mob-random-start {
+  width: 100%;
+  padding: 16px;
   background: #2563EB;
   color: white;
   border: none;
-  font: 14px 'Zen Kaku Gothic New', sans-serif;
-  letter-spacing: 0.08em;
+  border-radius: 12px;
+  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 48px;
+  touch-action: manipulation;
 }
 
-.random-start:hover:not(:disabled) {
+.mob-random-start:hover:not(:disabled) {
   background: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px -8px rgba(37, 99, 235, 0.4);
 }
 
-.random-start:disabled {
+.mob-random-start:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mob-random-start:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -505,27 +534,109 @@ const grammarCategories = [
   letter-spacing: 0.1em;
 }
 
-@media (max-width: 968px) {
-  .type-grid,
-  .grammar-grid {
-    grid-template-columns: 1fr;
+/* 骨架屏样式 */
+.practice-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skeleton-practice-card {
+  background: #fffdf8;
+  border: 1px solid #e3e0d4;
+  border-radius: 12px;
+  min-height: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-practice-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 242, 233, 0.4),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 平板及以上桌面端样式 */
+@media (min-width: 768px) {
+  .practice-main {
+    padding: 60px 40px;
+    max-width: 900px;
   }
-  
-  .random-settings {
-    flex-direction: column;
-    align-items: stretch;
+
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 12px;
   }
-  
-  .random-start {
-    width: 100%;
+
+  .section-desc {
+    margin-bottom: 30px;
+  }
+
+  .mob-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .mob-grammar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .mob-random-settings {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 30px;
+  }
+
+  .mob-setting-group {
+    flex: 1;
+  }
+
+  .mob-random-start {
+    width: auto;
+    min-width: 180px;
   }
 }
 
-@media (max-width: 640px) {
-  .type-card,
-  .grammar-card,
-  .mistakes-btn {
-    padding: 24px;
+/* 交错进入动画 */
+@media (max-width: 768px) {
+  .mob-grammar-card,
+  .mob-mistakes-btn {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: item-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .mob-grammar-card:nth-child(1),
+  .mob-mistakes-btn:nth-child(1) { animation-delay: 0.05s; }
+  .mob-grammar-card:nth-child(2),
+  .mob-mistakes-btn:nth-child(2) { animation-delay: 0.1s; }
+  .mob-grammar-card:nth-child(3),
+  .mob-mistakes-btn:nth-child(3) { animation-delay: 0.15s; }
+  .mob-grammar-card:nth-child(4),
+  .mob-mistakes-btn:nth-child(4) { animation-delay: 0.2s; }
+  .mob-grammar-card:nth-child(5),
+  .mob-mistakes-btn:nth-child(5) { animation-delay: 0.25s; }
+
+  @keyframes item-enter {
+    to { opacity: 1; transform: translateY(0); }
   }
 }
 </style>

@@ -61,100 +61,103 @@ async function start(p) {
 </script>
 
 <template>
-  <div class="content-page">
-    <!-- 模式切换区 -->
-    <div class="mode-switcher">
-      <div class="mode-info">
-        <p class="eyebrow">EXAM MODE</p>
-        <h2>选择模式</h2>
-      </div>
-      <div class="mode-options">
-        <button
-          type="button"
-          :class="{ active: mode === 'exam' }"
-          @click="setMode('exam')"
-        >
-          <span class="mode-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
-          </span>
-          <span class="mode-text">
-            <strong>仿真考试</strong>
-            <small>严格计时，中途不可暂停</small>
-          </span>
-        </button>
-        <button
-          type="button"
-          :class="{ active: mode === 'practice' }"
-          @click="setMode('practice')"
-        >
-          <span class="mode-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-            </svg>
-          </span>
-          <span class="mode-text">
-            <strong>练习模式</strong>
-            <small>可暂停、可回看解析</small>
-          </span>
-        </button>
-      </div>
-      <p class="mode-hint">
-        {{ mode === 'exam'
-          ? '仿真模式：计时严格，听力播放时锁定界面，交卷后统一查看讲解。'
-          : '练习模式：可随时暂停，答题后立即显示解析，适合日常巩固。' }}
-      </p>
+  <div class="content-page exam-mobile">
+    <!-- Tab 模式切换 -->
+    <div class="mob-mode-tabs">
+      <button
+        type="button"
+        :class="['mob-tab', { active: mode === 'exam' }]"
+        @click="setMode('exam')"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </svg>
+        仿真考试
+      </button>
+      <button
+        type="button"
+        :class="['mob-tab', { active: mode === 'practice' }]"
+        @click="setMode('practice')"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+        </svg>
+        练习模式
+      </button>
     </div>
+    <p class="mob-mode-hint">
+      {{ mode === 'exam'
+        ? '仿真模式：计时严格，听力播放时锁定界面，交卷后统一查看讲解。'
+        : '练习模式：可随时暂停，答题后立即显示解析，适合日常巩固。' }}
+    </p>
 
-    <div class="section-top">
+    <div class="mob-header">
       <p class="eyebrow">JLPT EXAM PRACTICE</p>
-      <span>真题模拟</span>
+      <h2>真题模拟</h2>
+      <p class="mob-lead">仅开放已核验完整试卷。科目计时由后端保存，刷新不会重置。</p>
     </div>
-    <h2>把练习，<em>交给时间。</em></h2>
-    <p class="page-lead">仅开放已核验完整试卷。科目计时由后端保存，刷新不会重置。</p>
 
-    <div v-if="loading" class="state-box">正在读取试卷…</div>
+    <!-- 骨架屏：加载时展示 3 张试卷卡片骨架 -->
+    <div v-if="loading" class="mob-skeleton-list">
+      <div v-for="n in 3" :key="n" class="mob-skeleton-card">
+        <div class="mob-sk-head">
+          <div class="mob-sk-idx shimmer"></div>
+          <div class="mob-sk-meta">
+            <div class="mob-sk-small shimmer"></div>
+            <div class="mob-sk-title shimmer"></div>
+          </div>
+        </div>
+        <div class="mob-sk-note shimmer"></div>
+        <div class="mob-sk-note short shimmer"></div>
+        <div class="mob-sk-btn shimmer"></div>
+      </div>
+    </div>
     <div v-else-if="error" class="state-box error">
       {{ error }} <button @click="load">重试</button>
     </div>
 
     <template v-if="data">
-      <div class="filters">
+      <!-- 等级筛选 -->
+      <div class="mob-level-chips">
         <button
           v-for="l in ['n5','n4','n3','n2','n1']"
           :key="l"
-          :class="{ chosen: level === l }"
+          :class="['mob-chip', { chosen: level === l }]"
           @click="level = l"
         >{{ l.toUpperCase() }}</button>
       </div>
 
-      <div class="exam-rules">
+      <!-- 科目时长 -->
+      <div class="mob-rules-card">
         <strong>官方科目时长</strong>
         <span v-for="r in data.rules?.[level] || []" :key="r.title">
           {{ r.title }} · {{ r.minutes }} 分钟
         </span>
-        <small>有考试年月的历年卷使用对应时期规则；科目之间不结转剩余时间。</small>
       </div>
 
-      <label v-if="mode === 'exam'" class="feedback-toggle">
+      <label v-if="mode === 'exam'" class="mob-feedback-toggle">
         <input v-model="feedback" type="checkbox">
-        答错后立即显示答案和讲解
-        <small>默认关闭，交卷后统一查看。</small>
+        <span>
+          答错后立即显示答案和讲解
+          <small>默认关闭，交卷后统一查看。</small>
+        </span>
       </label>
 
-      <div class="item-list">
-        <article v-for="(p, i) in papers" :key="p.id" class="list-row">
-          <span class="item-index">{{ String(i + 1).padStart(2, '0') }}</span>
-          <div>
-            <small>{{ p.level?.toUpperCase() }} · {{ p.examYear || '官方问题集' }}</small>
-            <h3>{{ p.title }}</h3>
-            <p>{{ p.verificationNote }}</p>
+      <!-- 试卷卡片列表 -->
+      <div class="mob-paper-list">
+        <article v-for="(p, i) in papers" :key="p.id" class="mob-paper-card">
+          <div class="mob-paper-head">
+            <span class="mob-paper-idx">{{ String(i + 1).padStart(2, '0') }}</span>
+            <div class="mob-paper-meta">
+              <small>{{ p.level?.toUpperCase() }} · {{ p.examYear || '官方问题集' }}</small>
+              <h3>{{ p.title }}</h3>
+            </div>
           </div>
+          <p class="mob-paper-note">{{ p.verificationNote }}</p>
           <button
-            class="primary-action"
+            class="mob-paper-btn"
             :disabled="!p.ready || !!starting"
             @click="start(p)"
           >
@@ -171,107 +174,367 @@ async function start(p) {
 </template>
 
 <style scoped>
-/* 模式切换区 */
-.mode-switcher {
-  background: var(--theme-surface, #fffdf8);
-  border: 1px solid var(--theme-border, #d1ccb8);
-  border-radius: 12px;
-  padding: 28px 32px;
-  margin: 32px 0 40px;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-template-rows: auto auto;
-  gap: 24px 32px;
-  align-items: start;
+.exam-mobile {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
 }
-.mode-info .eyebrow {
-  margin: 0 0 6px;
-}
-.mode-info h2 {
-  font: 500 22px 'Zen Kaku Gothic New', sans-serif;
-  letter-spacing: 0.06em;
-  margin: 0;
-  color: var(--theme-text, #27302b);
-}
-.mode-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  grid-row: 1 / 3;
-}
-.mode-options button {
+
+/* Tab 模式切换 - 48px 高 */
+.mob-mode-tabs {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px 18px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
   border: 1px solid var(--theme-border, #d1ccb8);
+  background: var(--theme-surface, #fffdf8);
+}
+.mob-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
   background: transparent;
   cursor: pointer;
-  text-align: left;
-  border-radius: 10px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  color: var(--theme-text, #27302b);
-}
-.mode-options button:hover {
-  border-color: var(--season-accent, #57718c);
-  background: color-mix(in srgb, var(--season-accent, #57718c) 5%, transparent);
-}
-.mode-options button.active {
-  border-color: var(--season-accent, #57718c);
-  background: color-mix(in srgb, var(--season-accent, #57718c) 10%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--season-accent, #57718c) 14%, transparent);
-}
-.mode-icon {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--season-accent, #57718c) 13%, transparent);
-  color: var(--season-accent, #57718c);
-  flex: none;
-}
-.mode-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.mode-text strong {
-  font: 500 14px 'Zen Kaku Gothic New', sans-serif;
-  letter-spacing: 0.04em;
-}
-.mode-text small {
-  font-size: 11px;
+  font: 500 14px/1 'Zen Kaku Gothic New', sans-serif;
   color: var(--theme-text-secondary, #67746a);
-  line-height: 1.5;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
 }
-.mode-hint {
-  grid-column: 1 / -1;
-  margin: 0;
-  padding-top: 16px;
-  border-top: 1px dashed var(--theme-border, #e2ded3);
+.mob-tab.active {
+  background: var(--season-accent, #57718c);
+  color: #fff;
+  font-weight: 600;
+}
+.mob-mode-hint {
   font-size: 12px;
   line-height: 1.8;
   color: var(--theme-text-secondary, #67746a);
-  letter-spacing: 0.03em;
+  margin: 12px 0 24px;
+  padding: 0 4px;
+  letter-spacing: 0.02em;
 }
 
-@media (max-width: 900px) {
-  .mode-switcher {
-    grid-template-columns: 1fr;
+.mob-header {
+  margin-bottom: 24px;
+}
+.mob-header h2 {
+  font: 600 22px/1.4 'Zen Kaku Gothic New', sans-serif;
+  color: var(--theme-text, #27302b);
+  margin: 6px 0 8px;
+}
+.mob-lead {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--theme-text-secondary, #67746a);
+  margin: 0;
+}
+
+/* 等级筛选 */
+.mob-level-chips {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.mob-chip {
+  min-width: 52px;
+  min-height: 44px !important;
+  height: auto;
+  border: 1px solid var(--theme-border, #d1ccb8);
+  background: var(--theme-surface, #fffdf8);
+  border-radius: 20px;
+  font: 600 13px 'Zen Kaku Gothic New', sans-serif;
+  color: var(--theme-text-secondary, #67746a);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.mob-chip.chosen {
+  background: var(--season-accent, #57718c);
+  color: #fff;
+  border-color: var(--season-accent, #57718c);
+}
+
+/* 科目时长 */
+.mob-rules-card {
+  background: var(--theme-surface-alt, #f8f6ee);
+  border: 1px solid var(--theme-border, #e2ded3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #67746a);
+}
+.mob-rules-card strong {
+  color: var(--theme-text, #27302b);
+  font-size: 13px;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+/* 反馈开关 */
+.mob-feedback-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--theme-surface, #fffdf8);
+  border: 1px solid var(--theme-border, #e2ded3);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--theme-text, #27302b);
+  line-height: 1.5;
+}
+.mob-feedback-toggle input {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.mob-feedback-toggle small {
+  display: block;
+  font-size: 12px;
+  color: var(--theme-text-secondary, #67746a);
+  margin-top: 2px;
+}
+
+/* 试卷卡片列表 */
+.mob-paper-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.mob-paper-card {
+  background: var(--theme-surface, #fffdf8);
+  border: 1px solid var(--theme-border, #d1ccb8);
+  border-radius: 14px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+.mob-paper-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.mob-paper-idx {
+  font: 700 14px/1 'Zen Kaku Gothic New', sans-serif;
+  color: var(--season-accent, #57718c);
+  background: color-mix(in srgb, var(--season-accent, #57718c) 10%, transparent);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.mob-paper-meta small {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #67746a);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mob-paper-meta h3 {
+  font: 500 16px/1.4 'Zen Kaku Gothic New', sans-serif;
+  color: var(--theme-text, #27302b);
+  margin: 4px 0 0;
+}
+.mob-paper-note {
+  font-size: 13px;
+  color: var(--theme-text-secondary, #67746a);
+  line-height: 1.6;
+  margin: 12px 0 16px;
+}
+.mob-paper-btn {
+  display: block;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 10px;
+  background: var(--season-accent, #57718c);
+  color: #fff;
+  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mob-paper-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+.mob-paper-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 骨架屏：加载时展示 3 张试卷卡片骨架 */
+.mob-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.mob-skeleton-card {
+  background: var(--theme-surface, #fffdf8);
+  border: 1px solid var(--theme-border, #d1ccb8);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.mob-sk-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mob-sk-idx {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.mob-sk-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mob-sk-small {
+  width: 40%;
+  height: 12px;
+  border-radius: 6px;
+}
+
+.mob-sk-title {
+  width: 70%;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.mob-sk-note {
+  width: 100%;
+  height: 13px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.mob-sk-note.short {
+  width: 85%;
+  margin-bottom: 16px;
+}
+
+.mob-sk-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+}
+
+/* Shimmer 动画 */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
-  .mode-options {
-    grid-row: auto;
+  100% {
+    background-position: 200% 0;
   }
 }
 
-@media (max-width: 640px) {
-  .mode-switcher {
-    padding: 22px 20px;
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--theme-surface-alt, #f5f2e9) 0%,
+    var(--theme-surface, #fffdf8) 50%,
+    var(--theme-surface-alt, #f5f2e9) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Spring 过渡变量 */
+:root {
+  --spring-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-duration: 200ms;
+}
+
+/* Tab 模式切换 Spring 过渡 */
+.mob-mode-tabs {
+  transition: all var(--spring-duration) var(--spring-ease);
+}
+
+.mob-tab {
+  transition: all var(--spring-duration) var(--spring-ease);
+}
+
+.mob-tab:active {
+  transform: scale(0.97);
+}
+
+/* 试卷卡片 Spring 过渡 + :active 缩放 */
+.mob-paper-card {
+  transition: all var(--spring-duration) var(--spring-ease);
+}
+
+.mob-paper-card:active {
+  transform: scale(0.97);
+}
+
+/* 等级筛选 Spring 过渡 */
+.mob-chip {
+  transition: all var(--spring-duration) var(--spring-ease);
+}
+
+.mob-chip:active {
+  transform: scale(0.97);
+}
+
+/* 开始按钮 Spring 过渡 + :active 缩放 */
+.mob-paper-btn {
+  transition: all var(--spring-duration) var(--spring-ease);
+}
+
+.mob-paper-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Desktop 保留原有样式的兼容性 */
+@media (min-width: 641px) {
+  .exam-mobile {
+    max-width: 800px;
+    padding: 24px 32px;
   }
-  .mode-options {
-    grid-template-columns: 1fr;
+  .mob-paper-card {
+    padding: 24px 28px;
+  }
+}
+
+/* 交错进入动画 */
+@media (max-width: 768px) {
+  .mob-paper-card {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: item-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .mob-paper-card:nth-child(1) { animation-delay: 0.05s; }
+  .mob-paper-card:nth-child(2) { animation-delay: 0.1s; }
+  .mob-paper-card:nth-child(3) { animation-delay: 0.15s; }
+  .mob-paper-card:nth-child(4) { animation-delay: 0.2s; }
+  .mob-paper-card:nth-child(5) { animation-delay: 0.25s; }
+
+  @keyframes item-enter {
+    to { opacity: 1; transform: translateY(0); }
   }
 }
 </style>

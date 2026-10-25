@@ -20,7 +20,7 @@ export const config = {
   passwordResetFrom: process.env.PASSWORD_RESET_FROM || '',
   publicAppUrl: process.env.PUBLIC_APP_URL || '',
   audioPublicBaseUrl: process.env.AUDIO_PUBLIC_BASE_URL || (process.env.CLOUDINARY_CLOUD_NAME ? `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload/ja-learning/audio` : ''),
-  frontendOrigins: (process.env.FRONTEND_ORIGINS || 'http://localhost:4173,http://localhost:5173').split(',').map(origin => origin.trim()).filter(Boolean),
+  frontendOrigins: (process.env.FRONTEND_ORIGINS || 'http://localhost:4173,http://localhost:5173,http://localhost:8080').split(',').map(origin => origin.trim()).filter(Boolean),
   databaseUrl: process.env.DATABASE_URL || 'file:./dev.db',
   serveFrontend: process.env.SERVE_FRONTEND === 'true',
 };

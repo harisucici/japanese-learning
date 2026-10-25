@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [vue()],
     server: {
+      host: true,
       proxy: {
         '/api/core': {
           target: proxyTarget,

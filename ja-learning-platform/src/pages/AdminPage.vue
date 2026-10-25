@@ -85,19 +85,156 @@ onMounted(async () => { await auth.check(); await load() })
 </script>
 
 <template>
-  <div class="content-page admin-page"><div class="section-top"><p class="eyebrow">CONTENT REVIEW</p><span>仅管理员可访问</span></div>
+  <div class="content-page admin-page">
+    <div class="mob-admin-head">
+      <p class="eyebrow">CONTENT REVIEW</p>
+      <h2>题库管理</h2>
+      <p class="mob-admin-lead">仅管理员可访问。请核对来源、答案和解析后再决定是否发布。</p>
+    </div>
+
     <div v-if="auth.loading" class="state-box">正在核对管理权限…</div>
-    <div v-else-if="auth.user?.role!=='admin'" class="state-box error">此页面需要管理员账户。<RouterLink to="/account">返回我的账户 ↗</RouterLink></div>
-    <template v-else><div v-if="error" class="state-box error" role="alert">{{error}} <button @click="load">重试</button></div><div v-if="notice" class="admin-notice" role="status">{{notice}}</div>
-      <div class="admin-toolbar"><div><label>等级<select v-model="filters.level"><option value="">全部等级</option><option v-for="level in ['n5','n4','n3','n2','n1']" :key="level" :value="level">{{level.toUpperCase()}}</option></select></label><label>状态<select v-model="filters.status"><option value="">全部状态</option><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已归档</option></select></label></div><span>共 {{total}} 道题</span></div>
-      <div v-if="loading" class="state-box">正在读取题库…</div><div v-else-if="!items.length" class="state-box">当前筛选下没有题目。</div><div v-else class="admin-list"><article v-for="item in items" :key="item.id" class="admin-row"><div><small>{{item.level?.toUpperCase()}} · {{item.type}} · {{item.source}} · {{item.status}}</small><h3>{{item.content}}</h3><p>ID {{item.id}}</p></div><button class="secondary-action" @click="inspect(item.id)">查看与审核 ↗</button></article></div>
-      <div class="admin-pages"><button :disabled="offset===0" @click="offset-=20;load()">← 上一页</button><span>{{offset+1}}–{{Math.min(offset+20,total)}} / {{total}}</span><button :disabled="offset+20>=total" @click="offset+=20;load()">下一页 →</button></div>
-      <details class="admin-import"><summary>导入结构化题目</summary><p>粘贴题目数组或含 items 数组的 JSON。导入结果需要人工核对来源、答案和解析，再决定是否发布。</p><textarea v-model="importText" rows="8" spellcheck="false" placeholder='[{"level":"n5","type":"grammar",...}]'></textarea><button class="primary-action" :disabled="busy || !importText.trim()" @click="importQuestions">检查并导入</button></details>
-      <div v-if="selected" class="admin-shade" @click.self="selected=null"><section class="admin-detail" role="dialog" aria-modal="true" aria-label="题目审核"><button class="admin-close" aria-label="关闭" @click="selected=null">×</button><p class="eyebrow">QUESTION / {{selected.level?.toUpperCase()}}</p><h2>{{selected.content}}</h2><p class="admin-meta">{{selected.type}} · {{selected.source}} · {{selected.status}}</p><h3>选项与答案</h3><ul><li v-for="option in selected.options || []" :key="option.id" :class="{correct:option.id===selected.answer}">{{option.content}} <span v-if="option.id===selected.answer">✓ 标准答案</span></li></ul><h3>来源与解析</h3><pre>{{JSON.stringify(selected.provenance || {},null,2)}}</pre><p>{{selected.explanation?.translation || '尚无翻译与解析。'}}</p><p v-if="!readyForPublish(selected)" class="admin-warning">答案、来源、句子结构或逐项解析尚未齐全，暂不能发布。</p><button v-if="selected.status==='published'" class="secondary-action" :disabled="busy" @click="setPublished(selected,false)">撤回题目</button><button v-else class="primary-action" :disabled="busy || !readyForPublish(selected)" @click="setPublished(selected,true)">发布题目</button></section></div>
+    <div v-else-if="auth.user?.role !== 'admin'" class="state-box error">
+      此页面需要管理员账户。<RouterLink to="/account">返回我的账户 ↗</RouterLink>
+    </div>
+
+    <template v-else>
+      <div v-if="error" class="state-box error" role="alert">
+        {{ error }} <button @click="load">重试</button>
+      </div>
+      <div v-if="notice" class="admin-notice" role="status">{{ notice }}</div>
+
+      <div class="mob-admin-toolbar">
+        <div class="mob-toolbar-filters">
+          <label class="mob-filter">
+            <span>等级</span>
+            <select v-model="filters.level">
+              <option value="">全部等级</option>
+              <option v-for="level in ['n5','n4','n3','n2','n1']" :key="level" :value="level">
+                {{ level.toUpperCase() }}
+              </option>
+            </select>
+          </label>
+          <label class="mob-filter">
+            <span>状态</span>
+            <select v-model="filters.status">
+              <option value="">全部状态</option>
+              <option value="draft">草稿</option>
+              <option value="published">已发布</option>
+              <option value="archived">已归档</option>
+            </select>
+          </label>
+        </div>
+        <span class="mob-total-count">共 {{ total }} 道题</span>
+      </div>
+
+      <div v-if="loading" class="mob-skeleton-list">
+        <div v-for="n in 3" :key="n" class="mob-admin-row shimmer-card">
+          <div class="mob-row-content">
+            <div class="mob-sk-meta shimmer"></div>
+            <div class="mob-sk-title shimmer"></div>
+            <div class="mob-sk-id shimmer"></div>
+          </div>
+          <div class="mob-sk-btn shimmer"></div>
+        </div>
+      </div>
+      <div v-else-if="!items.length" class="state-box">当前筛选下没有题目。</div>
+      <div v-else class="mob-admin-list">
+        <article v-for="item in items" :key="item.id" class="mob-admin-row">
+          <div class="mob-row-content">
+            <small>{{ item.level?.toUpperCase() }} · {{ item.type }} · {{ item.source }} · {{ item.status }}</small>
+            <h3>{{ item.content }}</h3>
+            <p>ID {{ item.id }}</p>
+          </div>
+          <button class="mob-row-btn secondary-action" @click="inspect(item.id)">查看与审核 ↗</button>
+        </article>
+      </div>
+
+      <div class="mob-admin-pages">
+        <button :disabled="offset === 0" @click="offset -= 20; load()">← 上一页</button>
+        <span>{{ offset + 1 }}–{{ Math.min(offset + 20, total) }} / {{ total }}</span>
+        <button :disabled="offset + 20 >= total" @click="offset += 20; load()">下一页 →</button>
+      </div>
+
+      <details class="mob-admin-import">
+        <summary>导入结构化题目</summary>
+        <p>粘贴题目数组或含 items 数组的 JSON。导入结果需要人工核对来源、答案和解析，再决定是否发布。</p>
+        <textarea v-model="importText" rows="8" spellcheck="false" placeholder='[{"level":"n5","type":"grammar",...}]'></textarea>
+        <button class="primary-action" :disabled="busy || !importText.trim()" @click="importQuestions">
+          检查并导入
+        </button>
+      </details>
+
+      <div v-if="selected" class="admin-shade" @click.self="selected = null">
+        <section class="admin-detail" role="dialog" aria-modal="true" aria-label="题目审核">
+          <button class="admin-close" aria-label="关闭" @click="selected = null">×</button>
+          <p class="eyebrow">QUESTION / {{ selected.level?.toUpperCase() }}</p>
+          <h2>{{ selected.content }}</h2>
+          <p class="admin-meta">{{ selected.type }} · {{ selected.source }} · {{ selected.status }}</p>
+          <h3>选项与答案</h3>
+          <ul>
+            <li v-for="option in selected.options || []" :key="option.id" :class="{ correct: option.id === selected.answer }">
+              {{ option.content }}
+              <span v-if="option.id === selected.answer">✓ 标准答案</span>
+            </li>
+          </ul>
+          <h3>来源与解析</h3>
+          <pre>{{ JSON.stringify(selected.provenance || {}, null, 2) }}</pre>
+          <p>{{ selected.explanation?.translation || '尚无翻译与解析。' }}</p>
+          <p v-if="!readyForPublish(selected)" class="admin-warning">
+            答案、来源、句子结构或逐项解析尚未齐全，暂不能发布。
+          </p>
+          <button
+            v-if="selected.status === 'published'"
+            class="secondary-action"
+            :disabled="busy"
+            @click="setPublished(selected, false)"
+          >撤回题目</button>
+          <button
+            v-else
+            class="primary-action"
+            :disabled="busy || !readyForPublish(selected)"
+            @click="setPublished(selected, true)"
+          >发布题目</button>
+        </section>
+      </div>
     </template>
   </div>
 </template>
 
 <style scoped>
-.admin-page{padding-bottom:90px}.admin-toolbar{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:38px 0 18px}.admin-toolbar>div{display:flex;gap:15px}.admin-toolbar label{font-size:11px;color:#6f7b70}.admin-toolbar select{display:block;background:#fffdf8;border:1px solid #d0cec2;padding:10px 14px;color:#355247;margin-top:7px}.admin-toolbar>span,.admin-meta{font-size:12px;color:#748074}.admin-row{display:flex;justify-content:space-between;align-items:center;gap:20px;border-top:1px solid #d7d4c8;padding:24px 0}.admin-row:last-child{border-bottom:1px solid #d7d4c8}.admin-row>div{min-width:0}.admin-row small{color:#9a815f;font-size:11px}.admin-row h3{font:18px/1.6 'Zen Kaku Gothic New',sans-serif;margin:7px 0}.admin-row p{font-size:10px;color:#899188;overflow-wrap:anywhere}.admin-pages{display:flex;align-items:center;justify-content:center;gap:20px;margin:25px}.admin-pages button{border:0;background:none;color:#355247;cursor:pointer}.admin-pages button:disabled{opacity:.3;cursor:default}.admin-pages span{font-size:12px;color:#7c8579}.admin-import{margin-top:55px;background:#fffdf8;padding:25px}.admin-import summary{cursor:pointer;font-size:20px}.admin-import p{font-size:12px;color:#748074;line-height:1.9}.admin-import textarea{display:block;width:100%;resize:vertical;border:1px solid #cac9bd;padding:15px;background:#fdfbf5;margin:20px 0;font:12px/1.6 monospace}.admin-notice{background:#e5eee5;padding:14px 20px;color:#355247}.admin-shade{position:fixed;inset:0;background:#15241dcc;z-index:100;display:flex;justify-content:flex-end}.admin-detail{width:min(560px,100vw);height:100%;overflow:auto;background:#fffdf8;padding:40px}.admin-close{float:right;border:0;background:none;font-size:28px;cursor:pointer}.admin-detail h2{font:26px/1.6 'Zen Kaku Gothic New',sans-serif}.admin-detail h3{font-size:16px;margin-top:30px}.admin-detail li{padding:11px;border-bottom:1px solid #ddd9ce}.admin-detail li.correct{color:#355e45;font-weight:700}.admin-detail li span{font-size:11px;margin-left:8px}.admin-detail pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f0e6;padding:16px;font-size:11px}.admin-detail p{line-height:1.8}.admin-warning{color:#a15a4e}.admin-detail .primary-action,.admin-detail .secondary-action{margin-top:25px}@media(max-width:700px){.admin-toolbar,.admin-row{align-items:flex-start;flex-direction:column}.admin-row .secondary-action{margin-top:0}.admin-detail{padding:25px}}
+.admin-page{padding-bottom:90px}.admin-toolbar{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:38px 0 18px}.admin-toolbar>div{display:flex;gap:15px}.admin-toolbar label{font-size:12px;color:#6f7b70}.admin-toolbar select{display:block;background:#fffdf8;border:1px solid #d0cec2;padding:10px 14px;color:#355247;margin-top:7px}.admin-toolbar>span,.admin-meta{font-size:12px;color:#748074}.admin-row{display:flex;justify-content:space-between;align-items:center;gap:20px;border-top:1px solid #d7d4c8;padding:24px 0}.admin-row:last-child{border-bottom:1px solid #d7d4c8}.admin-row>div{min-width:0}.admin-row small{color:#9a815f;font-size:12px}.admin-row h3{font:18px/1.6 'Zen Kaku Gothic New',sans-serif;margin:7px 0}.admin-row p{font-size:12px;color:#899188;overflow-wrap:anywhere}.admin-pages{display:flex;align-items:center;justify-content:center;gap:20px;margin:25px}.admin-pages button{border:0;background:none;color:#355247;cursor:pointer}.admin-pages button:disabled{opacity:.3;cursor:default}.admin-pages span{font-size:12px;color:#7c8579}.admin-import{margin-top:55px;background:#fffdf8;padding:25px}.admin-import summary{cursor:pointer;font-size:20px}.admin-import p{font-size:12px;color:#748074;line-height:1.9}.admin-import textarea{display:block;width:100%;resize:vertical;border:1px solid #cac9bd;padding:15px;background:#fdfbf5;margin:20px 0;font:12px/1.6 monospace}.admin-notice{background:#e5eee5;padding:14px 20px;color:#355247}.admin-shade{position:fixed;inset:0;background:#15241dcc;z-index:100;display:flex;justify-content:flex-end}.admin-detail{width:min(560px,100vw);height:100%;overflow:auto;background:#fffdf8;padding:40px}.admin-close{float:right;border:0;background:none;font-size:28px;cursor:pointer}.admin-detail h2{font:26px/1.6 'Zen Kaku Gothic New',sans-serif}.admin-detail h3{font-size:16px;margin-top:30px}.admin-detail li{padding:11px;border-bottom:1px solid #ddd9ce}.admin-detail li.correct{color:#355e45;font-weight:700}.admin-detail li span{font-size:12px;margin-left:8px}.admin-detail pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f0e6;padding:16px;font-size:12px}.admin-detail p{line-height:1.8}.admin-warning{color:#a15a4e}.admin-detail .primary-action,.admin-detail .secondary-action{margin-top:25px}@media(max-width:700px){.admin-toolbar,.admin-row{align-items:flex-start;flex-direction:column}.admin-row .secondary-action{margin-top:0}.admin-detail{padding:25px}}
+/* Spring 动画变量 */
+.admin-page{--spring-ease:cubic-bezier(0.34,1.56,0.64,1);--spring-duration:200ms}
+
+/* 工具栏按钮 Spring 过渡 + :active 缩放 */
+.mob-admin-toolbar button,.mob-filter select{transition:transform var(--spring-duration) var(--spring-ease)}
+.mob-filter:active select{transform:scale(0.97)}
+
+/* 题目卡片 :active 缩放 */
+.mob-admin-row{transition:transform var(--spring-duration) var(--spring-ease),box-shadow 0.15s}
+.mob-admin-row:active{transform:scale(0.97)}
+
+/* 操作按钮 Spring 过渡 */
+.mob-row-btn,.primary-action,.secondary-action{transition:all var(--spring-duration) var(--spring-ease)}
+.mob-row-btn:active,.primary-action:active:not(:disabled),.secondary-action:active:not(:disabled){transform:scale(0.97)}
+
+/* 骨架屏列表 */
+.mob-skeleton-list{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+
+/* 骨架屏卡片 */
+.shimmer-card{background:var(--theme-surface,#fffdf8);border:1px solid var(--theme-border,#e3e0d4);border-radius:12px;padding:20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+
+.mob-sk-meta{width:40%;height:14px;border-radius:6px;margin-bottom:10px}
+.mob-sk-title{width:75%;height:18px;border-radius:6px;margin-bottom:8px}
+.mob-sk-id{width:30%;height:12px;border-radius:6px}
+.mob-sk-btn{width:120px;height:40px;border-radius:8px;flex-shrink:0}
+
+/* Shimmer 动画 */
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,var(--theme-surface-alt,#f5f2e9) 0%,var(--theme-surface,#fffdf8) 50%,var(--theme-surface-alt,#f5f2e9) 100%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+
+/* 减弱动画模式 */
+@media (prefers-reduced-motion:reduce){
+.mob-admin-row,.mob-row-btn,.primary-action,.secondary-action,.mob-filter select{transition:none}
+}
 </style>
