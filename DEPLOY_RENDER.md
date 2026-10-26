@@ -4,7 +4,7 @@
 
 ## 创建服务
 
-1. 在 Render 中连接 GitHub 仓库 `harisucici/japanese-learning`，以 `feature/add-music` 分支创建 Blueprint，选择仓库根目录的 `render.yaml`。
+1. 在 Render 中连接 GitHub 仓库 `harisucici/japanese-learning`，以 `feature/apk-version-updated` 分支创建 Blueprint，选择仓库根目录的 `render.yaml`。
 2. Render 首次创建时填写两个未写入仓库的密钥：`TURSO_AUTH_TOKEN`（内容库）和 `USER_TURSO_AUTH_TOKEN`（独立用户库）。其他必需变量由 `render.yaml` 填入；`JWT_SECRET` 由 Render 生成。
 3. 等待部署完成。一个 Web Service 同时提供 `/`、`/novel`、`/fun`、`/materials` 和 API；不要额外创建 Static Site。`PORT` 由 Render 提供，后端监听 `0.0.0.0`。
 
@@ -20,3 +20,5 @@
 - 若使用自定义域名，绑定到**同一个** Web Service。浏览器 API 基址是相对路径 `/api/v1`，不需要修改 Cookie 域名。
 
 `DATABASE_URL=file:./dev.db` 仅供 Prisma 生成客户端时解析 SQLite 模式；运行时使用 `TURSO_URL`，不会创建或使用本地阅读数据库。`AUDIO_PUBLIC_BASE_URL` 是 Cloudinary 公开播放地址前缀，数据库只保存音频对象 ID。
+
+Android release 加载此服务的页面，部署后重启应用即可更新网页。`/native-tts-v1/` 由 APK 拦截并提供内置语音资源，不上传 Render。Android 构建和调试步骤见 `ja-learning-platform/android/README_BUILD.md`。

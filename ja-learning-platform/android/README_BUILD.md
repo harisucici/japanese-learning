@@ -1,197 +1,46 @@
-# Android APK Build Guide
+# Android 构建与运行
 
-## ✅ Completed Setup
+构建需要 JDK 21（例如 `JAVA_HOME=$(/usr/libexec/java_home -v 21)`），Node.js 22 或更新版本。先运行 `npm ci`。
 
-### 1. Capacitor Configuration
-- **File**: `capacitor.config.ts` (root)
-- **App ID**: `com.jalearning.app`
-- **App Name**: `静かな学び`
-- **Server**: Empty (uses bundled assets from `android/app/src/main/assets/public/`)
-- **Cleartext**: Disabled (HTTPS only)
+## 两个环境
 
-### 2. Application Icons
-- **Source**: Converted from JPEG with transparent background
-- **Generated**:
-  - Legacy icons: `mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png` (48-192px)
-  - Adaptive foreground: `ic_launcher_foreground.png` (108-432px, subject in 2/3 safe zone)
-  - Adaptive background: `ic_launcher_background.png` (white)
-  - Play Store: `playstore/icon.png` (512x512)
-- **Adaptive icon XML**: `mipmap-anydpi-v26/ic_launcher.xml` + `ic_launcher_round.xml`
+- `debug`：模拟器默认 `http://10.0.2.2:8080`，USB 真机默认 `http://localhost:8080`，使用本机 Vite 和代理到 `localhost:3000` 的后端。debug 包名带 `.debug`，可与 release 共存。
+- `release`：默认 `https://japanese-learning-92jk.onrender.com`，页面和 `/api/v1` 同源，继续使用 HttpOnly Cookie。
+- 地址由 Gradle buildTypes 决定，不依赖 `CAP_ENV` 或上次 cap sync。release 只允许 HTTPS，debug 才允许 HTTP。
 
-### 3. Production Environment
-- **File**: `.env.production`
-- **API URL**: `https://japanese-learning-92jk.onrender.com/api/reading`
-- **Build command**: `npm run build -- --mode production`
-
-### 4. Android Project Structure
-- **Root Gradle**: `build.gradle`, `settings.gradle`, `variables.gradle`
-- **App Module**: `app/build.gradle`
-- **Manifest**: `app/src/main/AndroidManifest.xml`
-  - Package: `com.jalearning.app`
-  - MainActivity: `com.jalearning.app.MainActivity`
-  - Permissions: INTERNET, ACCESS_NETWORK_STATE
-  - Network security: HTTPS only
-- **Resources**:
-  - `values/strings.xml` (app name: 静かな学び)
-  - `values/styles.xml` (AppTheme with splash)
-  - `values/colors.xml` (primary: #2C3E50)
-  - `xml/network_security_config.xml`
-  - `xml/file_paths.xml`
-  - `drawable/splash.xml`
-
-### 5. Build Artifacts
-- **Debug APK**: `android/app/build/outputs/apk/debug/app-debug.apk`
-- **Release APK**: Requires signing configuration (see below)
-
-## 🚀 Build Commands
-
-### Debug Build
 ```bash
-# 1. Build web assets (production mode)
-npm run build -- --mode production
-
-# 2. Sync to Android
-npx cap sync android
-
-# 3. Build APK
-cd android
-./gradlew assembleDebug
+# 先在 ja-learning-backend 中启动本地后端
+npm run dev
+# 然后在 ja-learning-platform 中启动 Vite（固定端口 8080）
+npm run dev
+# USB 手机需要端口转发；Android Studio 模拟器自动访问 10.0.2.2
+adb reverse tcp:8080 tcp:8080
+# 另一个终端：准备资源、同步并打包
+npm run build:android:dev
 ```
 
-Output: `android/app/build/outputs/apk/debug/app-debug.apk`
+USB 转发无需修改 IP。通过 Wi-Fi 真机调试时，手机和电脑连接同一网络，构建时用 `./gradlew assembleDebug -PdevUrl=http://电脑局域网IP:8080`；模拟器地址可用 `-PemulatorUrl=http://10.0.2.2:8080` 覆盖。API 通过 Vite 转发，不需要手机直接访问后端端口。
 
-### Release Build (Requires Signing)
+## Release
 
-#### Option A: Create Debug Keystore (for testing)
-```bash
-cd android/app
-keytool -genkey -v -keystore release-key.jks \
-  -keyalg RSA -keysize 2048 -validity 10000 \
-  -alias jalearning \
-  -storepass [YOUR_PASSWORD] \
-  -keypass [YOUR_PASSWORD] \
-  -dname "CN=静かな学び, OU=Dev, O=JaLearning, L=Tokyo, ST=Tokyo, C=JP"
-```
+在可信的本地环境设置 `ANDROID_KEYSTORE_FILE`（绝对路径）、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_ALIAS`、`ANDROID_KEY_PASSWORD`，再运行 `npm run build:android:prod`。密钥和密码不写入仓库。自定义远程地址使用 `./gradlew assembleRelease -PreleaseUrl=https://你的域名`。
 
-#### Option B: Configure Signing in `app/build.gradle`
-```gradle
-android {
-    signingConfigs {
-        release {
-            storeFile file('release-key.jks')
-            storePassword '[YOUR_PASSWORD]'
-            keyAlias 'jalearning'
-            keyPassword '[YOUR_PASSWORD]'
-        }
-    }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-```
+APK 在 `android/app/build/outputs/apk/`。Android Studio 也可直接选择 debug/release，Gradle 会准备完整内置语音资源。首次构建需要网络下载模型和 npm 依赖，后续复用本地资源。
 
-#### Build Release APK
-```bash
-cd android
-./gradlew assembleRelease
-```
+## 页面更新与语音
 
-Output: `android/app/build/outputs/apk/release/app-release.apk`
+release 是联网页面壳：每次启动加载 Render 页面，部署成功后重启应用即可获取新页面。后台接口更新直接生效。此方案不提供完整离线页面；原生代码、权限、语音引擎版本变化仍需升级 APK。
 
-## 📱 Install on Device
+语音 Worker、JavaScript 引擎、ONNX Runtime/WASM、日语词典、模型、音色作为 `/native-tts-v1/` 打包在 APK。Android 只对当前应用同源的这个路径返回内置文件；缺失资源返回 404，不回退网络下载。网页端继续使用在线引擎。前端保留 v1 语音协议，避免 Render 部署破坏已安装 APK。
 
-### Via ADB
-```bash
-adb install android/app/build/outputs/apk/debug/app-debug.apk
-```
+验收：真机/模拟器各启动 debug 并登录、调用接口；release 登录并确认同源 Cookie；首次合成后断网再合成一个未缓存的新词，确认无 CDN/HuggingFace 请求。仓库忽略模型、生成 assets、APK、数据库备份及签名文件。
 
-### Via Android Studio
-```bash
-npx cap open android
-# Select device → Run ▶️
-```
+## Kotlin 与语音回归
 
-## 🔧 Troubleshooting
+应用和设备测试源码位于 `app/src/main/kotlin/` 与 `app/src/androidTest/kotlin/`。项目使用 Kotlin 2.2.20、JDK 21；首次迁移后在 Android Studio 执行 Gradle Sync。
 
-### Build Errors
+内置词典使用 `.tar.gz.bin` 保存，避免 AAPT 自动解压并重命名；WebView 仍通过原 `.tar.gz` URL 获取原始 gzip 字节。Open JTalk 在现有 TTS Worker 内执行，避免 WebView 无法拦截嵌套 Worker 资源请求。
 
-**Error: `android.useAndroidX` not enabled**
-- ✅ Fixed: Added `gradle.properties` with `android.useAndroidX=true`
+设备回归类为 `com.jaleaning.app.BundledTtsInstrumentedTest`，验证打包后的 gzip 文件头和真实 WebView 语音合成。可在 Android Studio 运行该测试；生成测试 APK 后也可用 ADB instrumentation 执行。
 
-**Error: `capacitor.build.gradle` not found**
-- ✅ Fixed: Created empty `app/capacitor.build.gradle` (auto-generated by `npx cap sync`)
-
-**Error: Theme `@style/AppTheme.NoActionBar` not found**
-- ✅ Fixed: Created `res/values/styles.xml` with AppTheme definitions
-
-**Error: `@mipmap/ic_launcher` not found**
-- ✅ Fixed: Generated icons in all mipmap densities
-
-### Runtime Issues
-
-**API calls fail with cleartext error**
-- Cause: Android blocks HTTP by default
-- Fix: Ensure API uses HTTPS, or temporarily enable cleartext in `network_security_config.xml`
-
-**Assets not loading**
-- Cause: `npx cap sync` not run after `npm run build`
-- Fix: Always run `npx cap sync android` after building web assets
-
-**App crashes on launch**
-- Check: `adb logcat` for stack traces
-- Common: Missing permissions, incorrect `MainActivity` path
-
-## 📦 File Structure Summary
-
-```
-ja-learning-platform/
-├── capacitor.config.ts          # Capacitor configuration
-├── .env.production              # Production API URL
-├── dist/                        # Built web assets
-└── android/
-    ├── build.gradle             # Root gradle config
-    ├── settings.gradle          # Module includes
-    ├── variables.gradle         # SDK versions
-    ├── gradlew                  # Gradle wrapper (Unix)
-    ├── gradle/
-    │   └── wrapper/
-    │       ├── gradle-wrapper.jar
-    │       └── gradle-wrapper.properties
-    └── app/
-        ├── build.gradle         # App module config
-        ├── capacitor.build.gradle  # Auto-generated by cap sync
-        ├── proguard-rules.pro   # ProGuard config
-        └── src/main/
-            ├── AndroidManifest.xml
-            ├── java/com/jalearning/app/MainActivity.java
-            ├── assets/
-            │   ├── capacitor.config.json
-            │   └── public/      # Bundled web assets
-            └── res/
-                ├── mipmap-*/    # App icons (5 densities)
-                ├── mipmap-anydpi-v26/  # Adaptive icon XML
-                ├── playstore/   # 512x512 icon
-                ├── values/      # strings, styles, colors
-                ├── xml/         # network security, file paths
-                └── drawable/    # splash screen
-```
-
-## 🎯 Next Steps
-
-1. **Test debug build** on emulator/device
-2. **Create release keystore** for production signing
-3. **Update version codes** in `app/build.gradle` before release
-4. **Configure ProGuard** rules for release optimization
-5. **Add app icon** to Play Store listing (use `playstore/icon.png`)
-
-## 📝 Notes
-
-- The source JPEG had a white background; icons were processed to make it transparent
-- Adaptive icons use a 108dp canvas with the subject centered in the inner 2/3 (safe zone)
-- Network security config blocks HTTP traffic by default (HTTPS-only API)
-- Capacitor 8.5.3 is installed and working
-- Android SDK 36/37 are available at `/Users/harisucici/Library/Android/sdk`
+三个服务地址统一放在 `android/gradle.properties` 的 `devUrl`、`emulatorUrl`、`releaseUrl` 中，并支持 `-P` 覆盖。Kotlin 不包含具体 URL。release 的全部地址字段都使用远程 HTTPS 地址。

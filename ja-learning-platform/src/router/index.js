@@ -13,6 +13,7 @@ import PracticeModePage from '../pages/PracticeModePage.vue'
 import AccountPage from '../pages/AccountPage.vue'
 import ReviewPage from '../pages/ReviewPage.vue'
 import AdminPage from '../pages/AdminPage.vue'
+import NotFoundPage from '../pages/NotFoundPage.vue'
 import { useAuthStore } from '../store.js'
 
 const routes = [
@@ -30,7 +31,8 @@ const routes = [
   { path: '/stats', component: StatsPage, meta: { requiresAuth: true } },
   { path: '/practice', component: PracticeModePage, meta: { requiresAuth: true } },
   { path: '/review', component: ReviewPage, meta: { requiresAuth: true } },
-  { path: '/admin', component: AdminPage, meta: { requiresAuth: true } }
+  { path: '/admin', component: AdminPage, meta: { requiresAuth: true } },
+  { path: '/:pathMatch(.*)*', component: NotFoundPage }
 ]
 
 const router = createRouter({

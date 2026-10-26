@@ -9,5 +9,5 @@ export function setSessionCookie(res: Response, token: string) {
 }
 
 export function clearSessionCookie(res: Response) {
-  res.clearCookie('ja_session', { httpOnly: true, secure: config.nodeEnv === 'production', sameSite: 'lax', path: '/api' });
+  res.clearCookie('ja_session', { httpOnly: true, secure: config.nodeEnv === 'production', sameSite: 'lax', path: '/' });
 }

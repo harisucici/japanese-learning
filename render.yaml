@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: SERVE_FRONTEND
+        value: "true"
       - key: NODE_VERSION
         value: 22.22.0
       # Used by Prisma Client generation only. The running app uses remote Turso.

@@ -1,15 +1,27 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+kotlin { jvmToolchain(21) }
 
 android {
     namespace = "com.jaleaning.app"
     compileSdk = rootProject.ext.compileSdkVersion
 
+    buildFeatures { buildConfig true }
+    def releaseUrl = providers.gradleProperty('releaseUrl').get()
+    def devUrl = providers.gradleProperty('devUrl').get()
+    def emulatorUrl = providers.gradleProperty('emulatorUrl').get()
+    if (!(releaseUrl ==~ /https:\/\/[^\s"\\]+/)) throw new GradleException('releaseUrl must be HTTPS')
+    if (!(devUrl ==~ /http:\/\/[^\s"\\]+/)) throw new GradleException('devUrl must be HTTP')
+
+    if (!(emulatorUrl ==~ /http:\/\/[^\s"\\]+/)) throw new GradleException('emulatorUrl must be HTTP')
+
     signingConfigs {
         release {
-            storeFile file('release-key.jks')
-            storePassword 'jalearning2026'
-            keyAlias 'release'
-            keyPassword 'jalearning2026'
+            storeFile file(providers.environmentVariable('ANDROID_KEYSTORE_FILE').getOrElse('release-key.jks'))
+            storePassword providers.environmentVariable('ANDROID_KEYSTORE_PASSWORD').orNull
+            keyAlias providers.environmentVariable('ANDROID_KEY_ALIAS').getOrElse('release')
+            keyPassword providers.environmentVariable('ANDROID_KEY_PASSWORD').orNull
         }
     }
 
@@ -27,7 +39,17 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+            buildConfigField 'String', 'APP_URL', '"' + devUrl + '"'
+            buildConfigField 'String', 'EMULATOR_URL', '"' + emulatorUrl + '"'
+            manifestPlaceholders = [usesCleartextTraffic: 'true']
+        }
         release {
+            buildConfigField 'String', 'APP_URL', '"' + releaseUrl + '"'
+            buildConfigField 'String', 'EMULATOR_URL', '"' + releaseUrl + '"'
+            manifestPlaceholders = [usesCleartextTraffic: 'false']
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -42,6 +64,7 @@ repositories {
 }
 
 dependencies {
+    implementation platform('org.jetbrains.kotlin:kotlin-bom:2.2.20')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
@@ -54,6 +77,16 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+
+// Separate from cap sync: model/runtime assets are native and never served by Render.
+android.sourceSets.main.assets.srcDir(layout.buildDirectory.dir('generated/tts-assets'))
+tasks.register('prepareBundledTts', Exec) {
+    workingDir "${projectDir}/../.."
+    commandLine 'node', 'scripts/prepare-tts-model.js', '--android'
+    inputs.files(fileTree("${projectDir}/../../src/tts"), file("${projectDir}/../../scripts/prepare-tts-model.js"), file("${projectDir}/../../scripts/tts-model-lock.json"), file("${projectDir}/../../package-lock.json"))
+    outputs.dir(layout.buildDirectory.dir('generated/tts-assets'))
+}
+preBuild.dependsOn prepareBundledTts
 
 try {
     def servicesJSON = file('google-services.json')

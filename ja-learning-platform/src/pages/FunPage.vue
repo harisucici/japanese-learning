@@ -193,13 +193,32 @@ function initialOf(title) {
     padding: 12px 16px;
     scrollbar-width: none;
     border-bottom: 1px solid var(--theme-border-soft, #e2ded3);
-    background: var(--theme-surface, #fffdf8);
+    background:
+      linear-gradient(to right, var(--theme-surface, #fffdf8) 0%, transparent 8%, transparent 92%, var(--theme-surface, #fffdf8) 100%);
     position: sticky;
     top: 0;
     z-index: 20;
   }
   .mobile-themes::-webkit-scrollbar {
     display: none;
+  }
+  .mobile-themes::before,
+  .mobile-themes::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .mobile-themes::before {
+    left: 0;
+    background: linear-gradient(to right, var(--theme-surface, #fffdf8) 0%, transparent 100%);
+  }
+  .mobile-themes::after {
+    right: 0;
+    background: linear-gradient(to left, var(--theme-surface, #fffdf8) 0%, transparent 100%);
   }
   .theme-chip {
     flex: none;
@@ -407,13 +426,42 @@ function initialOf(title) {
 /* 极小屏 */
 @media (max-width: 375px) {
   .mobile-title {
-    font-size: 20px;
+    font-size: 19px;
+    line-height: 1.3;
+  }
+  .mobile-desc {
+    font-size: 12px;
+  }
+  .mobile-header {
+    padding: 12px 12px 10px;
   }
   .fun-cover {
-    height: 80px;
+    height: 70px;
   }
   .cover-initial {
-    font-size: 40px;
+    font-size: 36px;
+  }
+  .cover-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .fun-theme {
+    font-size: 12px;
+  }
+  .fun-title {
+    font-size: 16px;
+  }
+  .fun-desc {
+    font-size: 13px;
+  }
+  .start-btn {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+  .theme-chip {
+    font-size: 13px;
+    padding: 6px 12px;
+    min-height: 40px;
   }
 }
 

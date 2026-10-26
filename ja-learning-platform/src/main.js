@@ -5,4 +5,15 @@ import router from './router'
 import './style.css'
 import './mobile-motion.css'
 
-createApp(App).use(createPinia()).use(router).mount('#app')
+const app = createApp(App).use(createPinia()).use(router)
+
+// 预加载日语发音引擎（异步，不阻塞首屏渲染）
+// Android 从 APK 内置资源加载；浏览器首次使用在线资源。
+import { loadEngine } from './utils/japaneseSpeech.js'
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(() => loadEngine().catch(() => {}), { timeout: 5000 })
+} else {
+  setTimeout(() => loadEngine().catch(() => {}), 2000)
+}
+
+app.mount('#app')

@@ -67,3 +67,9 @@ ja-learning-backend/prisma/*.db
 work/
 outputs/
 .openai/
+
+# Local configuration, models and signing material
+.env.*.local
+*.db.bak*
+*.jks
+*.keystore
