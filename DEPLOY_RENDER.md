@@ -14,6 +14,8 @@
 
 ## 检查
 
+已有的「仅后端」Web Service 不会自动应用仓库里的 `render.yaml`。若 Android Release 首页显示 `Not Found`、但 `/health` 正常，请在该服务的 Settings 中清空 Root Directory，将 Build Command 设为 `bash scripts/render-build.sh`，Start Command 设为 `node ja-learning-backend/dist/index.js`，并在 Environment 中设置 `SERVE_FRONTEND=true`。联合构建时 `VITE_API_BASE_URL` 和 `VITE_READING_API_BASE_URL` 均应为 `/api/v1`。重新部署后检查首页和资源地址，不能只检查 `/health`。
+
 - `https://<服务域名>/health` 返回 `{ "status": "ok" }`。
 - 直接打开 `https://<服务域名>/materials/material-101`，页面能加载文章和配套音频。
 - 打开 `/fun` 可以看到题组并开始练习。创建匿名学习会话后，浏览器应收到 `HttpOnly` 的 `ja_session` Cookie；刷新后记录由服务端恢复。

@@ -28,8 +28,7 @@ class BundledTtsInstrumentedTest {
     }
 
     @Test
-    fun releaseLoadsRemotePage() {
-        org.junit.Assume.assumeFalse(BuildConfig.DEBUG)
+    fun loadsConfiguredPage() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val intent = Intent(instrumentation.targetContext, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val activity = instrumentation.startActivitySync(intent) as MainActivity
@@ -43,9 +42,10 @@ class BundledTtsInstrumentedTest {
                 result = JSONObject(JSONTokener(encoded).nextValue() as String)
                 if (result.optString("title").contains("山间书院") && result.optString("text").contains("阅读")) break
             }
-            android.util.Log.i("ReleasePageTest", result.toString())
-            assertTrue("Release page failed to load: $result", result.optString("url").startsWith(BuildConfig.APP_URL))
-            assertTrue("Remote app content missing: $result", result.optString("title").contains("山间书院") && result.optString("text").contains("阅读"))
+            android.util.Log.i("AppPageTest", result.toString())
+            val expectedUrl = activity.bridge.config.serverUrl.orEmpty()
+            assertTrue("App page failed to load: $result", expectedUrl.isNotEmpty() && result.optString("url").startsWith(expectedUrl))
+            assertTrue("App content missing: $result", result.optString("title").contains("山间书院") && result.optString("text").contains("阅读"))
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

@@ -13,7 +13,8 @@
 npm run dev
 # 然后在 ja-learning-platform 中启动 Vite（固定端口 8080）
 npm run dev
-# USB 手机需要端口转发；Android Studio 模拟器自动访问 10.0.2.2
+# Debug 构建会自动为已连接、已授权的 USB 真机设置转发。
+# 若构建后才连接手机，可手动执行；模拟器自动访问 10.0.2.2。
 adb reverse tcp:8080 tcp:8080
 # 另一个终端：准备资源、同步并打包
 npm run build:android:dev
@@ -34,6 +35,10 @@ release 是联网页面壳：每次启动加载 Render 页面，部署成功后�
 语音 Worker、JavaScript 引擎、ONNX Runtime/WASM、日语词典、模型、音色作为 `/native-tts-v1/` 打包在 APK。Android 只对当前应用同源的这个路径返回内置文件；缺失资源返回 404，不回退网络下载。网页端继续使用在线引擎。前端保留 v1 语音协议，避免 Render 部署破坏已安装 APK。
 
 验收：真机/模拟器各启动 debug 并登录、调用接口；release 登录并确认同源 Cookie；首次合成后断网再合成一个未缓存的新词，确认无 CDN/HuggingFace 请求。仓库忽略模型、生成 assets、APK、数据库备份及签名文件。
+
+## 系统栏安全区
+
+`MainActivity` 在原生容器统一处理状态栏、系统导航栏、屏幕开孔及键盘的 Insets。WebView 放在安全区域内，已处理的 Insets 不再传给网页，避免 CSS 重复留白。此设置同时适用于 Debug 本地页面和 Release 远程页面；修改后必须重新打包安装 APK，仅部署网页不会更新原生窗口。`SafeAreaInstrumentedTest` 在解锁的设备上验证横竖屏 WebView 均未侵入系统栏区域。
 
 ## Kotlin 与语音回归
 

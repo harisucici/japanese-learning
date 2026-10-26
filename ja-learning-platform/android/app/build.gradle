@@ -89,6 +89,39 @@ tasks.register('prepareBundledTts', Exec) {
 }
 preBuild.dependsOn prepareBundledTts
 
+// Recreate USB forwarding for physical devices on Android Studio Run as well.
+tasks.register('prepareDebugPortForwarding') {
+    doLast {
+        def endpoint = new URI(providers.gradleProperty('devUrl').get())
+        if (!(endpoint.host in ['localhost', '127.0.0.1'])) return
+        def adb = new File(android.sdkDirectory, "platform-tools/adb${System.getProperty('os.name').toLowerCase().contains('windows') ? '.exe' : ''}")
+        def port = endpoint.port == -1 ? 80 : endpoint.port
+        try {
+            def devices = new ByteArrayOutputStream()
+            def listing = project.exec {
+                commandLine adb.absolutePath, 'devices'
+                standardOutput = devices
+                ignoreExitValue = true
+            }
+            if (listing.exitValue != 0) throw new GradleException('adb devices failed')
+            devices.toString('UTF-8').readLines().each { line ->
+                def fields = line.trim().split(/\s+/)
+                if (fields.length >= 2 && fields[1] == 'device' && !fields[0].startsWith('emulator-')) {
+                    def result = project.exec {
+                        commandLine adb.absolutePath, '-s', fields[0], 'reverse', "tcp:${port}", "tcp:${port}"
+                        ignoreExitValue = true
+                    }
+                    if (result.exitValue != 0) throw new GradleException("adb reverse failed for ${fields[0]}")
+                    logger.lifecycle("Debug USB forwarding ready: ${fields[0]} localhost:${port}")
+                }
+            }
+        } catch (Exception error) {
+            logger.warn("USB forwarding unavailable: ${error.message}. Run adb reverse tcp:${port} tcp:${port} after connecting the phone.")
+        }
+    }
+}
+tasks.matching { it.name == 'preDebugBuild' }.configureEach { dependsOn 'prepareDebugPortForwarding' }
+
 try {
     def servicesJSON = file('google-services.json')
     if (servicesJSON.text) {
