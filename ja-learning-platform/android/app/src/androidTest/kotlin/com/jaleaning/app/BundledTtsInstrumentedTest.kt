@@ -28,6 +28,30 @@ class BundledTtsInstrumentedTest {
     }
 
     @Test
+    fun releaseLoadsRemotePage() {
+        org.junit.Assume.assumeFalse(BuildConfig.DEBUG)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val intent = Intent(instrumentation.targetContext, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val activity = instrumentation.startActivitySync(intent) as MainActivity
+        try {
+            val view = activity.bridge.webView
+            var result = JSONObject()
+            for (attempt in 0 until 90) {
+                Thread.sleep(1000)
+                val encoded = evaluate(instrumentation, view,
+                    "JSON.stringify({url:location.href,title:document.title,ready:document.readyState,text:document.body?.innerText?.slice(0,500)})")
+                result = JSONObject(JSONTokener(encoded).nextValue() as String)
+                if (result.optString("title").contains("山间书院") && result.optString("text").contains("阅读")) break
+            }
+            android.util.Log.i("ReleasePageTest", result.toString())
+            assertTrue("Release page failed to load: $result", result.optString("url").startsWith(BuildConfig.APP_URL))
+            assertTrue("Remote app content missing: $result", result.optString("title").contains("山间书院") && result.optString("text").contains("阅读"))
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test
     fun synthesizeUsingApkAssets() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val intent = Intent(instrumentation.targetContext, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -8,6 +8,7 @@ android {
     compileSdk = rootProject.ext.compileSdkVersion
 
     buildFeatures { buildConfig true }
+    testBuildType providers.gradleProperty('testBuildType').getOrElse('debug')
     def releaseUrl = providers.gradleProperty('releaseUrl').get()
     def devUrl = providers.gradleProperty('devUrl').get()
     def emulatorUrl = providers.gradleProperty('emulatorUrl').get()
@@ -29,8 +30,8 @@ android {
         applicationId "com.jaleaning.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
