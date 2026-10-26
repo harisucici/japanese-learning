@@ -35,11 +35,9 @@ async function loadPersonalization() {
     // 若后续后端扩展该字段可直接使用。
     try {
       // 检查用户是否已登录
-      const authResponse = await fetch('/api/reading/auth/me', {
-        credentials: 'include',
-        method: 'GET'
-      })
-      if (!authResponse.ok) {
+      try {
+        await requestResource('auth/me')
+      } catch (e) {
         console.log('用户未登录，跳过个性化数据加载')
         return
       }

@@ -3,9 +3,11 @@
 > 商业级日语能力考试备考平台，支持 Web/Mobile，提供完整的题库管理、模拟考试、智能解析、错题本和复习系统。
 
 ![Version](https://img.shields.io/badge/version-1.1.0-blue)
-![Flutter](https://img.shields.io/badge/Flutter-3.27.4-02569B)
+![Vue](https://img.shields.io/badge/Vue-3.5.13-4FC08D)
+![Vite](https://img.shields.io/badge/Vite-6.0-646CFF)
+![Pinia](https://img.shields.io/badge/Pinia-2.3-FFD85C)
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933)
-![Prisma](https://img.shields.io/badge/Prisma-5.x-2D3748)
+![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748)
 ![License](https://img.shields.io/badge/license-Proprietary-red)
 
 ## 项目概览
@@ -18,22 +20,25 @@
 - **学习追踪**: 答题记录、错题本、间隔重复复习
 - **数据可视化**: 学习统计、正确率趋势、知识点掌握度
 - **音频支持**: 题干朗读、例句发音、听力练习
-- **响应式设计**: Web 优化布局，支持 iOS/Android（Flutter）
+- **响应式设计**: Web 优化布局，支持 Android（Capacitor 8.5 打包）
 
 ## 技术架构
 
-### 前端 (japanese-learning-platform)
-- **框架**: Flutter 3.27.4
-- **状态管理**: Redux (三层架构: actions/reducers/repositories)
-- **网络层**: Dio HTTP 客户端
-- **UI/UX**: 自定义主题系统、动画过渡、骨架屏
-- **音频**: just_audio + audio_session
+### 前端 (ja-learning-platform)
+- **框架**: Vue 3.5.13 + TypeScript 7.0
+- **构建工具**: Vite 6.0
+- **状态管理**: Pinia 2.3
+- **路由**: Vue Router 4.5
+- **网络层**: fetch API
+- **UI/UX**: 自定义主题系统、动画过渡、响应式设计
+- **移动端**: Capacitor 8.5（Android APK 打包）
+- **TTS 引擎**: HuggingFace transformers + kokoro-js-jp（本地日语发音）
 - **字体**: Noto Sans JP / Noto Serif JP
 
 ### 后端 (ja-learning-backend)
 - **运行时**: Node.js 18+
-- **框架**: Express.js + TypeScript
-- **ORM**: Prisma 5.x
+- **框架**: Express 4.21
+- **ORM**: Prisma 6.19
 - **数据库**: SQLite + Turso 云端同步
 - **认证**: JWT
 - **验证**: Zod
@@ -41,13 +46,16 @@
 ### 数据库
 - **本地开发**: SQLite (轻量、零配置)
 - **生产环境**: Turso (边缘 SQLite，支持云端同步)
-- **迁移管理**: Prisma Migrate (8 个迁移脚本)
+- **迁移管理**: Prisma Migrate
+
+### 测试
+- **前端测试**: Vitest 5.0 + @vue/test-utils 2.5
+- **覆盖率**: @vitest/coverage-v8
 
 ## 快速开始
 
 ### 环境要求
 - Node.js 18+ & npm
-- Flutter 3.27.4+
 - Git
 
 ### 后端启动
@@ -75,19 +83,19 @@ npm run dev
 
 ```bash
 # 进入前端目录
-cd japanese-learning-platform
+cd ja-learning-platform
 
 # 安装依赖
-flutter pub get
+npm install
 
-# Web 模式运行
-flutter run -d chrome
+# 启动开发服务器（默认端口 5173）
+npm run dev
 
-# 或构建 Web 版本
-flutter build web
+# 或构建 Android APK（开发版）
+npm run build:android:dev
 ```
 
-前端默认运行在 `http://localhost:8080`
+前端默认运行在 `http://localhost:5173`
 
 ## 项目结构
 
@@ -107,16 +115,31 @@ japanese-learning/
 │   ├── data/                     # 原始数据 (PDF/JSON)
 │   └── docs/                     # 后端文档
 │
-├── japanese-learning-platform/   # Flutter 前端
-│   ├── lib/                      # Dart 源码
-│   │   ├── core/                 # 核心模块
-│   │   ├── features/             # 功能模块
-│   │   ├── redux/                # 状态管理
-│   │   ├── shared/               # 共享组件
-│   │   └── widgets/              # 复杂 UI
-│   ├── assets/                   # 静态资源
-│   ├── web/                      # Web 配置
-│   └── test/                     # 测试
+├── ja-learning-platform/           # Vue 3 + Vite 前端
+│   ├── src/
+│   │   ├── pages/                  # 页面组件 (15 个)
+│   │   │   ├── HomePage.vue
+│   │   │   ├── ExamPage.vue
+│   │   │   ├── PracticeModePage.vue
+│   │   │   ├── StatsPage.vue
+│   │   │   ├── ReviewPage.vue
+│   │   │   ├── AdminPage.vue
+│   │   │   └── ...
+│   │   ├── components/             # 通用 UI 组件
+│   │   ├── composables/            # 组合式函数
+│   │   ├── tts/                    # TTS 引擎 (HuggingFace + kokoro-js-jp)
+│   │   ├── router/                 # Vue Router 配置
+│   │   │   └── index.js
+│   │   ├── store.js                # Pinia 状态管理
+│   │   ├── App.vue                 # 根组件
+│   │   ├── main.js                 # 入口文件
+│   │   └── style.css               # 全局样式
+│   ├── public/                     # 静态资源
+│   ├── android/                    # Capacitor Android 项目
+│   ├── scripts/                    # 辅助脚本
+│   ├── package.json
+│   ├── vite.config.js
+│   └── vitest.config.js
 │
 ├── CHANGELOG.md                  # 更新日志
 ├── VERSIONING.md                 # 版本管理指南
