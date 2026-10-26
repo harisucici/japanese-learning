@@ -430,7 +430,8 @@ describe('NovelDetailPage 组件测试', () => {
 
     const backLink = wrapper.find('a[href="/novel"]');
     expect(backLink.exists()).toBe(true);
-    expect(backLink.text()).toContain('返回趣味阅读');
+    expect(backLink.text()).toContain('返回');
+    expect(backLink.attributes('aria-label')).toBe('返回趣味阅读目录');
   });
 
   it('应该处理404错误', async () => {

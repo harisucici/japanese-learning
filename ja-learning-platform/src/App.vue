@@ -52,7 +52,7 @@ const active = computed(() => {
   <ThemeContext>
   <!-- Skip Link for accessibility -->
   <a href="#main-content" class="skip-link">跳转到主要内容</a>
-  <header v-if="!isSession" class="site-header" :class="{'on-page':active, 'mobile-compact': !isMobileHidden}">
+  <header v-if="!isSession" class="site-header" :class="{'on-page':active, 'mobile-compact': !isMobileHidden, 'reader-header-hidden': route.path.startsWith('/novel/')}">
     <RouterLink v-if="detailBack" class="mobile-detail-back" :to="detailBack" aria-label="返回列表">‹</RouterLink>
     <RouterLink class="brand" to="/" aria-label="山间书院，返回首页"><img class="brand-mark" :src="yamaSeal" alt="山间书院标志"><span class="brand-name">山间书院<small>THE READING RETREAT</small></span></RouterLink>
     <nav class="desktop-nav" aria-label="主导航"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin">题库管理</RouterLink><RouterLink to="/account">{{auth.user?.nickname || '我的账户'}}</RouterLink></nav>
@@ -67,7 +67,7 @@ const active = computed(() => {
     <div v-if="route.path === '/'">
       <component :is="Component" />
     </div>
-    <div v-else-if="active && !isSession" class="interior" :class="[active.class, { 'mobile-content-first': mobileContentFirst, 'mobile-detail-page': mobileDetailPage }]">
+    <div v-else-if="active && !isSession" class="interior" :class="[active.class, { 'mobile-content-first': mobileContentFirst, 'mobile-detail-page': mobileDetailPage, 'novel-reader': route.path.startsWith('/novel/') }]">
       <div class="interior-hero" :class="active.class">
         <div class="interior-art"><div class="interior-orb"></div><div class="interior-hill"></div></div>
         <div class="interior-head">

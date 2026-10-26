@@ -29,10 +29,11 @@ async function selectWord(token, key, event) {
     await speakJapanese(token.reading || token.word, status => {
       if (selectionId === speechSelectionId) speechStatus.value = status
     })
-  } catch {
+  } catch (speechFailure) {
+    console.error('[TTS] word playback failed:', speechFailure)
     if (selectionId === speechSelectionId) {
       speechStatus.value = 'idle'
-      speechError.value = '发音暂时不可用，请检查网络或换用较新的浏览器后重试。'
+      speechError.value = '发音暂时不可用，请稍后重试。'
     }
   }
 }
@@ -56,14 +57,14 @@ async function start() {
     return
   }
   starting.value = true; error.value = ''
-  try { 
+  try {
     const paperId = lesson.value.paperId
     const s = await api.startFun(paperId)
-    router.push(`/sessions/${s.id}`) 
-  } catch (e) { 
-    error.value = e.message 
-  } finally { 
-    starting.value = false 
+    router.push(`/sessions/${s.id}`)
+  } catch (e) {
+    error.value = e.message
+  } finally {
+    starting.value = false
   }
 }
 function adjustFont(delta) {
@@ -92,33 +93,32 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 
 <template>
   <div class="content-page detail-page novel-detail">
-    <!-- 顶部工具栏：返回、标题、设置 -->
-    <div class="reader-topbar">
-      <RouterLink class="topbar-back" to="/novel" aria-label="返回趣味阅读">←<span class="topbar-back-text">返回趣味阅读</span></RouterLink>
-      <h1 class="topbar-title">{{ lesson?.title || '未命名章节' }}</h1>
-      <button class="topbar-settings" type="button" @click="showSettings = !showSettings" :aria-expanded="showSettings" aria-label="阅读设置">⚙</button>
+    <div class="reader-toolbar">
+      <nav class="reader-topbar" aria-label="阅读工具栏">
+        <RouterLink class="topbar-back" to="/novel" aria-label="返回趣味阅读目录">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <span>返回</span>
+        </RouterLink>
+        <span class="topbar-context">趣味阅读</span>
+        <button class="topbar-settings" :class="{ active: showSettings }" type="button" @click="showSettings = !showSettings" :aria-expanded="showSettings" aria-controls="reader-font-settings" aria-label="调整阅读字号">
+          <span class="settings-mark" aria-hidden="true">Aa</span><span>字号</span>
+        </button>
+      </nav>
+      <Transition name="reader-settings">
+        <section v-if="showSettings" id="reader-font-settings" class="settings-panel" aria-label="阅读字号设置">
+          <div class="setting-row">
+            <div class="setting-label">正文字号<small>找到舒服的阅读大小</small></div>
+            <div class="font-controls">
+              <button type="button" @click="adjustFont(-2)" :disabled="fontSize <= 16" aria-label="减小字号">A−</button>
+              <output class="font-size" aria-live="polite">{{ fontSize }}</output>
+              <button type="button" @click="adjustFont(2)" :disabled="fontSize >= 24" aria-label="增大字号">A+</button>
+            </div>
+          </div>
+        </section>
+      </Transition>
     </div>
-
-    <!-- 设置面板（字体大小） -->
-    <div v-if="showSettings" class="settings-panel">
-      <div class="setting-row">
-        <span class="setting-label">字体大小</span>
-        <div class="font-controls">
-          <button type="button" @click="adjustFont(-2)" aria-label="减小字号">A-</button>
-          <span class="font-size">{{ fontSize }}px</span>
-          <button type="button" @click="adjustFont(2)" aria-label="增大字号">A+</button>
-        </div>
-      </div>
-    </div>
-
-    <RouterLink class="back-dark desktop-only" to="/novel">← 返回趣味阅读</RouterLink>
 
     <div v-if="loading" class="state-box mob-novel-detail-skeleton" aria-hidden="true">
-      <div class="sk-toolbar">
-        <div class="skeleton sk-back"></div>
-        <div class="skeleton sk-title"></div>
-        <div class="skeleton sk-settings"></div>
-      </div>
       <div class="sk-header">
         <div class="skeleton sk-meta"></div>
         <div class="skeleton sk-h2"></div>
@@ -141,7 +141,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     <template v-else-if="lesson">
       <header class="story-heading desktop-only">
         <div class="section-top"><p class="eyebrow">STORY / {{ lesson.category || '未分类' }}</p><span>{{ lesson.questionCount || 0 }} 道练习</span></div>
-        <h2>{{ lesson.title || '未命名章节' }}</h2>
+        <h1>{{ lesson.title || '未命名章节' }}</h1>
         <p class="page-lead">{{ lesson.note || '' }}</p>
         <div class="detail-actions"><button class="primary-action" :disabled="!lesson.published || !lesson.paperId || starting" @click="start">{{ starting ? '正在准备…' : '开始本篇练习 ↗' }}</button></div>
         <p v-if="error" class="action-error" role="alert">{{ error }}</p>
@@ -150,7 +150,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
       <!-- 移动端：精简头部 -->
       <header class="story-heading-mobile mobile-only">
         <div class="mobile-meta">{{ lesson.category || '未分类' }} · {{ lesson.questionCount || 0 }} 道练习</div>
-        <h2>{{ lesson.title || '未命名章节' }}</h2>
+        <h1>{{ lesson.title || '未命名章节' }}</h1>
         <p v-if="lesson.note" class="mobile-lead">{{ lesson.note }}</p>
         <div class="mobile-actions">
           <button class="primary-action" :disabled="!lesson.published || !lesson.paperId || starting" @click="start">
@@ -170,7 +170,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
             <article v-for="(p, i) in visiblePages" :key="p.number ?? i" class="reader-page page-section">
               <div v-if="p.recall" class="reader-label">背诵回忆版</div>
               <template v-if="p.readingTokens?.length">
-                <p v-if="i === 0" class="reader-hint">假名标在词语上方，点击词语查看中文释义并听发音。首次使用会下载日语语音模型，可能需要稍等。</p>
+                <p v-if="i === 0" class="reader-hint">假名标在词语上方，点击词语查看中文释义并听发音。首次发音需要稍等片刻，正在准备语音引擎。</p>
                 <p v-if="i === 0 && speechStatus !== 'idle'" class="speech-status" role="status">{{ speechStatus === 'playing' ? '正在播放发音…' : speechStatus === 'generating' ? '正在生成发音…' : '正在加载日语语音模型…' }}</p>
                 <p v-if="i === 0 && speechError" class="speech-error" role="alert">{{ speechError }}</p>
                 <div class="annotated-text">
@@ -228,126 +228,100 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 </template>
 
 <style scoped>
-.novel-detail { 
-  --reader-accent: var(--season-accent, #a44769); 
-  --reader-ink: var(--season-ink, #633449); 
-  --reader-line: var(--season-line, #e8cbd5); 
-  --reader-soft: var(--season-soft, #faedf1); 
-}
-
-/* 桌面端/移动端通用工具栏 */
-.reader-topbar {
-  display: none;
+.novel-detail {
+  --reader-accent: var(--season-accent, #a44769);
+  --reader-ink: var(--season-ink, #633449);
+  --reader-line: var(--season-line, #e8cbd5);
+  --reader-soft: var(--season-soft, #faedf1);
 }
 
 .desktop-only { display: block; }
 .mobile-only { display: none; }
 
-/* 顶部工具栏样式 */
-.reader-topbar {
+.reader-toolbar {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: var(--theme-surface, #fffdf8);
+  margin-bottom: 28px;
   border-bottom: 1px solid var(--reader-line);
-  padding: 10px 16px;
-  display: flex;
+  background: var(--theme-surface, #fffdf8);
+}
+.reader-topbar {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) 84px;
   align-items: center;
-  gap: 10px;
-  min-height: 48px;
-  backdrop-filter: blur(8px);
+  gap: 8px;
+  min-height: 64px;
+  padding: 8px 20px;
 }
-.topbar-back {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--reader-soft);
+.topbar-back, .topbar-settings {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
   color: var(--reader-ink);
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: 600;
-}
-.topbar-back:active {
-  transform: scale(0.95);
-}
-.topbar-title {
-  flex: 1;
-  min-width: 0;
-  font: 600 15px/1.3 'Zen Kaku Gothic New', sans-serif;
-  margin: 0;
-  color: var(--reader-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
-}
-.topbar-settings {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--reader-line);
-  border-radius: 10px;
   background: transparent;
-  color: var(--reader-ink);
-  font-size: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
   cursor: pointer;
+  touch-action: manipulation;
 }
-.topbar-settings:active {
-  background: var(--reader-soft);
+.topbar-back { justify-self: start; padding-left: 0; }
+.topbar-settings { justify-self: end; border-color: var(--reader-line); }
+.topbar-settings.active, .topbar-settings:hover { background: var(--reader-soft); }
+.topbar-back:focus-visible, .topbar-settings:focus-visible, .font-controls button:focus-visible {
+  outline: 2px solid var(--reader-accent);
+  outline-offset: 3px;
 }
-
-/* 设置面板 */
-.settings-panel {
-  display: none;
+.topbar-context {
+  text-align: center;
+  color: var(--theme-text-secondary, #788177);
+  font-size: 12px;
+  letter-spacing: .16em;
+  white-space: nowrap;
 }
+.settings-mark { font: 600 20px/1 Georgia, serif; letter-spacing: -.06em; }
+.settings-panel { padding: 0 20px 16px; }
 .setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--reader-soft);
-  border-bottom: 1px solid var(--reader-line);
-}
-.setting-label {
-  font-size: 13px;
-  color: var(--reader-ink);
-  font-weight: 600;
-}
-.font-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.font-controls button {
-  min-width: 44px;
-  min-height: 44px;
-  background: var(--theme-surface, #fffdf8);
+  gap: 12px;
+  padding: 14px;
   border: 1px solid var(--reader-line);
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 14px;
+  background: var(--reader-soft);
+}
+.setting-label { font-size: 13px; color: var(--reader-ink); font-weight: 600; }
+.setting-label small { display: block; margin-top: 5px; font-size: 10px; font-weight: 400; opacity: .75; }
+.font-controls { display: flex; align-items: center; gap: 4px; }
+.font-controls button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--reader-line);
+  border-radius: 10px;
   color: var(--reader-ink);
+  background: var(--theme-surface, #fffdf8);
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
 }
-.font-controls button:active {
-  background: var(--reader-line);
-}
-.font-size {
-  font-size: 13px;
-  color: var(--reader-ink);
-  min-width: 48px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
+.font-controls button:disabled { opacity: .35; cursor: default; }
+.font-size { min-width: 34px; text-align: center; color: var(--reader-ink); font-size: 14px; font-variant-numeric: tabular-nums; }
+.reader-settings-enter-active, .reader-settings-leave-active { transition: opacity .16s ease, transform .16s ease; }
+.reader-settings-enter-from, .reader-settings-leave-to { opacity: 0; transform: translateY(-5px); }
 
 /* 移动端精简头部 */
 .story-heading-mobile {
-  padding: 20px 16px 16px;
+  padding: 24px 22px 28px;
   border-bottom: 1px solid var(--reader-line);
 }
 .mobile-meta {
@@ -357,8 +331,10 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
   font-weight: 600;
   margin-bottom: 8px;
 }
-.story-heading-mobile h2 {
-  font: 700 22px/1.35 'Zen Kaku Gothic New', sans-serif;
+.story-heading-mobile h1 {
+  font: 600 clamp(24px, 6.5vw, 30px)/1.5 'Noto Serif JP', 'Songti SC', serif;
+  letter-spacing: .02em;
+  overflow-wrap: anywhere;
   margin: 0 0 8px;
   color: var(--reader-ink);
 }
@@ -384,16 +360,16 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 }
 
 .story-heading { max-width: 900px; padding-bottom: 8px; }
-.story-heading h2 { margin-top: 28px; line-height: 1.35; }
+.story-heading h1 { margin-top: 28px; line-height: 1.35; }
 .story-heading .page-lead { max-width: 680px; }
 .story-heading .detail-actions { margin: 28px 0 32px; }
 
-.reading-layout { 
-  display: grid; 
-  grid-template-columns: minmax(0, 1fr) minmax(230px, 285px); 
-  gap: clamp(24px, 4vw, 56px); 
-  align-items: start; 
-  margin-top: 25px; 
+.reading-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 285px);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+  margin-top: 25px;
 }
 .reading-column, .reading-sidebar { min-width: 0; }
 .reading-intro { border-top: 1px solid var(--reader-line); padding: 20px 0 18px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; }
@@ -406,12 +382,12 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 .speech-status, .speech-error { margin: -12px 0 20px; font-size: 12px; line-height: 1.6; color: var(--reader-ink); }
 .speech-error { color: #984d45; }
 
-.annotated-text, .reading-text { 
-  white-space: pre-wrap; 
-  overflow-wrap: anywhere; 
-  font-size: var(--reader-font-size, var(--base-font-size, 17px)); 
-  line-height: var(--base-line-height, 2.2); 
-  color: inherit; 
+.annotated-text, .reading-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--reader-font-size, var(--base-font-size, 17px));
+  line-height: var(--base-line-height, 2.2);
+  color: inherit;
 }
 .reading-text { margin: 0; }
 
@@ -578,8 +554,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 @media (max-width: 768px) {
   .desktop-only { display: none !important; }
   .mobile-only { display: block; }
-  .reader-topbar { display: flex; }
-  .settings-panel { display: block; }
+  .reader-toolbar { margin-bottom: 0; }
 
   .novel-detail {
     padding-bottom: 80px;
@@ -606,7 +581,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     padding: 0 16px;
     gap: 20px;
   }
-  
+
   /* 字体 ≥ 18px、行高 ≥ 1.8、padding 16px */
   .annotated-text, .reading-text {
     font-size: var(--reader-font-size, 18px);
@@ -639,7 +614,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 
 @media (max-width: 480px) {
   .reader-label { margin-bottom: 20px; }
-  .story-heading-mobile h2 { font-size: 20px; }
+  .reader-topbar { padding-inline: 16px; }
 }
 
 /* ===== 骨架屏（移动端小说详情页） ===== */

@@ -55,8 +55,8 @@ for (const [name, spec] of Object.entries(lock.files)) {
 }
 
 const japaneseSource = path.join(root, 'node_modules/kokoro-js-jp/dist')
-const japaneseFiles = ['browser/worker.js', 'open_jtalk_dic_utf_8-1.11.tar.gz',
-  'openjtalk-voice.htsvoice', 'openjtalk-wasm-wrapper-D6E3BSJO.js', 'openjtalk-wasm.wasm']
+const japaneseFiles = ['open_jtalk_dic_utf_8-1.11.tar.gz',
+  'openjtalk-voice.htsvoice', 'openjtalk-wasm.wasm']
 const wasmSource = path.join(root, 'node_modules/onnxruntime-web/dist')
 const wasmFiles = (await fs.readdir(wasmSource)).filter(name => /^ort-wasm.*\.(mjs|wasm)$/.test(name))
 if (!wasmFiles.some(name => name.endsWith('.wasm'))) throw new Error('ONNX WASM runtime missing; run npm ci')
@@ -65,7 +65,9 @@ for (const [source, destDir, names] of [[japaneseSource, 'japanese', japaneseFil
     const file = path.join(source, name)
     if ((await fs.stat(file)).size === 0) throw new Error(`Empty TTS resource: ${file}`)
     if (!verifyOnly) {
-      const dest = path.join(output, destDir, name)
+      // AAPT silently inflates *.gz assets and strips their suffix.
+      const bundledName = name.endsWith('.gz') ? `${name}.bin` : name
+      const dest = path.join(output, destDir, bundledName)
       await fs.mkdir(path.dirname(dest), { recursive: true })
       await fs.copyFile(file, dest)
     }
@@ -75,6 +77,7 @@ if (!verifyOnly) {
   await build({
     entryPoints: [path.join(root, 'src/tts/nativeWorker.js')],
     outfile: path.join(output, 'worker.js'),
+    alias: { 'openjtalk-native': path.join(japaneseSource, 'openjtalk-wasm-wrapper-D6E3BSJO.js') },
     bundle: true, platform: 'browser', format: 'esm', target: 'es2022', minify: true,
   })
   for (const [name, source] of [

@@ -2,6 +2,7 @@
 import { KokoroJP } from 'kokoro-js-jp'
 import { env } from '@huggingface/transformers'
 import { startSpeechWorker } from './workerProtocol.js'
+import { installInlineJapaneseWorker } from './inlineJapaneseWorker.js'
 
 const base = new URL('./', self.location.href).href
 const model = new URL('model/', base).pathname
@@ -23,6 +24,8 @@ self.fetch = (input, options) => {
   if (!target.href.startsWith(base)) return Promise.reject(new Error(`Non-bundled TTS resource: ${target.href}`))
   return localFetch(target.href, options)
 }
+
+installInlineJapaneseWorker(base)
 
 startSpeechWorker(() => KokoroJP.load({
   modelId: model,

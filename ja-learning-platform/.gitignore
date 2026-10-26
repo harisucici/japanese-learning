@@ -25,3 +25,6 @@ android/app/src/main/assets/
 *.keystore
 public/kokoro-model/
 public/native-tts-v1/
+
+# Kotlin incremental build state
+android/.kotlin/

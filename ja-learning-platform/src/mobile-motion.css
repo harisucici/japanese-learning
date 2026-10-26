@@ -26,6 +26,10 @@
   .app-main.mobile-nav-space { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
   body:has(.mobile-dock) footer { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)) !important; }
   .route-stage { min-width: 0; }
+  .site-header.reader-header-hidden { display: none !important; }
+  .interior.novel-reader .interior-content {
+    padding: env(safe-area-inset-top, 0px) 0 20px !important;
+  }
   .interior-content { min-height: 0; padding-bottom: 24px !important; }
   .interior-hero { padding-bottom: 12px !important; }
   .interior-head .history-link { display: none !important; }

@@ -58,6 +58,7 @@ function ensureWorker() {
     // show its own error state instead of hanging forever.
     throw new Error('Web Workers are not supported in this browser')
   }
+  console.info('[TTS] platform:', Capacitor.getPlatform())
   worker = Capacitor.isNativePlatform()
     ? new Worker(new URL('/native-tts-v1/worker.js', window.location.origin), { type: 'module' })
     : new Worker(new URL('./ttsWorker.js', import.meta.url), { type: 'module' })
@@ -112,6 +113,7 @@ function onWorkerMessage(event) {
       if (msg.id != null && pendingRequests.has(msg.id)) {
         const pending = pendingRequests.get(msg.id)
         pendingRequests.delete(msg.id)
+        console.error('[TTS] synthesis failed:', msg.message)
         pending.reject(new Error(msg.message || 'Worker error'))
       } else {
         failWorker(msg.message)
@@ -122,6 +124,7 @@ function onWorkerMessage(event) {
 }
 
 function failWorker(message) {
+  console.error('[TTS] engine failed:', message)
   workerReady = false
   preloadPromise = null
   worker?.terminate()
