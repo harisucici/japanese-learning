@@ -46,6 +46,7 @@ if (config.serveFrontend) {
   app.use(express.static(siteDirectory, { index: false }));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/') || req.path.startsWith('/study-assets/') || req.path.startsWith('/exam-assets/')) return next();
+    res.setHeader('Cache-Control', 'no-store');
     res.sendFile(path.join(siteDirectory, 'index.html'));
   });
 }

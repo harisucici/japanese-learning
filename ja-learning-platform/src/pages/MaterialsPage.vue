@@ -60,7 +60,7 @@ function initialOf(title) {
       </div>
     </div>
     <div v-else-if="error" class="state-box error">{{ error }} <button @click="load">重试</button></div>
-    
+
     <template v-else>
       <!-- 桌面端控制区 -->
       <div class="desktop-only">
@@ -198,9 +198,30 @@ function initialOf(title) {
     -webkit-overflow-scrolling: touch;
     padding: 0 16px;
     scrollbar-width: none;
+    position: relative;
+    background:
+      linear-gradient(to right, var(--theme-surface, #fffdf8) 0%, transparent 8%, transparent 92%, var(--theme-surface, #fffdf8) 100%);
   }
   .mobile-filters::-webkit-scrollbar {
     display: none;
+  }
+  .mobile-filters::before,
+  .mobile-filters::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .mobile-filters::before {
+    left: 0;
+    background: linear-gradient(to right, var(--theme-surface, #fffdf8) 0%, transparent 100%);
+  }
+  .mobile-filters::after {
+    right: 0;
+    background: linear-gradient(to left, var(--theme-surface, #fffdf8) 0%, transparent 100%);
   }
   .filter-chip {
     flex: none;
@@ -339,14 +360,33 @@ function initialOf(title) {
 /* 极小屏 */
 @media (max-width: 375px) {
   .card-thumb {
-    width: 40px;
-    height: 46px;
+    width: 38px;
+    height: 44px;
   }
   .thumb-initial {
-    font-size: 19px;
+    font-size: 18px;
   }
   .card-title {
+    font-size: 14px;
+  }
+  .card-details {
+    font-size: 12px;
+  }
+  .mobile-card {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  .search-field {
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+  .search-field input {
     font-size: 15px;
+  }
+  .filter-chip {
+    font-size: 13px;
+    padding: 6px 12px;
+    min-height: 40px;
   }
 }
 

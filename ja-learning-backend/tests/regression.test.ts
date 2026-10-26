@@ -13,7 +13,9 @@ describe('Full Regression Test', () => {
 
   beforeAll(async () => {
     agent = request.agent(app);
-    // Delete any existing test invite code, then create fresh
+    // Clean up stale test user from previous runs so register (test 4) gets 201
+    // User table is managed via raw SQL, not Prisma models
+    await (userPrisma as any).$executeRaw`DELETE FROM "User" WHERE email = ${TEST_EMAIL}`;
     await userPrisma.inviteCode.deleteMany({ where: { code: TEST_INVITE } });
     await userPrisma.inviteCode.create({ data: { code: TEST_INVITE, used: false } });
   }, 10000);
@@ -73,6 +75,10 @@ describe('Full Regression Test', () => {
 
   // 8. Logout
   it('8. Logout after register', async () => {
+    // Establish an explicit session before testing logout.
+    await agent
+      .post('/api/v1/auth/login')
+      .send({ email: TEST_EMAIL, password: TEST_PASSWORD });
     const res = await agent.post('/api/v1/auth/logout');
     expect(res.status).toBe(200);
   });
@@ -155,10 +161,20 @@ describe('Full Regression Test', () => {
 
   // 21. Create practice session
   it('21. Create practice session', async () => {
-    const res = await agent
-      .post('/api/v1/learning/sessions')
-      .send({ mode: 'practice', level: 'n5', limit: 3 });
-    expect(res.status).toBe(201);
+    // The regression must not depend on a pre-existing N5 question bank.
+    const question = await prisma.question.create({ data: {
+      level: 'n5', type: 'vocabulary', content: 'テスト',
+      options: [{ id: 'a', content: 'テスト', index: 0 }],
+      answer: 'a', source: 'custom', explanationId: 'regression-explanation',
+    } });
+    try {
+      const res = await agent
+        .post('/api/v1/learning/sessions')
+        .send({ mode: 'practice', level: 'n5', limit: 3 });
+      expect(res.status).toBe(201);
+    } finally {
+      await prisma.question.delete({ where: { id: question.id } });
+    }
   });
 
   // 22-23. Review items
@@ -229,10 +245,28 @@ describe('Full Regression Test', () => {
 
   // 32. Create exam session
   it('32. Create exam session', async () => {
-    const res = await agent
-      .post('/api/v1/learning/sessions')
-      .send({ mode: 'exam', level: 'n5', limit: 5 });
-    expect(res.status).toBe(201);
+    // exam mode requires a ready ExamPaper with minutes-bearing sections
+    const paperId = `regression-exam-${Date.now()}`;
+    await prisma.examPaper.create({
+      data: {
+        id: paperId,
+        title: 'regression-exam',
+        level: 'n5',
+        kind: 'practice_exam',
+        ready: true,
+        sections: [{ id: 's1', title: 's1', questionIds: [], minutes: 30 }],
+        materials: [],
+        verificationNote: 'test',
+      },
+    });
+    try {
+      const res = await agent
+        .post('/api/v1/learning/sessions')
+        .send({ mode: 'exam', level: 'n5', paperId, instantFeedback: false });
+      expect(res.status).toBe(201);
+    } finally {
+      await prisma.examPaper.delete({ where: { id: paperId } }).catch(() => {});
+    }
   });
 
   // 33. Guest session

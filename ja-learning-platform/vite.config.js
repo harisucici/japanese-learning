@@ -9,6 +9,8 @@ export default defineConfig(({ mode }) => {
     plugins: [vue()],
     server: {
       host: true,
+      port: 8080,
+      strictPort: true,
       proxy: {
         '/api/core': {
           target: proxyTarget,

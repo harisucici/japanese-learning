@@ -38,6 +38,28 @@ button {
 }
 
 /* ============================================
+ * Skip Link (无障碍访问)
+ * 键盘用户可快速跳转到主内容区域
+ * ============================================ */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary, #3a5d4d);
+  color: #fffdf8;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.2s;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ============================================
  * 站点头部
  * 顶栏、品牌标识、桌面导航与移动端汉堡菜单
  * ============================================ */

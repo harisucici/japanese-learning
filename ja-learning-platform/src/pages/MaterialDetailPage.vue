@@ -144,7 +144,7 @@ const firstAudio = computed(() => item.value?.audios?.[0] || null)
 
 <style scoped>
 .material-detail {
-  padding-bottom: 80px;
+  padding-bottom: 120px;
 }
 
 .desktop-only { display: block; }
@@ -156,7 +156,7 @@ const firstAudio = computed(() => item.value?.audios?.[0] || null)
   .mobile-only { display: block; }
 
   .material-detail {
-    padding: 0 0 100px;
+    padding: 0 0 140px;
   }
 
   /* 顶部音频播放器（固定） */
@@ -443,10 +443,75 @@ const firstAudio = computed(() => item.value?.audios?.[0] || null)
 /* 极小屏 */
 @media (max-width: 375px) {
   .mobile-title {
-    font-size: 18px;
+    font-size: 17px;
+    line-height: 1.3;
+  }
+  .mobile-meta {
+    font-size: 11px;
+  }
+  .mobile-author {
+    font-size: 11px;
+  }
+  .mobile-header {
+    padding: 12px 12px 10px;
+  }
+  .mobile-back {
+    font-size: 12px;
   }
   .player-controls {
-    height: 36px;
+    height: 34px;
+  }
+  .player-title {
+    font-size: 13px;
+  }
+  .player-sub {
+    font-size: 11px;
+  }
+  .mobile-audio-player {
+    padding: 10px 12px;
+  }
+  .mobile-font-control {
+    padding: 8px 12px;
+  }
+  .font-label {
+    font-size: 12px;
+  }
+  .font-buttons button {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+  .font-size {
+    font-size: 12px;
+    min-width: 42px;
+  }
+  .tab-btn {
+    font-size: 14px;
+    min-height: 44px;
+    padding: 10px;
+  }
+  .mobile-content {
+    padding: 12px;
+  }
+  .mobile-content :deep(.reading-text),
+  .mobile-content :deep(.rt-content) {
+    font-size: var(--reading-font-size, 16px);
+    line-height: 1.75;
+  }
+  .translation-text {
+    font-size: var(--reading-font-size, 16px);
+    line-height: 1.75;
+  }
+  .bottom-btn {
+    font-size: 13px;
+    padding: 0 8px;
+  }
+  .material-skeleton {
+    padding: 16px 12px;
+  }
+  .material-skeleton .skeleton-player {
+    padding: 12px;
+    margin-bottom: 16px;
   }
 }
 </style>

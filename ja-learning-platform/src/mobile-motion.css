@@ -92,14 +92,8 @@
   footer.mobile-auth-footer { display: none; }
   body:has(.account-page.is-auth input:focus) .mobile-dock { display: none; }
 
-  /* A short paper-like reveal for route changes. */
-  .mobile-page-enter-active { animation: mobile-page-in .46s var(--mobile-ease) both; }
-  .mobile-page-leave-active { animation: mobile-page-out .16s ease-in both; }
-  @keyframes mobile-page-in {
-    from { opacity: 0; transform: translate3d(0, 18px, 0); filter: blur(3px); }
-    to { opacity: 1; transform: translateZ(0); filter: blur(0); }
-  }
-  @keyframes mobile-page-out { to { opacity: 0; transform: translate3d(0, -6px, 0); } }
+  /* Route page transition animations are defined outside the media query
+     (see bottom of file) so Vue can detect animationend at every viewport. */
 
   /* Keep the landscape and seal vocabulary of the existing visual theme. */
   .hero-art .sun { animation: mobile-sun-breathe 8s ease-in-out infinite alternate; }
@@ -234,3 +228,13 @@
   :root[data-reduce-motion="true"] .interior-head,
   :root[data-reduce-motion="true"] .menu-inner > a { animation: none !important; }
 }
+
+/* Route page transition keyframes — defined outside media queries so Vue can
+   detect animationend at every viewport width (fixes BUG-001 on desktop). */
+.mobile-page-enter-active { animation: mobile-page-in .46s var(--mobile-ease, cubic-bezier(.22, 1, .36, 1)) both; }
+.mobile-page-leave-active { animation: mobile-page-out .16s ease-in both; }
+@keyframes mobile-page-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); filter: blur(3px); }
+  to { opacity: 1; transform: translateZ(0); filter: blur(0); }
+}
+@keyframes mobile-page-out { to { opacity: 0; transform: translate3d(0, -6px, 0); } }

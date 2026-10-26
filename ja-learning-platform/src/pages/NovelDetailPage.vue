@@ -94,7 +94,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
   <div class="content-page detail-page novel-detail">
     <!-- 顶部工具栏：返回、标题、设置 -->
     <div class="reader-topbar">
-      <RouterLink class="topbar-back" to="/novel" aria-label="返回小说列表">←</RouterLink>
+      <RouterLink class="topbar-back" to="/novel" aria-label="返回趣味阅读">←<span class="topbar-back-text">返回趣味阅读</span></RouterLink>
       <h1 class="topbar-title">{{ lesson?.title || '未命名章节' }}</h1>
       <button class="topbar-settings" type="button" @click="showSettings = !showSettings" :aria-expanded="showSettings" aria-label="阅读设置">⚙</button>
     </div>
@@ -186,6 +186,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
               </template>
               <p v-else class="reading-text">{{ p.text }}</p>
             </article>
+            <p v-if="lesson.pages?.length === 0" class="no-content">本章内容正在加载中…</p>
           </div>
           <div v-if="hasMorePages" ref="loadTrigger" class="load-trigger" role="status">向下滚动，继续阅读…</div>
           <div v-else-if="lesson.pages?.length" class="reading-end">本篇已读到底 · 可以回顾词卡或开始练习</div>

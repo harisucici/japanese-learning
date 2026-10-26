@@ -1,1 +1,38 @@
-{"name":"quiet-reading","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"vite --host 0.0.0.0","build":"vite build","preview":"vite preview --host 0.0.0.0","test":"vitest run","test:watch":"vitest"},"dependencies":{"@capacitor/android":"^8.5.3","@capacitor/cli":"^8.5.3","@capacitor/core":"^8.5.3","pinia":"^2.3.0","vue":"^3.5.13","vue-router":"^4.5.0"},"devDependencies":{"@vitejs/plugin-vue":"^5.2.1","@vitest/coverage-v8":"^5.0.5","@vue/test-utils":"^2.5.1","jsdom":"^30.1.3","typescript":"^7.0.2","vite":"^6.0.5","vitest":"^5.0.5"}}
+{
+  "name": "quiet-reading",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "build:android": "npm run build && npx cap sync android",
+    "prepare:tts": "node scripts/prepare-tts-model.js",
+    "prepare:tts:verify": "node scripts/prepare-tts-model.js --verify",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build:android:dev": "npm run build:android && cd android && ./gradlew assembleDebug",
+    "build:android:prod": "npm run build:android && cd android && ./gradlew assembleRelease"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@huggingface/transformers": "3.8.1",
+    "kokoro-js-jp": "0.2.0",
+    "pinia": "^2.3.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/coverage-v8": "^5.0.5",
+    "@vue/test-utils": "^2.5.1",
+    "esbuild": "0.25.12",
+    "jsdom": "^30.1.3",
+    "typescript": "^7.0.2",
+    "vite": "^6.0.5",
+    "vitest": "^5.0.5"
+  }
+}
