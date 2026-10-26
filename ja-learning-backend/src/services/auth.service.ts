@@ -118,7 +118,7 @@ export class AuthService {
       body: JSON.stringify({
         from: config.passwordResetFrom,
         to: [result.user.email],
-        subject: '山间书院 · 重置密码',
+        subject: '山間の書院 · 重置密码',
         text: `请在一小时内打开以下链接重置密码：\n${link}\n如果不是你本人操作，可以忽略此邮件。`,
       }),
     });

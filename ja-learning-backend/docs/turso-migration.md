@@ -1,4 +1,4 @@
-# 日语学习平台：Turso 迁移包
+# 山間の書院：Turso 迁移包
 
 这是一个完整的本地数据库快照。`learning.sqlite` 同时包含业务数据和原始资料文件，不依赖原电脑的绝对路径。`learning.sql` 是同一快照的可重建 SQL 备份。数据库尚未上传到 Turso；当前网站仍使用 PostgreSQL。
 

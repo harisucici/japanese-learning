@@ -88,7 +88,7 @@ onUnmounted(() => {
 
 <template>
   <div class="home-page">
-  <section class="hero" :style="{ transform: `translateY(${scrollY * 0.25}px)` }"><div class="hero-art"><div class="sky"></div><div class="sun"></div><div class="mountain back"></div><div class="mountain middle"></div><div class="mountain front"></div><div class="water"></div><div class="reeds reeds-left"></div><div class="reeds reeds-right"></div></div><div class="hero-shade"></div><div class="hero-copy"><p class="eyebrow light">A PLACE TO READ, A WAY TO GROW</p><h1>在文字里<br>遇见<span>辽阔</span></h1><p>让阅读慢下来，让想象走得更远。</p><a href="#explore" class="text-link light-link">开启探索 <span>↗</span></a></div><div class="hero-bottom">读一页书，走一段路。<span>山间书院 · THE READING RETREAT</span></div></section>
+  <section class="hero" :style="{ transform: `translateY(${scrollY * 0.25}px)` }"><div class="hero-art"><div class="sky"></div><div class="sun"></div><div class="mountain back"></div><div class="mountain middle"></div><div class="mountain front"></div><div class="water"></div><div class="reeds reeds-left"></div><div class="reeds reeds-right"></div></div><div class="hero-shade"></div><div class="hero-copy"><p class="eyebrow light">A PLACE TO READ, A WAY TO GROW</p><h1>在文字里<br>遇见<span>辽阔</span></h1><p>让阅读慢下来，让想象走得更远。</p><a href="#explore" class="text-link light-link">开启探索 <span>↗</span></a></div><div class="hero-bottom">读一页书，走一段路。<span>山間の書院 · THE READING RETREAT</span></div></section>
   
   <!-- 骨架屏：加载完成前显示 -->
   <div v-if="loading" class="mobile-skeleton section-wrap" aria-hidden="true">

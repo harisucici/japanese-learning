@@ -339,7 +339,7 @@ const isQuestionActive = computed(() => {
     <!-- 桌面端顶栏 -->
     <div class="session-top desk-top">
       <button @click="back" :disabled="audioLocked">← 返回学习页</button>
-      <strong>山间书院 · {{ mode === 'practice' ? '练习模式' : '模拟考试' }}</strong>
+      <strong>山間の書院 · {{ mode === 'practice' ? '练习模式' : '模拟考试' }}</strong>
       <button v-if="session" @click="showAnswered = !showAnswered">
         已答 {{ session.answers?.length || 0 }} 题
       </button>

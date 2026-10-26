@@ -40,12 +40,12 @@ class BundledTtsInstrumentedTest {
                 val encoded = evaluate(instrumentation, view,
                     "JSON.stringify({url:location.href,title:document.title,ready:document.readyState,text:document.body?.innerText?.slice(0,500)})")
                 result = JSONObject(JSONTokener(encoded).nextValue() as String)
-                if (result.optString("title").contains("山间书院") && result.optString("text").contains("阅读")) break
+                if (result.optString("title").contains("山間の書院") && result.optString("text").contains("阅读")) break
             }
             android.util.Log.i("AppPageTest", result.toString())
             val expectedUrl = activity.bridge.config.serverUrl.orEmpty()
             assertTrue("App page failed to load: $result", expectedUrl.isNotEmpty() && result.optString("url").startsWith(expectedUrl))
-            assertTrue("App content missing: $result", result.optString("title").contains("山间书院") && result.optString("text").contains("阅读"))
+            assertTrue("App content missing: $result", result.optString("title").contains("山間の書院") && result.optString("text").contains("阅读"))
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

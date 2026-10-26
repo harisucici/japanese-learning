@@ -54,7 +54,7 @@ const active = computed(() => {
   <a href="#main-content" class="skip-link">跳转到主要内容</a>
   <header v-if="!isSession" class="site-header" :class="{'on-page':active, 'mobile-compact': !isMobileHidden, 'reader-header-hidden': route.path.startsWith('/novel/')}">
     <RouterLink v-if="detailBack" class="mobile-detail-back" :to="detailBack" aria-label="返回列表">‹</RouterLink>
-    <RouterLink class="brand" to="/" aria-label="山间书院，返回首页"><img class="brand-mark" :src="yamaSeal" alt="山间书院标志"><span class="brand-name">山间书院<small>THE READING RETREAT</small></span></RouterLink>
+    <RouterLink class="brand" to="/" aria-label="山間の書院，返回首页"><img class="brand-mark" :src="yamaSeal" alt="山間の書院标志"><span class="brand-name">山間の書院<small>THE READING RETREAT</small></span></RouterLink>
     <nav class="desktop-nav" aria-label="主导航"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin">题库管理</RouterLink><RouterLink to="/account">{{auth.user?.nickname || '我的账户'}}</RouterLink></nav>
     <button class="menu-button" type="button" @click="store.toggleMenu" :aria-expanded="store.menuOpen" :aria-label="store.menuOpen ? '关闭菜单' : '打开菜单'"><span></span><span></span></button>
   </header>
@@ -111,6 +111,6 @@ const active = computed(() => {
     {{ gestureState.fontSize }}px
   </div>
 
-  <footer v-if="!isSession" :class="{ 'mobile-auth-footer': route.path === '/account' || route.path === '/reset-password' }"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt="山间书院标志"><strong>山间书院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山间书院</span><span>READ · EXPLORE · GROW</span></div></footer>
+  <footer v-if="!isSession" :class="{ 'mobile-auth-footer': route.path === '/account' || route.path === '/reset-password' }"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt="山間の書院标志"><strong>山間の書院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山間の書院</span><span>READ · EXPLORE · GROW</span></div></footer>
   </ThemeContext>
 </template>
