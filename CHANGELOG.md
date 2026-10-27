@@ -89,7 +89,7 @@ japanese-learning/
 │   ├── assets/                   # 静态资源（音频、字体、图片、数据）
 │   ├── web/                      # Web 构建配置
 │   └── test/                     # 测试文件
-└── 日语N5-N1刷题与深度解析平台需求文档.md.md
+└── 需求与实现差异分析报告.md
 ```
 
 ### 后端功能 (ja-learning-backend)
