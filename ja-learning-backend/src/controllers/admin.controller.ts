@@ -14,15 +14,17 @@ export class AdminController {
   async listQuestions(req: Request, res: Response) {
     try {
       const { level, type, status, source, limit, offset } = req.query;
+      const parsedLimit = limit ? parseInt(limit as string, 10) : 20;
+      const parsedOffset = offset ? parseInt(offset as string, 10) : 0;
       const result = await svc.list({
         level: level as string | undefined,
         type: type as string | undefined,
         status: status as string | undefined,
         source: source as string | undefined,
-        limit: limit ? parseInt(limit as string, 10) : undefined,
-        offset: offset ? parseInt(offset as string, 10) : undefined,
+        limit: parsedLimit,
+        offset: parsedOffset,
       });
-      res.json(result);
+      res.json({ ...result, limit: parsedLimit, offset: parsedOffset });
     } catch (e: any) {
       console.error('List questions error:', e);
       res.status(e.status || 500).json({ error: e.message });

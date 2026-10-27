@@ -23,7 +23,29 @@ export async function requestResource(path, body, method = body === undefined ? 
     ...(body === undefined ? {} : { body: JSON.stringify(body) })
   })
   const data = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : `服务请求失败（${response.status}）`)
+  if (!response.ok) {
+    const err = data?.error
+    const msg = typeof err === 'string'
+      ? err
+      : (err?.message || `服务请求失败（${response.status}）`)
+    const error = new Error(msg)
+    error.code = err?.code || null
+    error.details = err?.details || null
+    throw error
+  }
+  // Unwrap envelope: { success: true, data: {...}, meta? }
+  if (data && typeof data === 'object' && 'success' in data) {
+    if (data.success === false) {
+      const err = data.error || {}
+      const error = new Error(err.message || `服务请求失败（${response.status}）`)
+      error.code = err.code || null
+      error.details = err.details || null
+      throw error
+    }
+    const unwrapped = data.data !== undefined ? data.data : data
+    if (data.meta !== undefined && unwrapped !== null && typeof unwrapped === 'object') unwrapped.meta = data.meta
+    return unwrapped
+  }
   return data
 }
 
@@ -48,9 +70,27 @@ export const useAuthStore = defineStore('auth', {
       })
       const data = await response.json().catch(() => ({}))
       if (!response.ok) {
-        const detail = data.error
-        throw new Error(typeof detail === 'string' ? detail : detail?.fieldErrors
-          ? Object.values(detail.fieldErrors).flat().join('；') : `服务请求失败（${response.status}）`)
+        const err = data?.error
+        const msg = typeof err === 'string'
+          ? err
+          : (err?.message || (typeof err?.fieldErrors === 'object'
+            ? Object.values(err.fieldErrors).flat().join('；')
+            : `服务请求失败（${response.status}）`))
+        const error = new Error(msg)
+        error.code = err?.code || null
+        error.details = err?.details || (typeof err === 'object' ? err : null)
+        throw error
+      }
+      // Unwrap envelope: { success: true, data: {...} }
+      if (data && typeof data === 'object' && 'success' in data) {
+        if (data.success === false) {
+          const err = data.error || {}
+          const error = new Error(err.message || `服务请求失败（${response.status}）`)
+          error.code = err.code || null
+          error.details = err.details || null
+          throw error
+        }
+        return data.data !== undefined ? data.data : data
       }
       return data
     },
@@ -113,7 +153,6 @@ export const useLearningStore = defineStore('learning', {
         headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
         ...(body === undefined ? {} : { body: JSON.stringify(body) })
       })
-      // 直接读取 JSON，不依赖 content-length
       let data = {}
       this.requestStage = `读取响应内容（${response.status}）`
       data = await response.json().catch(() => ({}))
@@ -123,9 +162,26 @@ export const useLearningStore = defineStore('learning', {
         return this.request(path, body, true, true)
       }
       if (!response.ok) {
-        const error = new Error(data.error || `服务请求失败（${response.status}）`)
+        const err = data?.error
+        const msg = typeof err === 'string'
+          ? err
+          : (err?.message || `服务请求失败（${response.status}）`)
+        const error = new Error(msg)
         error.status = response.status
+        error.code = err?.code || null
+        error.details = err?.details || null
         throw error
+      }
+      // Unwrap envelope: { success: true, data: {...} }
+      if (data && typeof data === 'object' && 'success' in data) {
+        if (data.success === false) {
+          const err = data.error || {}
+          const error = new Error(err.message || `服务请求失败（${response.status}）`)
+          error.code = err.code || null
+          error.details = err.details || null
+          throw error
+        }
+        return data.data !== undefined ? data.data : data
       }
       return data
     },
@@ -133,7 +189,18 @@ export const useLearningStore = defineStore('learning', {
       if (this.guestReady) return
       const response = await fetch(`${API_BASE}/learning/guest`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: '{}' })
       const data = await response.json().catch(() => ({}))
-      if (!response.ok || !data.ready) throw new Error(data.error || '无法建立学习会话')
+      if (!response.ok) {
+        const err = data?.error
+        const msg = typeof err === 'string'
+          ? err
+          : (err?.message || `服务请求失败（${response.status}）`)
+        const error = new Error(msg)
+        error.code = err?.code || null
+        throw error
+      }
+      // Unwrap envelope
+      const payload = (data && data.success && data.data !== undefined) ? data.data : data
+      if (!payload || !payload.ready) throw new Error('无法建立学习会话')
       this.guestReady = true
     },
     async startFun(id) { this.session = await this.request('sessions', { level: 'n5', mode: 'fun', collectionId: id }, true); return this.session },

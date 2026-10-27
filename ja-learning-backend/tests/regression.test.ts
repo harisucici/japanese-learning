@@ -46,7 +46,7 @@ describe('Full Regression Test', () => {
       .post('/api/v1/auth/register')
       .send({ email: TEST_EMAIL, password: TEST_PASSWORD, currentLevel: 'n5', inviteCode: TEST_INVITE });
     expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty('user');
+    expect(res.body.data).toHaveProperty('user');
   });
 
   // 5. Duplicate email
@@ -89,7 +89,7 @@ describe('Full Regression Test', () => {
       .post('/api/v1/auth/login')
       .send({ email: TEST_EMAIL, password: TEST_PASSWORD });
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('user');
+    expect(res.body.data).toHaveProperty('user');
   });
 
   // 10. Wrong password
@@ -104,7 +104,7 @@ describe('Full Regression Test', () => {
   it('11. Get authenticated profile', async () => {
     const res = await agent.get('/api/v1/auth/me');
     expect(res.status).toBe(200);
-    expect(res.body.user.email).toBe(TEST_EMAIL);
+    expect(res.body.data.user.email).toBe(TEST_EMAIL);
   });
 
   // 12. Logout for unauth tests

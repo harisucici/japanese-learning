@@ -21,7 +21,7 @@ export class ExplanationController {
       });
       if (!answered) return res.status(403).json({ error: '提交答案或完成考试后可查看解析' });
       const item = await svc.getByQuestionId(questionId);
-      if (!item) return res.status(404).json({ error: 'Not found' });
+      if (!item) return res.status(404).json({ error: '未找到该文件' });
       res.json(item);
     } catch (e: any) {
       res.status(500).json({ error: e.message });

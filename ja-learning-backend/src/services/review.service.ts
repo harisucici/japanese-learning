@@ -18,8 +18,8 @@ export class ReviewService {
     if (!item) throw Object.assign(new Error('复习项不存在'), { status: 404 });
 
     // Simplified SM-2 algorithm
-    let easeFactor = item.easeFactor;
-    let intervalDays = item.intervalDays;
+    let easeFactor = item.easeFactor ?? 2.5;
+    let intervalDays = item.intervalDays ?? 0;
     let status = item.status;
     let reviewCount = item.reviewCount + 1;
     let correctStreak = correct ? item.correctStreak + 1 : 0;

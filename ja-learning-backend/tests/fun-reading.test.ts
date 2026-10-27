@@ -111,13 +111,13 @@ describe('趣味阅读模块 - API测试', () => {
         .get('/api/v1/learning/fun-papers')
         .expect(200);
 
-      expect(res.body).toHaveProperty('papers');
-      expect(res.body).toHaveProperty('label');
-      expect(Array.isArray(res.body.papers)).toBe(true);
-      expect(res.body.papers.length).toBeGreaterThan(0);
+      expect(res.body.data).toHaveProperty('papers');
+      expect(res.body.data).toHaveProperty('label');
+      expect(Array.isArray(res.body.data.papers)).toBe(true);
+      expect(res.body.data.papers.length).toBeGreaterThan(0);
 
       // 验证返回的数据结构
-      const paper = res.body.papers[0];
+      const paper = res.body.data.papers[0];
       expect(paper).toHaveProperty('id');
       expect(paper).toHaveProperty('title');
       expect(paper).toHaveProperty('description');
@@ -134,7 +134,7 @@ describe('趣味阅读模块 - API测试', () => {
         .get('/api/v1/learning/fun-papers')
         .expect(200);
 
-      const paper = res.body.papers.find((p: any) => p.id === mockFunPaper.id);
+      const paper = res.body.data.papers.find((p: any) => p.id === mockFunPaper.id);
       if (paper) {
         expect(paper.questionCount).toBeGreaterThanOrEqual(0);
         expect(typeof paper.ready).toBe('boolean');
@@ -149,7 +149,7 @@ describe('趣味阅读模块 - API测试', () => {
         .get('/api/v1/learning/fun-papers')
         .expect(200);
 
-      const paper = res.body.papers.find((p: any) => p.id === mockFunPaper.id);
+      const paper = res.body.data.papers.find((p: any) => p.id === mockFunPaper.id);
       if (paper) {
         expect(paper.readingLessonId).toBe(mockReadingArticle.id);
       }
@@ -164,15 +164,15 @@ describe('趣味阅读模块 - API测试', () => {
         .get('/api/v1/learning/novel-lessons')
         .expect(200);
 
-      expect(res.body).toHaveProperty('lessons');
-      expect(res.body).toHaveProperty('title');
-      expect(res.body).toHaveProperty('attribution');
-      expect(res.body).toHaveProperty('sourceTitle');
-      expect(res.body).toHaveProperty('sourcePages');
-      expect(Array.isArray(res.body.lessons)).toBe(true);
+      expect(res.body.data).toHaveProperty('lessons');
+      expect(res.body.data).toHaveProperty('title');
+      expect(res.body.data).toHaveProperty('attribution');
+      expect(res.body.data).toHaveProperty('sourceTitle');
+      expect(res.body.data).toHaveProperty('sourcePages');
+      expect(Array.isArray(res.body.data.lessons)).toBe(true);
 
       // 验证返回的数据结构
-      const lesson = res.body.lessons.find((l: any) => l.id === mockReadingArticle.id);
+      const lesson = res.body.data.lessons.find((l: any) => l.id === mockReadingArticle.id);
       if (lesson) {
         expect(lesson.title).toBe(mockReadingArticle.title);
         expect(lesson.category).toBe(mockReadingArticle.category);
@@ -189,7 +189,7 @@ describe('趣味阅读模块 - API测试', () => {
         .get('/api/v1/learning/novel-lessons')
         .expect(200);
 
-      const positions = res.body.lessons.map((l: any) => l.position);
+      const positions = res.body.data.lessons.map((l: any) => l.position);
       const sorted = [...positions].sort((a: number, b: number) => a - b);
       expect(positions).toEqual(sorted);
     });
@@ -203,12 +203,12 @@ describe('趣味阅读模块 - API测试', () => {
         .get(`/api/v1/learning/novel-lessons/${mockReadingArticle.id}`)
         .expect(200);
 
-      expect(res.body).toHaveProperty('id', mockReadingArticle.id);
-      expect(res.body).toHaveProperty('title', mockReadingArticle.title);
-      expect(res.body).toHaveProperty('pages');
-      expect(res.body).toHaveProperty('vocabulary');
-      expect(Array.isArray(res.body.pages)).toBe(true);
-      expect(Array.isArray(res.body.vocabulary)).toBe(true);
+      expect(res.body.data).toHaveProperty('id', mockReadingArticle.id);
+      expect(res.body.data).toHaveProperty('title', mockReadingArticle.title);
+      expect(res.body.data).toHaveProperty('pages');
+      expect(res.body.data).toHaveProperty('vocabulary');
+      expect(Array.isArray(res.body.data.pages)).toBe(true);
+      expect(Array.isArray(res.body.data.vocabulary)).toBe(true);
     });
 
     it('应该返回404当章节不存在', async () => {
@@ -228,7 +228,7 @@ describe('趣味阅读模块 - API测试', () => {
         .get(`/api/v1/learning/novel-lessons/${encodeURIComponent(mockReadingArticle.id)}`)
         .expect(200);
 
-      expect(res.body.id).toBe(mockReadingArticle.id);
+      expect(res.body.data.id).toBe(mockReadingArticle.id);
     });
   });
 
@@ -283,11 +283,11 @@ describe('趣味阅读模块 - API测试', () => {
           })
           .expect(201);
 
-        expect(res.body).toHaveProperty('id');
-        expect(res.body).toHaveProperty('mode', 'fun');
-        expect(res.body).toHaveProperty('collectionId', paperWithQuestions.id);
-        expect(res.body).toHaveProperty('questions');
-        expect(Array.isArray(res.body.questions)).toBe(true);
+        expect(res.body.data).toHaveProperty('id');
+        expect(res.body.data).toHaveProperty('mode', 'fun');
+        expect(res.body.data).toHaveProperty('collectionId', paperWithQuestions.id);
+        expect(res.body.data).toHaveProperty('questions');
+        expect(Array.isArray(res.body.data.questions)).toBe(true);
       } finally {
         // 清理
         await prisma.funPaper.delete({ where: { id: paperWithQuestions.id } }).catch(() => {});
@@ -409,7 +409,7 @@ describe('趣味阅读模块 - API测试', () => {
           collectionId: testPaperId,
         });
 
-      sessionId = res.body.id;
+      sessionId = res.body.data.id;
       questionIds = testQuestionIds;
     }, 30000);
 
@@ -441,9 +441,9 @@ describe('趣味阅读模块 - API测试', () => {
         .set('Cookie', testCookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('id', sessionId);
-      expect(res.body).toHaveProperty('questions');
-      expect(res.body).toHaveProperty('currentIndex', 0);
+      expect(res.body.data).toHaveProperty('id', sessionId);
+      expect(res.body.data).toHaveProperty('questions');
+      expect(res.body.data).toHaveProperty('currentIndex', 0);
     });
 
     it('应该提交答案并返回结果', async () => {
@@ -458,8 +458,8 @@ describe('趣味阅读模块 - API测试', () => {
         })
         .expect(200);
 
-      expect(res.body).toHaveProperty('answers');
-      const answer = res.body.answers.find((a: any) => a.questionId === questionIds[0]);
+      expect(res.body.data).toHaveProperty('answers');
+      const answer = res.body.data.answers.find((a: any) => a.questionId === questionIds[0]);
       expect(answer).toHaveProperty('isCorrect', true);
       expect(answer).toHaveProperty('correctOptionId', 'a1');
     });
@@ -485,7 +485,7 @@ describe('趣味阅读模块 - API测试', () => {
         .set('Cookie', testCookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('currentIndex');
+      expect(res.body.data).toHaveProperty('currentIndex');
     });
 
     it('应该验证答案参数', async () => {
@@ -532,7 +532,7 @@ describe('趣味阅读模块 - API测试', () => {
         .get('/api/v1/learning/fun-papers')
         .expect(200);
 
-      for (const paper of res.body.papers) {
+      for (const paper of res.body.data.papers) {
         expect(typeof paper.questionCount).toBe('number');
         expect(paper.questionCount).toBeGreaterThanOrEqual(0);
       }
@@ -545,8 +545,8 @@ describe('趣味阅读模块 - API测试', () => {
         .get(`/api/v1/learning/novel-lessons/${mockReadingArticle.id}`)
         .expect(200);
 
-      expect(Array.isArray(res.body.pages)).toBe(true);
-      for (const page of res.body.pages) {
+      expect(Array.isArray(res.body.data.pages)).toBe(true);
+      for (const page of res.body.data.pages) {
         expect(page).toHaveProperty('pageNumber');
         expect(typeof page.pageNumber).toBe('number');
       }
@@ -559,8 +559,8 @@ describe('趣味阅读模块 - API测试', () => {
         .get(`/api/v1/learning/novel-lessons/${mockReadingArticle.id}`)
         .expect(200);
 
-      expect(Array.isArray(res.body.vocabulary)).toBe(true);
-      for (const vocab of res.body.vocabulary) {
+      expect(Array.isArray(res.body.data.vocabulary)).toBe(true);
+      for (const vocab of res.body.data.vocabulary) {
         expect(vocab).toHaveProperty('word');
         expect(vocab).toHaveProperty('reading');
         expect(vocab).toHaveProperty('meaning');
