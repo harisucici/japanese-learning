@@ -42,7 +42,7 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(400);
 
-      expect(res.body.error).toMatch(/无效题型/);
+      expect(res.body.error.message).toMatch(/无效题型/);
     });
 
     it('should accept valid question type and return expected shape', async () => {
@@ -51,14 +51,14 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('level', 'n5');
-      expect(res.body).toHaveProperty('type', 'grammar');
-      expect(res.body).toHaveProperty('count');
-      expect(res.body).toHaveProperty('questions');
-      expect(Array.isArray(res.body.questions)).toBe(true);
+      expect(res.body.data).toHaveProperty('level', 'n5');
+      expect(res.body.data).toHaveProperty('type', 'grammar');
+      expect(res.body.data).toHaveProperty('count');
+      expect(res.body.data).toHaveProperty('questions');
+      expect(Array.isArray(res.body.data.questions)).toBe(true);
 
       // Questions must NOT contain answer field (security)
-      for (const q of res.body.questions) {
+      for (const q of res.body.data.questions) {
         expect(q).not.toHaveProperty('answer');
       }
     });
@@ -69,7 +69,7 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body.count).toBeLessThanOrEqual(2);
+      expect(res.body.data.count).toBeLessThanOrEqual(2);
     });
   });
 
@@ -98,11 +98,11 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('grammar');
-      expect(res.body.grammar).toHaveProperty('id', grammar.id);
-      expect(res.body).toHaveProperty('count');
-      expect(res.body).toHaveProperty('questions');
-      expect(Array.isArray(res.body.questions)).toBe(true);
+      expect(res.body.data).toHaveProperty('grammar');
+      expect(res.body.data.grammar).toHaveProperty('id', grammar.id);
+      expect(res.body.data).toHaveProperty('count');
+      expect(res.body.data).toHaveProperty('questions');
+      expect(Array.isArray(res.body.data.questions)).toBe(true);
 
       // Cleanup
       await (prisma as any).grammar.delete({ where: { id: grammar.id } });
@@ -122,10 +122,10 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('level', 'n5');
-      expect(res.body).toHaveProperty('count');
-      expect(res.body).toHaveProperty('items');
-      expect(Array.isArray(res.body.items)).toBe(true);
+      expect(res.body.data).toHaveProperty('level', 'n5');
+      expect(res.body.data).toHaveProperty('count');
+      expect(res.body.data).toHaveProperty('items');
+      expect(Array.isArray(res.body.data.items)).toBe(true);
     });
 
     it('should work without level filter', async () => {
@@ -134,7 +134,7 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('items');
+      expect(res.body.data).toHaveProperty('items');
     });
   });
 
@@ -151,14 +151,14 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('level', 'n5');
-      expect(res.body).toHaveProperty('count');
-      expect(res.body).toHaveProperty('questions');
-      expect(Array.isArray(res.body.questions)).toBe(true);
-      expect(res.body.count).toBeLessThanOrEqual(5);
+      expect(res.body.data).toHaveProperty('level', 'n5');
+      expect(res.body.data).toHaveProperty('count');
+      expect(res.body.data).toHaveProperty('questions');
+      expect(Array.isArray(res.body.data.questions)).toBe(true);
+      expect(res.body.data.count).toBeLessThanOrEqual(5);
 
       // Security: answers must not leak
-      for (const q of res.body.questions) {
+      for (const q of res.body.data.questions) {
         expect(q).not.toHaveProperty('answer');
       }
     });
@@ -169,7 +169,7 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('questions');
+      expect(res.body.data).toHaveProperty('questions');
     });
   });
 
@@ -228,10 +228,10 @@ describe('Review System Enhancement APIs', () => {
         .send({ mode: 'original' })
         .expect(200);
 
-      expect(res.body).toHaveProperty('reviewItemId', testItemId);
-      expect(res.body).toHaveProperty('mode', 'original');
-      expect(res.body).toHaveProperty('question');
-      expect(res.body.question).not.toHaveProperty('answer');
+      expect(res.body.data).toHaveProperty('reviewItemId', testItemId);
+      expect(res.body.data).toHaveProperty('mode', 'original');
+      expect(res.body.data).toHaveProperty('question');
+      expect(res.body.data.question).not.toHaveProperty('answer');
     });
 
     it('should update reviewMode after call', async () => {
@@ -297,15 +297,15 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(201);
 
-      expect(res.body).toHaveProperty('sessionId');
-      expect(res.body).toHaveProperty('reviewItemId', testItemId);
-      expect(res.body).toHaveProperty('question');
-      expect(res.body).toHaveProperty('message');
-      expect(res.body.question).not.toHaveProperty('answer');
+      expect(res.body.data).toHaveProperty('sessionId');
+      expect(res.body.data).toHaveProperty('reviewItemId', testItemId);
+      expect(res.body.data).toHaveProperty('question');
+      expect(res.body.data).toHaveProperty('message');
+      expect(res.body.data.question).not.toHaveProperty('answer');
 
       // Verify the session was actually created with mode='retry'
       const session = await userPrisma.learningSession.findUnique({
-        where: { id: res.body.sessionId },
+        where: { id: res.body.data.sessionId },
       });
       expect(session).not.toBeNull();
       expect(session!.mode).toBe('retry');
@@ -333,19 +333,19 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('totalMistakes');
-      expect(res.body).toHaveProperty('typeDistribution');
-      expect(res.body).toHaveProperty('knowledgeDistribution');
-      expect(res.body).toHaveProperty('timeTrend');
-      expect(res.body).toHaveProperty('firstTimeWrong');
-      expect(res.body).toHaveProperty('masteredAfterMistakes');
-      expect(res.body).toHaveProperty('items');
-      expect(Array.isArray(res.body.items)).toBe(true);
+      expect(res.body.data).toHaveProperty('totalMistakes');
+      expect(res.body.data).toHaveProperty('typeDistribution');
+      expect(res.body.data).toHaveProperty('knowledgeDistribution');
+      expect(res.body.data).toHaveProperty('timeTrend');
+      expect(res.body.data).toHaveProperty('firstTimeWrong');
+      expect(res.body.data).toHaveProperty('masteredAfterMistakes');
+      expect(res.body.data).toHaveProperty('items');
+      expect(Array.isArray(res.body.data.items)).toBe(true);
 
       // Verify numeric counters
-      expect(typeof res.body.totalMistakes).toBe('number');
-      expect(typeof res.body.firstTimeWrong).toBe('number');
-      expect(typeof res.body.masteredAfterMistakes).toBe('number');
+      expect(typeof res.body.data.totalMistakes).toBe('number');
+      expect(typeof res.body.data.firstTimeWrong).toBe('number');
+      expect(typeof res.body.data.masteredAfterMistakes).toBe('number');
     });
 
     it('should work without level filter', async () => {
@@ -354,7 +354,7 @@ describe('Review System Enhancement APIs', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(res.body).toHaveProperty('totalMistakes');
+      expect(res.body.data).toHaveProperty('totalMistakes');
     });
   });
 });

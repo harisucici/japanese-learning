@@ -7,13 +7,15 @@ export class QuestionController {
   async list(req: Request, res: Response) {
     try {
       const { level, type, limit, offset } = req.query;
+      const parsedLimit = limit ? parseInt(limit as string, 10) : 20;
+      const parsedOffset = offset ? parseInt(offset as string, 10) : 0;
       const result = await svc.list({
         level: level as string | undefined,
         type: type as string | undefined,
-        limit: limit ? parseInt(limit as string, 10) : undefined,
-        offset: offset ? parseInt(offset as string, 10) : undefined,
+        limit: parsedLimit,
+        offset: parsedOffset,
       });
-      res.json(result);
+      res.json({ ...result, limit: parsedLimit, offset: parsedOffset });
     } catch (e: any) {
       res.status(500).json({ error: e.message });
     }
@@ -23,7 +25,7 @@ export class QuestionController {
     try {
       const id = req.params.id as string;
       const item = await svc.getById(id);
-      if (!item) return res.status(404).json({ error: 'Not found' });
+      if (!item) return res.status(404).json({ error: '未找到该文件' });
       res.json(item);
     } catch (e: any) {
       res.status(500).json({ error: e.message });

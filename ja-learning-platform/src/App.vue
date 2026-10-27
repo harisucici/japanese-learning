@@ -17,6 +17,7 @@ const modules = [
   { num:'03', title:'素材阅读馆', en:'LIBRARY', path:'/materials', desc:'收藏值得细读的文字，积累自己的表达。', class:'library', cta:'探索馆藏' },
   { num:'04', title:'模拟考试', en:'PRACTICE', path:'/mock-exam', desc:'在安静的练习里，遇见更从容的自己。', class:'exam', cta:'开始练习' }
 ]
+const isNovelReader = computed(() => route.path.startsWith('/novel/'))
 const isSession = computed(() => route.path.startsWith('/sessions/') || route.path === '/sessions')
 const isMobileHidden = computed(() => isSession.value || route.path === '/admin')
 const mobileNav = [
@@ -52,7 +53,7 @@ const active = computed(() => {
   <ThemeContext>
   <!-- Skip Link for accessibility -->
   <a href="#main-content" class="skip-link">跳转到主要内容</a>
-  <header v-if="!isSession" class="site-header" :class="{'on-page':active, 'mobile-compact': !isMobileHidden, 'reader-header-hidden': route.path.startsWith('/novel/')}">
+  <header v-if="!isSession && !isNovelReader" class="site-header" :class="{'on-page':active, 'mobile-compact': !isMobileHidden, 'reader-header-hidden': route.path.startsWith('/novel/')}">
     <RouterLink v-if="detailBack" class="mobile-detail-back" :to="detailBack" aria-label="返回列表">‹</RouterLink>
     <RouterLink class="brand" to="/" aria-label="山間の書院，返回首页"><img class="brand-mark" :src="yamaSeal" alt="山間の書院标志"><span class="brand-name">山間の書院<small>THE READING RETREAT</small></span></RouterLink>
     <nav class="desktop-nav" aria-label="主导航"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink v-if="auth.user?.role==='admin'" to="/admin">题库管理</RouterLink><RouterLink to="/account">{{auth.user?.nickname || '我的账户'}}</RouterLink></nav>
@@ -68,7 +69,7 @@ const active = computed(() => {
       <component :is="Component" />
     </div>
     <div v-else-if="active && !isSession" class="interior" :class="[active.class, { 'mobile-content-first': mobileContentFirst, 'mobile-detail-page': mobileDetailPage, 'novel-reader': route.path.startsWith('/novel/') }]">
-      <div class="interior-hero" :class="active.class">
+      <div v-if="!isNovelReader" class="interior-hero" :class="active.class">
         <div class="interior-art"><div class="interior-orb"></div><div class="interior-hill"></div></div>
         <div class="interior-head">
           <p class="eyebrow light">{{active.en}} / {{active.num}}</p>
@@ -111,6 +112,10 @@ const active = computed(() => {
     {{ gestureState.fontSize }}px
   </div>
 
-  <footer v-if="!isSession" :class="{ 'mobile-auth-footer': route.path === '/account' || route.path === '/reset-password' }"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt="山間の書院标志"><strong>山間の書院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山間の書院</span><span>READ · EXPLORE · GROW</span></div></footer>
+  <footer v-if="!isSession && !isNovelReader" :class="{ 'mobile-auth-footer': route.path === '/account' || route.path === '/reset-password' }"><div class="footer-top"><div><img class="footer-mark" :src="yamaSeal" alt="山間の書院标志"><strong>山間の書院</strong><p>在文字里遇见辽阔。</p></div><div class="footer-links"><RouterLink v-for="m in modules" :key="m.path" :to="m.path">{{m.title}}</RouterLink><RouterLink to="/review">错题复习</RouterLink><RouterLink to="/account">我的账户</RouterLink></div></div><div class="footer-bottom"><span>© 2026 山間の書院</span><span>READ · EXPLORE · GROW</span></div></footer>
   </ThemeContext>
 </template>
+
+<style>
+.interior.novel-reader .interior-content.section-wrap { width: 100%; max-width: none; padding: 0 !important; margin: 0; }
+</style>

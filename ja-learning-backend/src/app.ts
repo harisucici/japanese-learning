@@ -3,6 +3,7 @@ import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
 import { config } from './config/env';
+import { envelopeResponse } from './utils/response';
 
 import learningRoutes from './routes/learning.routes';
 import practiceRoutes from './routes/practice.routes';
@@ -21,6 +22,7 @@ const app = express();
 
 app.use(cors({ origin: (origin, done) => done(null, !origin || config.frontendOrigins.includes(origin)), credentials: true }));
 app.use(express.json());
+app.use(envelopeResponse());
 app.use('/api/v1', (_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 app.use('/study-assets',express.static(path.join(__dirname,'../data/study-assets')));
 app.use('/exam-assets',express.static(path.join(__dirname,'../data/exam-assets')));
@@ -52,7 +54,17 @@ if (config.serveFrontend) {
 }
 
 app.use((_req, res) => {
-  res.status(404).json({ error: 'Not found' });
+  res.status(404).json({ error: '未找到该文件', message: '未找到该文件' });
+});
+
+// Global error handler — must be last middleware
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const { normalizeErrorBody, codeForStatus } = require('./utils/response');
+  const status = typeof err?.status === 'number' ? err.status : 500;
+  const message = status === 500 ? '服务暂时不可用，请重试' : (err?.message || '未知错误');
+  const normalized = normalizeErrorBody(message);
+  normalized.code = codeForStatus(status, normalized.code);
+  res.status(status).json({ success: false, error: normalized });
 });
 
 export default app;

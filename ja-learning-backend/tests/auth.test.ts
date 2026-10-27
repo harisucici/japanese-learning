@@ -66,20 +66,20 @@ describe('Authentication System', () => {
         .send({ ...testUser, inviteCode: testInviteCode });
 
       if (res.status !== 201) {
-        console.error('Register failed:', res.status, res.body);
+        console.error('Register failed:', res.status, res.body.data);
       }
 
       expect(res.status).toBe(201);
 
-      expect(res.body).toHaveProperty('user');
-      expect(res.body.user.email).toBe(testUser.email);
-      expect(res.body.user.nickname).toBe(testUser.nickname);
-      expect(res.body.user.currentLevel).toBe(testUser.currentLevel);
-      expect(res.body.user.targetLevel).toBe(testUser.targetLevel);
-      expect(res.body.user).not.toHaveProperty('passwordHash');
+      expect(res.body.data).toHaveProperty('user');
+      expect(res.body.data.user.email).toBe(testUser.email);
+      expect(res.body.data.user.nickname).toBe(testUser.nickname);
+      expect(res.body.data.user.currentLevel).toBe(testUser.currentLevel);
+      expect(res.body.data.user.targetLevel).toBe(testUser.targetLevel);
+      expect(res.body.data.user).not.toHaveProperty('passwordHash');
 
       authToken = res.headers['set-cookie']?.[0]?.split(';')[0].split('=')[1];
-      userId = res.body.user.id;
+      userId = res.body.data.user.id;
     });
 
     it('应该拒绝重复邮箱注册', async () => {
@@ -130,8 +130,8 @@ describe('Authentication System', () => {
         })
         .expect(200);
 
-      expect(res.body).toHaveProperty('user');
-      expect(res.body.user.email).toBe(testUser.email);
+      expect(res.body.data).toHaveProperty('user');
+      expect(res.body.data.user.email).toBe(testUser.email);
     });
 
     it('应该拒绝错误密码', async () => {
@@ -168,9 +168,9 @@ describe('Authentication System', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(res.body).toHaveProperty('user');
-      expect(res.body.user.email).toBe(testUser.email);
-      expect(res.body.user.id).toBe(userId);
+      expect(res.body.data).toHaveProperty('user');
+      expect(res.body.data.user.email).toBe(testUser.email);
+      expect(res.body.data.user.id).toBe(userId);
     });
 
     it('应该拒绝未认证请求', async () => {
@@ -196,9 +196,9 @@ describe('Authentication System', () => {
         })
         .expect(200);
 
-      expect(res.body.user.nickname).toBe('新昵称');
-      expect(res.body.user.currentLevel).toBe('n4');
-      expect(res.body.user.targetLevel).toBe('n3');
+      expect(res.body.data.user.nickname).toBe('新昵称');
+      expect(res.body.data.user.currentLevel).toBe('n4');
+      expect(res.body.data.user.targetLevel).toBe('n3');
     });
 
     it('应该拒绝无效的等级', async () => {
@@ -262,7 +262,7 @@ describe('Authentication System', () => {
       const payload = jwt.default.verify(decodeURIComponent(guestCookie.split('=')[1]), config.jwtSecret) as { userId: string };
       const input = { email: `migrate-${Date.now()}@example.com`, password: 'Migrate123', nickname: '迁移用户', anonymousId: payload.userId, inviteCode: migrateInviteCode };
       const upgraded = await request(app).post('/api/v1/auth/migrate-from-anonymous').set('Cookie', guestCookie).send(input).expect(200);
-      expect(upgraded.body.user.email).toBe(input.email);
+      expect(upgraded.body.data.user.email).toBe(input.email);
       await request(app).post('/api/v1/auth/migrate-from-anonymous').set('Authorization', `Bearer ${authToken}`).send({ ...input, email: `other-${Date.now()}@example.com` }).expect(403);
     });
   });

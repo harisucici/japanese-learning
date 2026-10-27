@@ -314,8 +314,8 @@ describe('NovelDetailPage 组件测试', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('测试小说');
-    expect(wrapper.text()).toContain('长篇小说');
-    expect(wrapper.text()).toContain('测试备注');
+    expect(wrapper.find('.topbar-title').text()).toBe('测试小说');
+    expect(wrapper.find('header').exists()).toBe(false);
     expect(wrapper.text()).toContain('第一页内容');
   });
 
@@ -349,7 +349,7 @@ describe('NovelDetailPage 组件测试', () => {
     expect(wrapper.text()).toContain('词汇2');
   });
 
-  it('应该支持开始练习按钮', async () => {
+  it('应该从工具栏打开字号面板并同步更新正文', async () => {
     const mockLesson = {
       id: 'test-id',
       title: '测试小说',
@@ -374,12 +374,18 @@ describe('NovelDetailPage 组件测试', () => {
 
     await flushPromises();
 
-    const startBtn = findButtonByText(wrapper, '开始本篇练习');
-    expect(startBtn).toBeDefined();
-    expect(startBtn.attributes('disabled')).toBeUndefined();
+    await wrapper.find('.topbar-settings').trigger('click');
+    await flushPromises();
+    const slider = document.querySelector('#reader-font-range');
+    expect(slider).not.toBeNull();
+    slider.value = '22';
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+    await flushPromises();
+    expect(wrapper.find('.pages-container').attributes('style')).toContain('22px');
+    expect(document.querySelector('#reader-font-settings').getAttribute('aria-modal')).toBe('true');
   });
 
-  it('应该在未发布时禁用开始按钮', async () => {
+  it('应该支持关闭字号面板并返回工具栏', async () => {
     const mockLesson = {
       id: 'test-id',
       title: '测试小说',
@@ -401,9 +407,13 @@ describe('NovelDetailPage 组件测试', () => {
 
     await flushPromises();
 
-    const startBtn = findButtonByText(wrapper, '开始本篇练习');
-    expect(startBtn).toBeDefined();
-    expect(startBtn.attributes('disabled')).toBeDefined();
+    await wrapper.find('.topbar-settings').trigger('click');
+    await flushPromises();
+    expect(document.querySelector('#reader-font-settings')).not.toBeNull();
+    document.querySelector('[aria-label="关闭字号设置"]').click();
+    await flushPromises();
+    expect(document.querySelector('#reader-font-settings')).toBeNull();
+    expect(wrapper.find('.topbar-settings').attributes('aria-expanded')).toBe('false');
   });
 
   it('应该显示返回按钮', async () => {

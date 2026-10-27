@@ -24,7 +24,7 @@ export class GrammarController {
         limit: parsed.data.limit,
         offset: parsed.data.offset,
       });
-      res.json(result);
+      res.json({ ...result, limit: parsed.data.limit, offset: parsed.data.offset });
     } catch (e: any) {
       res.status(500).json({ error: e.message || 'Internal error' });
     }
@@ -34,7 +34,7 @@ export class GrammarController {
   async getById(req: Request, res: Response) {
     try {
       const item = await svc.getById(req.params.id as string);
-      if (!item) return res.status(404).json({ error: 'Not found' });
+      if (!item) return res.status(404).json({ error: '未找到该文件' });
       res.json(item);
     } catch (e: any) {
       res.status(500).json({ error: e.message || 'Internal error' });
@@ -63,7 +63,7 @@ export class GrammarController {
         return res.status(400).json({ error: 'Invalid payload', details: parsed.error.flatten() });
       }
       const item = await svc.update(req.params.id as string, parsed.data);
-      if (!item) return res.status(404).json({ error: 'Not found' });
+      if (!item) return res.status(404).json({ error: '未找到该文件' });
       res.json(item);
     } catch (e: any) {
       res.status(500).json({ error: e.message || 'Internal error' });
@@ -77,7 +77,7 @@ export class GrammarController {
       const offset = parseInt((req.query.offset as string) || '0', 10);
       const result = await svc.getQuestions(req.params.id as string, limit, offset);
       if (!result) return res.status(404).json({ error: 'Grammar not found' });
-      res.json(result);
+      res.json({ ...result, limit, offset });
     } catch (e: any) {
       res.status(500).json({ error: e.message || 'Internal error' });
     }

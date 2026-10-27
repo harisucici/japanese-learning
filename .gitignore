@@ -73,3 +73,6 @@ outputs/
 *.db.bak*
 *.jks
 *.keystore
+
+# Local database snapshots
+*.db.backup*
