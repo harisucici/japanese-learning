@@ -192,7 +192,7 @@ const firstAudio = computed(() => item.value?.audios?.[0] || null)
     min-width: 0;
   }
   .player-title {
-    font: 600 14px/1.3 'Zen Kaku Gothic New', sans-serif;
+    font: 600 14px/1.3 var(--app-font-family);
     margin: 0;
     color: var(--theme-text, #27302b);
     overflow: hidden;
@@ -250,7 +250,7 @@ const firstAudio = computed(() => item.value?.audios?.[0] || null)
     margin-bottom: 6px;
   }
   .mobile-title {
-    font: 700 20px/1.35 'Zen Kaku Gothic New', sans-serif;
+    font: 700 20px/1.35 var(--app-font-family);
     margin: 0 0 4px;
     color: var(--theme-text, #27302b);
   }

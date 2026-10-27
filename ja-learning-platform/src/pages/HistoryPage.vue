@@ -146,7 +146,7 @@ const formatDuration = (createdAt, completedAt) => {
   margin-bottom: 24px;
 }
 .mob-page-head h2 {
-  font: 600 24px/1.3 'Zen Kaku Gothic New', sans-serif;
+  font: 600 24px/1.3 var(--app-font-family);
   color: var(--theme-text, #27302b);
   margin: 6px 0 8px;
 }
@@ -180,7 +180,7 @@ const formatDuration = (createdAt, completedAt) => {
   transform: scale(0.97);
 }
 .mob-stat-card strong {
-  font: 600 28px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 600 28px/1 var(--app-font-family);
   color: var(--season-accent, #355247);
   font-variant-numeric: tabular-nums;
 }
@@ -192,7 +192,7 @@ const formatDuration = (createdAt, completedAt) => {
 
 /* 时间线标题 */
 .mob-subhead {
-  font: 600 18px/1.3 'Zen Kaku Gothic New', sans-serif;
+  font: 600 18px/1.3 var(--app-font-family);
   color: var(--theme-text, #27302b);
   margin: 0 0 16px;
   padding-left: 4px;
@@ -251,7 +251,7 @@ const formatDuration = (createdAt, completedAt) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 600 12px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 12px var(--app-font-family);
   border: 2px solid var(--theme-surface, #fffdf8);
   box-shadow: 0 0 0 2px var(--theme-border, #e3e0d4);
   flex-shrink: 0;
@@ -287,7 +287,7 @@ const formatDuration = (createdAt, completedAt) => {
   color: #059669;
 }
 .mob-tl-content h3 {
-  font: 500 15px/1.4 'Zen Kaku Gothic New', sans-serif;
+  font: 500 15px/1.4 var(--app-font-family);
   color: var(--theme-text, #27302b);
   margin: 0 0 4px;
 }
@@ -300,7 +300,7 @@ const formatDuration = (createdAt, completedAt) => {
 }
 .mob-tl-action {
   flex-shrink: 0;
-  font: 600 14px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 14px var(--app-font-family);
   color: var(--season-accent, #355247);
   align-self: center;
 }

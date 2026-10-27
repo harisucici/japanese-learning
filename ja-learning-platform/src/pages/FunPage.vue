@@ -173,7 +173,7 @@ function initialOf(title) {
     font-weight: 600;
   }
   .mobile-title {
-    font: 700 22px/1.3 'Zen Kaku Gothic New', sans-serif;
+    font: 700 22px/1.3 var(--app-font-family);
     margin: 0 0 6px;
     color: var(--theme-text, #27302b);
   }
@@ -276,7 +276,7 @@ function initialOf(title) {
     position: relative;
   }
   .cover-initial {
-    font: 700 48px/1 'Zen Kaku Gothic New', sans-serif;
+    font: 700 48px/1 var(--app-font-family);
     opacity: 0.9;
   }
   .cover-badge {
@@ -322,7 +322,7 @@ function initialOf(title) {
   .fun-difficulty.expert { background: #faedf1; color: #633449; }
 
   .fun-title {
-    font: 700 17px/1.35 'Zen Kaku Gothic New', sans-serif;
+    font: 700 17px/1.35 var(--app-font-family);
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;

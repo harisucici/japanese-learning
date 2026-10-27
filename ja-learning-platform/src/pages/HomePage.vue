@@ -214,7 +214,7 @@ onUnmounted(() => {
 }
 
 .card-content h3 {
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 18px var(--app-font-family);
   color: #27302b;
   margin: 0 0 12px;
 }
@@ -510,7 +510,7 @@ onUnmounted(() => {
   .hero { background: #233d36; }
   .hero-art { opacity: .78; filter: saturate(.52) sepia(.08); }
   .hero-shade { background: linear-gradient(90deg, #172b26bb 0%, #172b2680 54%, #172b2600 100%) !important; }
-  .hero-copy h1 { font-family: 'Noto Serif JP', 'Songti SC', 'STSong', serif !important; font-weight: 500; letter-spacing: .14em !important; text-shadow: 0 2px 14px #13271f55; }
+  .hero-copy h1 { font-weight: 500; letter-spacing: .14em !important; text-shadow: 0 2px 14px #13271f55; }
   .hero-copy .text-link { background: #f6f1e8ee; color: #28453b !important; border-color: #f6f1e8ee; box-shadow: 0 5px 14px #152b2040; font-weight: 600; }
   .hero-copy .text-link:active { background: #e5d6b9; transform: scale(.94); }
 
@@ -520,11 +520,11 @@ onUnmounted(() => {
   .personal-card { background: #faf7ef; border: 1px solid #cbbfa98c; box-shadow: 0 5px 18px #283a2a0c; }
   .personal-card .card-icon { background: #3b5c4a; border: 1px solid #e3dfce80; box-shadow: inset 0 0 0 2px #ffffff30; }
   .personal-card.weak .card-icon { background: #957044; }
-  .personal-card .card-content h3 { color: #2e4236; font-family: 'Noto Serif JP', 'Songti SC', 'STSong', serif; font-weight: 600; }
+  .personal-card .card-content h3 { color: #2e4236; font-weight: 600; }
   .personal-card .card-cta { color: #4a6954; }
   .personal-card .weak-item { background: #ece6da; border-color: #d5c9b8; color: #6d5c4d; }
 
-  .explore-title h2 { font-family: 'Noto Serif JP', 'Songti SC', 'STSong', serif; font-weight: 500; color: #263c32; letter-spacing: .07em; }
+  .explore-title h2 { font-weight: 500; color: #263c32; letter-spacing: .07em; }
   .explore-title h2 em { color: #8b6f55; font-style: normal; }
   .module-grid { perspective: 900px; }
   .module-card {
@@ -552,11 +552,11 @@ onUnmounted(() => {
   .module-card .card-visual::after { content: ''; position: absolute; z-index: 1; inset: 0; background: linear-gradient(105deg,transparent 15%,#fffdf851 48%,transparent 75%); transform: translateX(-120%); animation: shikishi-mist 8s ease-in-out infinite; }
   .module-card .card-orb { width: 64px; height: 64px; top: 2px; opacity: .72; animation: shikishi-sun 5.5s ease-in-out infinite alternate; }
   .module-card .card-shape { inset: 48% -20% -20%; animation: shikishi-hill 9s ease-in-out infinite alternate; }
-  .module-card .card-symbol { z-index: 2; right: 9px; bottom: 4px; font-size: 29px; color: #fff9e9a8; font-family: Georgia, serif; transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .4s; }
+  .module-card .card-symbol { z-index: 2; right: 9px; bottom: 4px; font-size: 29px; color: #fff9e9a8; transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .4s; }
   .module-card .card-info { padding: 9px 8px 8px; }
   .module-card .card-top { color: var(--card-accent); font-size: 9px; font-weight: 600; }
   .module-card .card-top span:last-child { font-size: 15px; transition: transform .3s; }
-  .module-card .card-info h3 { font-family: 'Noto Serif JP', 'Songti SC', 'STSong', serif; font-weight: 600; color: #273a30; font-size: 14px; letter-spacing: .02em; }
+  .module-card .card-info h3 { font-weight: 600; color: #273a30; font-size: 14px; letter-spacing: .02em; }
   .module-card .card-cta { display: flex; justify-content: space-between; align-items: center; color: var(--card-accent); border-top: 1px solid #b9ad9680; letter-spacing: .08em; }
   .module-card:hover, .module-card:focus-visible { transform: translateY(-5px) rotate(-.6deg); border-color: var(--card-accent); box-shadow: 0 6px 0 #d0c2aa80, 0 16px 30px #26382a23; }
   .module-card:hover .card-symbol, .module-card:focus-visible .card-symbol { transform: translateY(-6px) scale(1.18); }

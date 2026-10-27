@@ -1,11 +1,11 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useRoute, RouterLink } from 'vue-router'
 import { useLearningStore } from '../store'
 import { speakJapanese, stopJapaneseSpeech } from '../utils/japaneseSpeech'
 
-const route = useRoute(), router = useRouter(), api = useLearningStore()
-const lesson = ref(null), error = ref(''), loading = ref(true), starting = ref(false)
+const route = useRoute(), api = useLearningStore()
+const lesson = ref(null), error = ref(''), loading = ref(true)
 const selectedWord = ref(null)
 const speechStatus = ref('idle'), speechError = ref('')
 const visibleCount = ref(2), loadTrigger = ref(null)
@@ -17,7 +17,7 @@ const hasMorePages = computed(() => visibleCount.value < (lesson.value?.pages?.l
 let observer = null, loadVersion = 0, speechSelectionId = 0
 
 function disconnectObserver() { observer?.disconnect(); observer = null }
-async function selectWord(token, key, event) {
+async function selectWord(token, key) {
   const selectionId = ++speechSelectionId
   selectedWord.value = selectedWord.value === key ? null : key
   // 移动端：打开底部抽屉
@@ -51,26 +51,10 @@ async function load() {
   } catch (e) { if (version === loadVersion) error.value = e.message }
   finally { if (version === loadVersion) loading.value = false }
 }
-async function start() {
-  if (!lesson.value?.paperId) {
-    error.value = '本篇尚未关联练习题'
-    return
-  }
-  starting.value = true; error.value = ''
-  try {
-    const paperId = lesson.value.paperId
-    const s = await api.startFun(paperId)
-    router.push(`/sessions/${s.id}`)
-  } catch (e) {
-    error.value = e.message
-  } finally {
-    starting.value = false
-  }
-}
 function adjustFont(delta) {
   fontSize.value = Math.max(14, Math.min(32, fontSize.value + delta))
 }
-const fontSettingsButton = ref(null), fontDialog = ref(null)
+const fontDialog = ref(null)
 let previousBodyOverflow = '', previouslyFocused = null
 function openFontSizeSettings() { showFontSizeDrawer.value = true }
 function onSettingsKeydown(event) {
@@ -124,19 +108,13 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
           <span>返回</span>
         </RouterLink>
         <span class="topbar-title">{{ lesson?.title || '原文阅读' }}</span>
-        <button class="topbar-settings" ref="fontSettingsButton" :class="{ active: showFontSizeDrawer }" type="button" @click="openFontSizeSettings()" :aria-expanded="showFontSizeDrawer" aria-controls="reader-font-settings" aria-label="调整阅读字号">
+        <button class="topbar-settings" :class="{ active: showFontSizeDrawer }" type="button" @click="openFontSizeSettings()" :aria-expanded="showFontSizeDrawer" aria-controls="reader-font-settings" aria-label="调整阅读字号">
           <span class="settings-mark" aria-hidden="true">Aa</span>
         </button>
       </nav>
     </div>
 
     <div v-if="loading" class="state-box mob-novel-detail-skeleton" aria-hidden="true">
-      <div class="sk-header">
-        <div class="skeleton sk-meta"></div>
-        <div class="skeleton sk-h2"></div>
-        <div class="skeleton sk-lead"></div>
-        <div class="skeleton sk-btn"></div>
-      </div>
       <div class="sk-content">
         <div class="skeleton sk-intro"></div>
         <div v-for="n in 3" :key="n" class="sk-page">
@@ -166,7 +144,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
                 <p v-if="i === 0 && speechError" class="speech-error" role="alert">{{ speechError }}</p>
                 <div class="annotated-text">
                   <template v-for="(token, j) in p.readingTokens" :key="j">
-                    <button v-if="token.word" type="button" class="ruby-word" :aria-expanded="selectedWord === `${i}-${j}`" @click="selectWord(token, `${i}-${j}`, $event)">
+                    <button v-if="token.word" type="button" class="ruby-word" :aria-expanded="selectedWord === `${i}-${j}`" @click="selectWord(token, `${i}-${j}`)">
                       <ruby>{{ token.word }}<rt>{{ token.reading }}</rt></ruby>
                       <!-- 桌面端：popover -->
                       <span v-if="selectedWord === `${i}-${j}`" class="word-popover" role="tooltip">{{ token.meaning }}</span>
@@ -291,7 +269,6 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
   background: transparent;
   text-decoration: none;
   white-space: nowrap;
-  font-family: inherit;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.2;
@@ -301,11 +278,11 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 .topbar-back { justify-self: start; padding-left: 0; }
 .topbar-settings { grid-column: 3; justify-self: end; border-color: var(--reader-line); }
 .topbar-settings.active, .topbar-settings:hover { background: var(--reader-soft); }
-.topbar-back:focus-visible, .topbar-settings:focus-visible, .font-controls button:focus-visible {
+.topbar-back:focus-visible, .topbar-settings:focus-visible {
   outline: 2px solid var(--reader-accent);
   outline-offset: 3px;
 }
-.settings-mark { font: 600 20px/1 Georgia, serif; letter-spacing: -.06em; }
+.settings-mark { font: 600 20px/1 var(--app-font-family); letter-spacing: -.06em; }
 .reading-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(230px, 285px);
@@ -400,7 +377,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
   min-width: 0;
 }
 .drawer-word-group h3 {
-  font: 700 24px/1.2 'Zen Kaku Gothic New', sans-serif;
+  font: 700 24px/1.2 var(--app-font-family);
   margin: 0 0 4px;
   color: var(--reader-ink);
 }
@@ -499,13 +476,9 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
   .desktop-only { display: none !important; }
   .mobile-only { display: block; }
 
-  /* 移动端工具栏：sticky + 半透明背景 */
+  /* 移动端固定工具栏 */
   .reader-toolbar {
-    position: fixed;
-    inset: 0 0 auto;
     z-index: 50;
-    margin-bottom: 0;
-    border-bottom: 1px solid var(--reader-line);
     background: rgba(255, 253, 248, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -530,13 +503,8 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     -webkit-backdrop-filter: blur(12px);
   }
 
-  /* 移动端隐藏 header，只保留工具栏 */
-  header.story-heading-mobile {
-    display: none !important;
-  }
 
   .novel-detail {
-    padding-top: calc(72px + env(safe-area-inset-top, 0px));
     padding-bottom: 80px;
   }
 
@@ -597,7 +565,6 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 
 @media (max-width: 480px) {
   .reader-label { margin-bottom: 20px; }
-  .reader-topbar { padding-inline: 16px; }
 }
 
 /* ===== 骨架屏（移动端小说详情页） ===== */
@@ -616,54 +583,6 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 @keyframes novel-shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}
-.sk-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-}
-.sk-back {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  flex: none;
-}
-.sk-title {
-  flex: 1;
-  height: 18px;
-}
-.sk-settings {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  flex: none;
-}
-.sk-header {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--reader-line, #e8cbd5);
-}
-.sk-meta {
-  width: 40%;
-  height: 12px;
-}
-.sk-h2 {
-  width: 70%;
-  height: 22px;
-  border-radius: 6px;
-}
-.sk-lead {
-  width: 90%;
-  height: 14px;
-}
-.sk-btn {
-  width: 100%;
-  height: 44px;
-  margin-top: 8px;
-  border-radius: 10px;
 }
 .sk-content {
   display: flex;
@@ -698,21 +617,19 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     padding-top: 8px;
   }
 }
-</style>
 
-<style scoped>
 .topbar-title { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; font-size: 14px; font-weight: 500; color: var(--reader-ink); }
 .reader-topbar { width: 100%; box-sizing: border-box; max-width: 1280px; margin: auto; }
 .reader-bottombar { display: none; }
 @media (max-width: 768px) { .reader-bottombar { display: flex; } }
 .font-size-drawer-overlay { --reader-ink: var(--season-ink, #633449); --reader-accent: var(--season-accent, #a44769); --reader-line: var(--season-line, #e8cbd5); --reader-soft: var(--season-soft, #faedf1); position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-end; justify-content: center; background: #17241f66; backdrop-filter: blur(4px); }
-.font-size-drawer { width: min(100%, 520px); box-sizing: border-box; max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; padding: 0 24px max(20px, env(safe-area-inset-bottom)); border: 1px solid var(--reader-line); border-bottom: 0; border-radius: 28px 28px 0 0; background: var(--theme-surface, #fffdf8); color: var(--theme-text, #35473d); box-shadow: 0 -12px 60px #15241f26; font-family: inherit; outline: none; }
+.font-size-drawer { width: min(100%, 520px); box-sizing: border-box; max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; padding: 0 24px max(20px, env(safe-area-inset-bottom)); border: 1px solid var(--reader-line); border-bottom: 0; border-radius: 28px 28px 0 0; background: var(--theme-surface, #fffdf8); color: var(--theme-text, #35473d); box-shadow: 0 -12px 60px #15241f26; outline: none; }
 .font-sheet-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 0; }
-.font-sheet-heading h2 { margin: 0; font-weight: 600; font-family: inherit; font-size: 20px; line-height: 1.4; color: var(--reader-ink); }
+.font-sheet-heading h2 { margin: 0; font-weight: 600; font-size: 20px; line-height: 1.4; color: var(--reader-ink); }
 .font-sheet-heading p { margin: 6px 0 0; font-size: 13px; line-height: 1.6; color: var(--theme-text-secondary, #72796f); }
 .font-size-preview { padding: 18px 20px; border: 1px solid var(--reader-line); border-radius: 16px; background: var(--reader-soft); }
 .preview-label { font-size: 11px; letter-spacing: .12em; color: var(--reader-ink); opacity: .75; }
-.font-size-preview p { margin: 12px 0 0; min-height: 96px; font-family: 'Noto Serif JP', serif; line-height: 1.9; overflow-wrap: anywhere; color: var(--reader-ink); }
+.font-size-preview p { margin: 12px 0 0; min-height: 96px; line-height: 1.9; overflow-wrap: anywhere; color: var(--reader-ink); }
 .font-size-caption { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 8px; }
 .font-size-caption label { font-size: 14px; font-weight: 600; }
 .font-size-caption output { font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--reader-ink); }
@@ -722,11 +639,11 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 .font-slider-row button:disabled { opacity: .35; cursor: default; }
 .font-slider-row input { width: 100%; min-width: 0; height: 44px; margin: 0; accent-color: var(--reader-accent); cursor: pointer; }
 .font-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
-.font-presets button { min-height: 58px; border: 1px solid var(--reader-line); border-radius: 12px; background: transparent; color: var(--reader-ink); font-family: inherit; font-weight: 500; line-height: 1.4; font-size: 14px; cursor: pointer; }
+.font-presets button { min-height: 58px; border: 1px solid var(--reader-line); border-radius: 12px; background: transparent; color: var(--reader-ink); font-weight: 500; line-height: 1.4; font-size: 14px; cursor: pointer; }
 .font-presets button small { display: block; margin-top: 3px; font-size: 11px; opacity: .7; }
 .font-presets button[aria-pressed="true"] { background: var(--reader-soft); border-color: var(--reader-accent); box-shadow: inset 0 0 0 1px var(--reader-accent); }
 .font-sheet-footer { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; padding-top: 24px; }
-.font-sheet-footer button { min-height: 48px; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+.font-sheet-footer button { min-height: 48px; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
 .font-reset { border: 1px solid var(--reader-line); background: transparent; color: var(--reader-ink); }
 .font-size-confirm { border: 0; background: var(--reader-accent); color: #fff; }
 .font-size-drawer button:focus-visible, .font-slider-row input:focus-visible { outline: 2px solid var(--reader-accent); outline-offset: 3px; }

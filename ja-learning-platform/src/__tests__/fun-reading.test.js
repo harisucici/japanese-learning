@@ -87,7 +87,10 @@ describe('NovelPage 组件测试', () => {
       },
     });
 
-    expect(wrapper.text()).toContain('正在读取章节…');
+    expect(wrapper.find('.novel-skeleton').exists()).toBe(true);
+    expect(wrapper.findAll('.sk-row')).toHaveLength(5);
+    expect(wrapper.text()).not.toContain('正在读取');
+    expect(wrapper.attributes('aria-busy')).toBe('true');
   });
 
   it('应该成功加载并显示小说列表', async () => {
@@ -128,6 +131,8 @@ describe('NovelPage 组件测试', () => {
 
     await flushPromises();
 
+    expect(wrapper.find('.novel-skeleton').exists()).toBe(false);
+    expect(wrapper.attributes('aria-busy')).toBe('false');
     expect(wrapper.text()).toContain('测试小说1');
     expect(wrapper.text()).toContain('测试小说2');
     expect(wrapper.text()).toContain('长篇小说');

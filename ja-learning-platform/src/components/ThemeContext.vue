@@ -248,7 +248,7 @@ function closePanel() {
   border-bottom: 1px solid var(--theme-border, #d9d4c3);
 }
 .theme-panel-head h2 {
-  font: 500 22px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 22px var(--app-font-family);
   letter-spacing: 0.08em;
   margin: 6px 0 0;
 }
@@ -294,7 +294,7 @@ function closePanel() {
   background: transparent;
   color: inherit;
   cursor: pointer;
-  font: 13px 'Zen Kaku Gothic New', sans-serif;
+  font: 13px var(--app-font-family);
   letter-spacing: 0.05em;
   transition: all 0.18s;
   border-radius: 6px;

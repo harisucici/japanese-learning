@@ -804,7 +804,6 @@ const isQuestionActive = computed(() => {
 
 <style scoped>
 /* ===== 通用工具 ===== */
-.desk-only { }
 .mob-only { display: none; }
 
 /* ===== 顶栏 ===== */
@@ -857,12 +856,12 @@ const isQuestionActive = computed(() => {
   min-width: 0;
 }
 .mob-qnum {
-  font: 500 13px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 500 13px/1 var(--app-font-family);
   color: var(--theme-text-secondary, #67746a);
   letter-spacing: 0.05em;
 }
 .mob-timer {
-  font: 500 18px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 500 18px/1 var(--app-font-family);
   color: var(--theme-text, #27302b);
   letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
@@ -899,7 +898,7 @@ const isQuestionActive = computed(() => {
   background: transparent;
   color: #dc2626;
   border-radius: 8px;
-  font: 500 13px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 13px var(--app-font-family);
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: all 0.2s;
@@ -915,7 +914,7 @@ const isQuestionActive = computed(() => {
 
 /* 题目文字在桌面端保持原样 */
 .question-panel h1 {
-  font: 500 20px/1.6 'Zen Kaku Gothic New', sans-serif;
+  font: 500 20px/1.6 var(--app-font-family);
   margin: 14px 0;
 }
 
@@ -947,7 +946,7 @@ const isQuestionActive = computed(() => {
   color: #fff;
   border: none;
   border-radius: 28px;
-  font: 500 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 15px var(--app-font-family);
   letter-spacing: 0.04em;
   cursor: pointer;
   min-height: 48px;
@@ -1019,7 +1018,7 @@ const isQuestionActive = computed(() => {
   border-bottom: 1px solid var(--theme-border, #e2ded3);
 }
 .mob-sheet-head h3 {
-  font: 500 17px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 17px var(--app-font-family);
   letter-spacing: 0.04em;
   margin: 4px 0 0;
 }
@@ -1077,7 +1076,7 @@ const isQuestionActive = computed(() => {
   background: var(--theme-surface-alt, #f5f2e9);
   color: var(--theme-text-secondary, #8a9389);
   border-radius: 12px;
-  font: 500 16px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 500 16px/1 var(--app-font-family);
   cursor: pointer;
   transition: transform 0.2s var(--spring-ease), background 0.3s;
   display: flex;
@@ -1125,7 +1124,7 @@ const isQuestionActive = computed(() => {
   border-radius: 12px;
   background: #dc2626;
   color: #fff;
-  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px var(--app-font-family);
   letter-spacing: 0.08em;
   cursor: pointer;
   transition: filter 0.15s;
@@ -1166,7 +1165,7 @@ const isQuestionActive = computed(() => {
   flex: 1;
   height: 48px;
   border-radius: 10px;
-  font: 500 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 15px var(--app-font-family);
   cursor: pointer;
   letter-spacing: 0.04em;
 }
@@ -1274,7 +1273,7 @@ const isQuestionActive = computed(() => {
   border-bottom: 1px solid var(--theme-border, #d9d4c3);
 }
 .submit-modal-head h2 {
-  font: 500 20px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 20px var(--app-font-family);
   letter-spacing: 0.06em;
   margin: 6px 0 0;
 }
@@ -1433,7 +1432,7 @@ const isQuestionActive = computed(() => {
     border: none;
     background: transparent;
     color: var(--theme-text, #27302b);
-    font: 500 15px/1 'Zen Kaku Gothic New', sans-serif;
+    font: 500 15px/1 var(--app-font-family);
     letter-spacing: 0.02em;
     cursor: pointer;
     display: flex;
@@ -1508,7 +1507,7 @@ const isQuestionActive = computed(() => {
     margin-bottom: 0;
     text-align: left !important;
     cursor: pointer !important;
-    font: 500 16px/1.5 'Zen Kaku Gothic New', sans-serif !important;
+    font: 500 16px/1.5 var(--app-font-family) !important;
     color: var(--theme-text, #27302b) !important;
     transition: transform 0.3s var(--spring-ease), border-color 0.3s, background 0.3s !important;
   }

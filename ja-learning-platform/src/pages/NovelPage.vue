@@ -18,12 +18,25 @@ function initialOf(title) {
 </script>
 
 <template>
-  <div class="content-page">
-    <div class="section-top"><p class="eyebrow">STORIES FROM THE LIBRARY</p><span>{{ data?.lessons?.length || 0 }} 篇</span></div>
+  <div class="content-page" :aria-busy="loading">
+    <div class="section-top"><p class="eyebrow">STORIES FROM THE LIBRARY</p><span v-if="!loading && !error">{{ data?.lessons?.length || 0 }} 篇</span></div>
     <h2>看故事，<em>记住词语。</em></h2>
     <p class="page-lead">按原文分章阅读，查看词卡与假名注释，再进入配套练习。</p>
 
-    <div v-if="loading" class="state-box">正在读取章节…</div>
+    <div v-if="loading" class="novel-skeleton" role="status" aria-label="章节加载中">
+      <div aria-hidden="true">
+        <div class="skeleton sk-source"></div>
+        <div class="skeleton sk-search"></div>
+        <div class="sk-filters"><div v-for="n in 4" :key="n" class="skeleton sk-chip"></div></div>
+        <div class="sk-list">
+          <div v-for="n in 5" :key="n" class="sk-row">
+            <div class="skeleton sk-cover"></div>
+            <div class="sk-body"><div class="skeleton sk-card-title"></div><div class="skeleton sk-card-meta"></div></div>
+            <div class="skeleton sk-arrow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div v-else-if="error" class="state-box error">{{ error }} <button @click="load">重试</button></div>
 
     <template v-else>
@@ -57,33 +70,6 @@ function initialOf(title) {
 
       <!-- 移动端：卡片列表 -->
       <div class="novel-mobile mobile-only">
-        <!-- 骨架屏 -->
-        <div v-if="loading" class="mobile-novel-skeleton" aria-hidden="true">
-          <div class="mobile-header">
-            <div class="skeleton sk-eyebrow"></div>
-            <div class="skeleton sk-title"></div>
-            <div class="skeleton sk-desc"></div>
-          </div>
-          <div class="mobile-search">
-            <div class="skeleton sk-search"></div>
-          </div>
-          <div class="mobile-filters-skeleton">
-            <div v-for="n in 4" :key="n" class="skeleton sk-chip"></div>
-          </div>
-          <div class="mobile-list">
-            <div v-for="n in 3" :key="n" class="mobile-card-skeleton">
-              <div class="skeleton sk-cover"></div>
-              <div class="sk-body">
-                <div class="skeleton sk-card-title"></div>
-                <div class="skeleton sk-card-meta"></div>
-                <div class="skeleton sk-card-excerpt"></div>
-                <div class="skeleton sk-card-excerpt short"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else-if="error" class="state-box error">{{ error }} <button @click="load">重试</button></div>
-        <template v-else>
           <!-- 搜索栏固定 -->
           <div class="mobile-search">
           <label class="search-field">
@@ -130,7 +116,6 @@ function initialOf(title) {
           </RouterLink>
           <p v-if="!lessons.length" class="empty">没有找到对应篇目。</p>
         </div>
-        </template>
       </div>
     </template>
   </div>
@@ -293,7 +278,7 @@ function initialOf(title) {
     overflow: hidden;
   }
   .cover-initial {
-    font: 600 21px/1 'Noto Serif JP', 'Songti SC', serif;
+    font: 600 21px/1 var(--app-font-family);
   }
 
   .card-body {
@@ -304,7 +289,7 @@ function initialOf(title) {
     gap: 6px;
   }
   .card-title {
-    font: 600 15px/1.4 'Noto Serif JP', 'Songti SC', serif;
+    font: 600 15px/1.4 var(--app-font-family);
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;
@@ -378,115 +363,31 @@ function initialOf(title) {
   }
 }
 
-/* 骨架屏 */
-.mobile-novel-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* 加载占位与实际的搜索、筛选和目录布局保持一致。 */
+.novel-skeleton { margin-top: 20px; }
+.sk-source { height: 56px; margin-bottom: 20px; border-radius: 10px; }
+.sk-search { height: 44px; max-width: 420px; border-radius: 8px; }
+.sk-filters { display: flex; gap: 8px; margin: 14px 0 20px; overflow: hidden; }
+.sk-chip { width: 64px; height: 34px; border-radius: 20px; flex: none; }
+.sk-row { display: flex; align-items: center; gap: 24px; padding: 26px 0; border-top: 1px solid var(--season-line, #e2ded3); }
+.sk-cover { width: 36px; height: 28px; flex: none; }
+.sk-body { flex: 1; min-width: 0; display: grid; gap: 12px; }
+.sk-card-title { width: 72%; max-width: 480px; height: 20px; }
+.sk-card-meta { width: 48%; max-width: 300px; height: 12px; }
+.sk-arrow { width: 88px; height: 14px; }
+@media (max-width: 768px) {
+  .novel-skeleton { margin-top: 12px; }
+  .sk-source { height: 40px; margin-bottom: 12px; }
+  .sk-search { max-width: none; height: 40px; }
+  .sk-filters { margin: 12px 0; }
+  .sk-list { display: grid; gap: 8px; padding: 8px 12px 80px; }
+  .sk-row { min-height: 76px; padding: 10px 12px; gap: 12px; border: 1px solid var(--theme-border-soft, #e2ded3); border-radius: 10px; background: var(--theme-surface, #fffdf8); }
+  .sk-cover { width: 44px; height: 52px; border-radius: 5px 8px 8px 5px; }
+  .sk-card-title { width: 85%; height: 16px; }
+  .sk-card-meta { width: 65%; height: 11px; }
+  .sk-arrow { width: 14px; height: 14px; }
 }
-
-.mobile-header {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sk-eyebrow {
-  width: 60px;
-  height: 12px;
-}
-
-.sk-title {
-  width: 70%;
-  height: 22px;
-}
-
-.sk-desc {
-  width: 90%;
-  height: 14px;
-}
-
-.mobile-search {
-  padding: 0 16px;
-}
-
-.sk-search {
-  height: 44px;
-  border-radius: 22px;
-}
-
-.mobile-filters-skeleton {
-  display: flex;
-  gap: 8px;
-  padding: 0 16px;
-  overflow: hidden;
-}
-
-.sk-chip {
-  width: 60px;
-  height: 36px;
-  border-radius: 18px;
-  flex-shrink: 0;
-}
-
-.mobile-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 0 16px;
-}
-
-.mobile-card-skeleton {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  background: var(--theme-surface, #fffdf8);
-  border: 1px solid var(--theme-border-soft, #e2ded3);
-  border-radius: 12px;
-  min-height: 120px;
-}
-
-.sk-cover {
-  width: 80px;
-  height: 106px;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-
-.sk-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.sk-card-title {
-  width: 80%;
-  height: 16px;
-}
-
-.sk-card-meta {
-  width: 50%;
-  height: 12px;
-}
-
-.sk-card-excerpt {
-  width: 100%;
-  height: 12px;
-}
-
-.sk-card-excerpt.short {
-  width: 70%;
-}
-
-/* 极小屏 */
-@media (max-width: 375px) {
-  .sk-cover {
-    width: 68px;
-    height: 90px;
-  }
-}
+@media (prefers-reduced-motion: reduce) { .novel-skeleton .skeleton { animation: none; } }
 
 /* 交错进入动画 */
 @media (max-width: 768px) {

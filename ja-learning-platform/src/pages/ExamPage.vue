@@ -198,7 +198,7 @@ async function start(p) {
   border: none;
   background: transparent;
   cursor: pointer;
-  font: 500 14px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 500 14px/1 var(--app-font-family);
   color: var(--theme-text-secondary, #67746a);
   transition: all 0.2s;
   letter-spacing: 0.03em;
@@ -221,7 +221,7 @@ async function start(p) {
   margin-bottom: 24px;
 }
 .mob-header h2 {
-  font: 600 22px/1.4 'Zen Kaku Gothic New', sans-serif;
+  font: 600 22px/1.4 var(--app-font-family);
   color: var(--theme-text, #27302b);
   margin: 6px 0 8px;
 }
@@ -246,7 +246,7 @@ async function start(p) {
   border: 1px solid var(--theme-border, #d1ccb8);
   background: var(--theme-surface, #fffdf8);
   border-radius: 20px;
-  font: 600 13px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 13px var(--app-font-family);
   color: var(--theme-text-secondary, #67746a);
   cursor: pointer;
   transition: all 0.15s;
@@ -327,7 +327,7 @@ async function start(p) {
   gap: 14px;
 }
 .mob-paper-idx {
-  font: 700 14px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 700 14px/1 var(--app-font-family);
   color: var(--season-accent, #57718c);
   background: color-mix(in srgb, var(--season-accent, #57718c) 10%, transparent);
   width: 36px;
@@ -345,7 +345,7 @@ async function start(p) {
   text-transform: uppercase;
 }
 .mob-paper-meta h3 {
-  font: 500 16px/1.4 'Zen Kaku Gothic New', sans-serif;
+  font: 500 16px/1.4 var(--app-font-family);
   color: var(--theme-text, #27302b);
   margin: 4px 0 0;
 }
@@ -363,7 +363,7 @@ async function start(p) {
   border-radius: 10px;
   background: var(--season-accent, #57718c);
   color: #fff;
-  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 15px var(--app-font-family);
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: all 0.2s;

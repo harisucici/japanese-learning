@@ -295,7 +295,7 @@ function initialOf(title) {
     overflow: hidden;
   }
   .thumb-initial {
-    font: 600 21px/1 'Noto Serif JP', 'Songti SC', serif;
+    font: 600 21px/1 var(--app-font-family);
   }
 
   .card-body {
@@ -306,7 +306,7 @@ function initialOf(title) {
     gap: 5px;
   }
   .card-title {
-    font: 600 15px/1.35 'Noto Serif JP', 'Songti SC', serif;
+    font: 600 15px/1.35 var(--app-font-family);
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;

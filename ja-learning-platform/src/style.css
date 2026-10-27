@@ -6,7 +6,8 @@
  * ============================================ */
 
 :root {
-  font-family: 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  --app-font-family: 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font-family: var(--app-font-family);
   color:#27302b;
   background:#f5f2e9;
   font-synthesis:none;
@@ -102,7 +103,6 @@ button {
 }
 
 .brand-name {
-  font-family: 'Noto Sans JP', 'Geist', system-ui, sans-serif;
   font-size:19px;
   letter-spacing:.18em;
   line-height:1.15;
@@ -111,7 +111,7 @@ button {
 
 .brand-name small {
   display:block;
-  font:8px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:8px var(--app-font-family);
   letter-spacing:.2em;
   margin-top:6px
 }
@@ -169,19 +169,19 @@ button {
   display:flex;
   align-items:center;
   border-bottom:1px solid #ffffff35;
-  font:36px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:36px var(--app-font-family);
   padding:20px 0
 }
 
 .menu-inner>a span {
-  font:12px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:12px var(--app-font-family);
   margin-right:30px;
   opacity:.6
 }
 
 .menu-inner>a i {
   margin-left:auto;
-  font:24px sans-serif
+  font:24px var(--app-font-family)
 }
 
 .eyebrow {
@@ -311,7 +311,7 @@ button {
 }
 
 .hero-copy h1 {
-  font:400 clamp(54px,7vw,105px)/1.33 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:400 clamp(54px,7vw,105px)/1.33 var(--app-font-family);
   letter-spacing:.16em;
   margin:27px 0 22px;
   text-shadow:0 2px 20px #14211c44
@@ -391,7 +391,7 @@ button {
 }
 
 .intro h2,.explore h2,.interior-content h2 {
-  font:400 clamp(33px,4vw,58px)/1.55 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:400 clamp(33px,4vw,58px)/1.55 var(--app-font-family);
   letter-spacing:.09em;
   margin:25px 0
 }
@@ -416,7 +416,7 @@ button {
 }
 
 .intro-body p {
-  font:14px/2.6 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:14px/2.6 var(--app-font-family);
   letter-spacing:.1em;
   max-width:350px
 }
@@ -425,7 +425,7 @@ button {
   margin-left:auto;
   border:1px solid #a88b70;
   color:#9a765a;
-  font:18px/1.2 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:18px/1.2 var(--app-font-family);
   padding:12px 8px;
   white-space:nowrap
 }
@@ -521,7 +521,7 @@ button {
   position:absolute;
   bottom:15px;
   right:20px;
-  font:italic 64px Georgia,serif;
+  font:italic 64px var(--app-font-family);
   color:#ffffff88
 }
 
@@ -554,7 +554,7 @@ button {
 }
 
 .card-info h3 {
-  font:26px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:26px var(--app-font-family);
   letter-spacing:.15em;
   margin:22px 0 13px
 }
@@ -591,7 +591,7 @@ button {
 }
 
 .exam-rules strong {
-  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:20px var(--app-font-family)
 }
 
 .exam-rules small {
@@ -610,7 +610,7 @@ button {
 
 .exam-clock span {
   margin-left:auto;
-  font:22px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:22px var(--app-font-family)
 }
 
 .exam-clock button {
@@ -683,7 +683,7 @@ button {
 }
 
 .big-quote {
-  font:clamp(30px,3.5vw,49px)/1.7 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:clamp(30px,3.5vw,49px)/1.7 var(--app-font-family);
   letter-spacing:.12em;
   margin:40px 0 24px
 }
@@ -718,7 +718,7 @@ footer {
 }
 
 .footer-top strong {
-  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:20px var(--app-font-family);
   letter-spacing:.2em
 }
 
@@ -809,7 +809,7 @@ footer {
 }
 
 .interior-head h1 {
-  font:clamp(58px,7vw,92px) 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:clamp(58px,7vw,92px) var(--app-font-family);
   letter-spacing:.18em;
   margin:20px 0
 }
@@ -874,7 +874,7 @@ footer {
   position:relative;
   z-index:1;
   color:#ffffffb0;
-  font:italic 150px Georgia,serif
+  font:italic 150px var(--app-font-family)
 }
 
 .feature-copy {
@@ -883,7 +883,7 @@ footer {
 }
 
 .feature-copy h3 {
-  font:29px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:29px var(--app-font-family);
   letter-spacing:.12em;
   margin:24px 0
 }
@@ -956,7 +956,7 @@ footer {
 }
 
 .item-index {
-  font:italic 30px Georgia,serif;
+  font:italic 30px var(--app-font-family);
   color:#ab9679
 }
 
@@ -967,7 +967,7 @@ footer {
 }
 
 .item-list h3 {
-  font:25px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:25px var(--app-font-family);
   margin:9px 0
 }
 
@@ -1005,7 +1005,7 @@ footer {
 }
 
 .next-path a {
-  font:21px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:21px var(--app-font-family);
   color:#364e43
 }
 
@@ -1117,7 +1117,7 @@ footer {
 }
 
 .list-row h3 {
-  font:25px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:25px var(--app-font-family);
   margin:11px 0
 }
 
@@ -1150,7 +1150,7 @@ footer {
 }
 
 .activity-card h3 {
-  font:26px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:26px var(--app-font-family);
   margin:16px 0
 }
 
@@ -1188,7 +1188,7 @@ footer {
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  font:12px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:12px var(--app-font-family);
   letter-spacing:.08em;
   text-decoration:none;
   white-space:nowrap
@@ -1264,7 +1264,7 @@ footer {
 }
 
 .session-top strong {
-  font:18px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:18px var(--app-font-family)
 }
 
 .session-body {
@@ -1274,11 +1274,11 @@ footer {
 }
 
 .session-body h1 {
-  font:clamp(28px,3.6vw,48px)/1.5 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:clamp(28px,3.6vw,48px)/1.5 var(--app-font-family)
 }
 
 .session-body h2 {
-  font:28px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:28px var(--app-font-family)
 }
 
 .session-progress {
@@ -1337,12 +1337,12 @@ footer {
   border:1px solid #cdd2c8;
   background:#fffdf8;
   color:#314b40;
-  font:16px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:16px var(--app-font-family);
   cursor:pointer
 }
 
 .options button span {
-  font:14px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:14px var(--app-font-family);
   color:#9b8466;
   margin-right:20px
 }
@@ -1385,7 +1385,7 @@ footer {
 }
 
 .score-panel strong {
-  font:70px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:70px var(--app-font-family);
   color:#355a4b
 }
 
@@ -1433,12 +1433,12 @@ footer {
 
 .vocab-panel summary {
   cursor:pointer;
-  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:20px var(--app-font-family)
 }
 
 .vocab-panel summary span {
   display:block;
-  font:11px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:11px var(--app-font-family);
   color:#888;
   margin-top:8px
 }
@@ -1456,7 +1456,7 @@ footer {
 }
 
 .vocab-grid strong {
-  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:20px var(--app-font-family)
 }
 
 .vocab-grid p {
@@ -1506,7 +1506,7 @@ footer {
 
 .reading-text {
   white-space:pre-wrap;
-  font:18px/2 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:18px/2 var(--app-font-family);
   color:#35473d
 }
 
@@ -1525,7 +1525,7 @@ footer {
 
 .annotated-text {
   white-space:pre-wrap;
-  font:20px/2.4 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:20px/2.4 var(--app-font-family)
 }
 
 .ruby-word {
@@ -1558,7 +1558,7 @@ footer {
   color:#fff;
   padding:4px 10px;
   white-space:nowrap;
-  font:13px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:13px var(--app-font-family);
   border-radius:4px
 }
 
@@ -1576,7 +1576,7 @@ footer {
 }
 
 .media-panel h3 {
-  font:20px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:20px var(--app-font-family)
 }
 
 .media-panel audio {
@@ -1640,7 +1640,7 @@ footer {
 
 .stats-grid strong {
   display:block;
-  font:30px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:30px var(--app-font-family);
   color:#3a5b4b
 }
 
@@ -1650,7 +1650,7 @@ footer {
 }
 
 .subhead {
-  font:24px 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font:24px var(--app-font-family);
   margin:50px 0 20px
 }
 
@@ -1711,7 +1711,7 @@ footer {
   border:1px solid #c9c9bc;
   background:#fffdf8;
   color:#314b40;
-  font:17px 'Noto Sans JP', 'Geist', system-ui, sans-serif
+  font:17px var(--app-font-family)
 }
 
 /* ============================================
@@ -3323,3 +3323,6 @@ rp {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Native controls and code blocks share the application font. */
+input, select, textarea, pre, code { font-family: inherit; }

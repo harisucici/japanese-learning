@@ -113,7 +113,7 @@ function preventCopy(e) {
 }
 
 .rt-title {
-  font: 500 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 15px var(--app-font-family);
   letter-spacing: 0.04em;
   margin: 0;
   color: var(--theme-text, #27302b);

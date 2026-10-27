@@ -130,7 +130,7 @@ function onContextMenu(e, num) {
   margin: 0 0 4px;
 }
 .ac-title {
-  font: 500 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 16px var(--app-font-family);
   letter-spacing: 0.05em;
   margin: 0;
   color: var(--theme-text, #27302b);
@@ -159,7 +159,7 @@ function onContextMenu(e, num) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 12px 'Zen Kaku Gothic New', sans-serif;
+  font: 12px var(--app-font-family);
   color: var(--theme-text, #547264);
   transition: all 0.15s;
   padding: 0;
