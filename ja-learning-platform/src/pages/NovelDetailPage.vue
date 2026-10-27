@@ -9,7 +9,7 @@ const lesson = ref(null), error = ref(''), loading = ref(true), starting = ref(f
 const selectedWord = ref(null)
 const speechStatus = ref('idle'), speechError = ref('')
 const visibleCount = ref(2), loadTrigger = ref(null)
-const fontSize = ref(18), showSettings = ref(false)
+const fontSize = ref(18), showFontSizeDrawer = ref(false)
 // 移动端底部抽屉（仅≤768px 使用）
 const drawerToken = ref(null)
 const visiblePages = computed(() => lesson.value?.pages?.slice(0, visibleCount.value) || [])
@@ -68,8 +68,32 @@ async function start() {
   }
 }
 function adjustFont(delta) {
-  fontSize.value = Math.max(16, Math.min(24, fontSize.value + delta))
+  fontSize.value = Math.max(14, Math.min(32, fontSize.value + delta))
 }
+const fontSettingsButton = ref(null), fontDialog = ref(null)
+let previousBodyOverflow = '', previouslyFocused = null
+function openFontSizeSettings() { showFontSizeDrawer.value = true }
+function onSettingsKeydown(event) {
+  if (event.key === 'Escape') showFontSizeDrawer.value = false
+  if (event.key !== 'Tab' || !fontDialog.value) return
+  const controls = [...fontDialog.value.querySelectorAll('button:not(:disabled), input')]
+  const first = controls[0], last = controls[controls.length - 1]
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+}
+watch(showFontSizeDrawer, async (open) => {
+  if (open) {
+    previouslyFocused = document.activeElement
+    previousBodyOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    await nextTick()
+    fontDialog.value?.focus()
+  } else {
+    document.body.style.overflow = previousBodyOverflow
+    previouslyFocused?.focus()
+  }
+})
+onBeforeUnmount(() => { if (showFontSizeDrawer.value) document.body.style.overflow = previousBodyOverflow })
 watch([loadTrigger, visibleCount], async (_, __, onCleanup) => {
   let cancelled = false
   onCleanup(() => { cancelled = true; disconnectObserver() })
@@ -99,23 +123,11 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
           <span>返回</span>
         </RouterLink>
-        <span class="topbar-context">趣味阅读</span>
-        <button class="topbar-settings" :class="{ active: showSettings }" type="button" @click="showSettings = !showSettings" :aria-expanded="showSettings" aria-controls="reader-font-settings" aria-label="调整阅读字号">
-          <span class="settings-mark" aria-hidden="true">Aa</span><span>字号</span>
+        <span class="topbar-title">{{ lesson?.title || '原文阅读' }}</span>
+        <button class="topbar-settings" ref="fontSettingsButton" :class="{ active: showFontSizeDrawer }" type="button" @click="openFontSizeSettings()" :aria-expanded="showFontSizeDrawer" aria-controls="reader-font-settings" aria-label="调整阅读字号">
+          <span class="settings-mark" aria-hidden="true">Aa</span>
         </button>
       </nav>
-      <Transition name="reader-settings">
-        <section v-if="showSettings" id="reader-font-settings" class="settings-panel" aria-label="阅读字号设置">
-          <div class="setting-row">
-            <div class="setting-label">正文字号<small>找到舒服的阅读大小</small></div>
-            <div class="font-controls">
-              <button type="button" @click="adjustFont(-2)" :disabled="fontSize <= 16" aria-label="减小字号">A−</button>
-              <output class="font-size" aria-live="polite">{{ fontSize }}</output>
-              <button type="button" @click="adjustFont(2)" :disabled="fontSize >= 24" aria-label="增大字号">A+</button>
-            </div>
-          </div>
-        </section>
-      </Transition>
     </div>
 
     <div v-if="loading" class="state-box mob-novel-detail-skeleton" aria-hidden="true">
@@ -139,27 +151,6 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     <div v-else-if="error && !lesson" class="state-box error">{{ error }} <button @click="load">重试</button></div>
 
     <template v-else-if="lesson">
-      <header class="story-heading desktop-only">
-        <div class="section-top"><p class="eyebrow">STORY / {{ lesson.category || '未分类' }}</p><span>{{ lesson.questionCount || 0 }} 道练习</span></div>
-        <h1>{{ lesson.title || '未命名章节' }}</h1>
-        <p class="page-lead">{{ lesson.note || '' }}</p>
-        <div class="detail-actions"><button class="primary-action" :disabled="!lesson.published || !lesson.paperId || starting" @click="start">{{ starting ? '正在准备…' : '开始本篇练习 ↗' }}</button></div>
-        <p v-if="error" class="action-error" role="alert">{{ error }}</p>
-      </header>
-
-      <!-- 移动端：精简头部 -->
-      <header class="story-heading-mobile mobile-only">
-        <div class="mobile-meta">{{ lesson.category || '未分类' }} · {{ lesson.questionCount || 0 }} 道练习</div>
-        <h1>{{ lesson.title || '未命名章节' }}</h1>
-        <p v-if="lesson.note" class="mobile-lead">{{ lesson.note }}</p>
-        <div class="mobile-actions">
-          <button class="primary-action" :disabled="!lesson.published || !lesson.paperId || starting" @click="start">
-            {{ starting ? '正在准备…' : '开始练习 ↗' }}
-          </button>
-        </div>
-        <p v-if="error" class="action-error" role="alert">{{ error }}</p>
-      </header>
-
       <div class="reading-layout">
         <main class="reading-column">
           <div class="reading-intro">
@@ -216,6 +207,36 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
           </div>
         </div>
       </div>
+
+      <Teleport to="body">
+        <Transition name="font-sheet">
+          <div v-if="showFontSizeDrawer" class="font-size-drawer-overlay" @click.self="showFontSizeDrawer = false" @keydown="onSettingsKeydown">
+            <section ref="fontDialog" id="reader-font-settings" class="font-size-drawer" role="dialog" aria-modal="true" aria-labelledby="font-sheet-title" tabindex="-1">
+              <div class="drawer-handle" aria-hidden="true"></div>
+              <div class="font-sheet-heading">
+                <div><h2 id="font-sheet-title">阅读字号</h2><p>调到适合你的大小，安心读下去。</p></div>
+                <button type="button" class="drawer-close" @click="showFontSizeDrawer = false" aria-label="关闭字号设置">×</button>
+              </div>
+              <div class="font-sheet-content">
+                <div class="font-size-preview">
+                  <span class="preview-label">效果预览</span>
+                  <p :style="{ fontSize: fontSize + 'px' }" lang="ja">風がそっと木々を揺らす。<br>今日は、少し遠くまで歩こう。</p>
+                </div>
+                <div class="font-size-caption"><label for="reader-font-range">正文字号</label><output for="reader-font-range" aria-live="polite">{{ fontSize }}<small> px</small></output></div>
+                <div class="font-slider-row">
+                  <button type="button" @click="adjustFont(-1)" :disabled="fontSize <= 14" aria-label="减小字号">A−</button>
+                  <input id="reader-font-range" v-model.number="fontSize" type="range" min="14" max="32" step="1" :aria-valuetext="fontSize + ' 像素'" />
+                  <button type="button" @click="adjustFont(1)" :disabled="fontSize >= 32" aria-label="增大字号">A+</button>
+                </div>
+                <div class="font-presets" aria-label="快捷字号">
+                  <button v-for="preset in [{ size: 16, label: '小' }, { size: 18, label: '标准' }, { size: 22, label: '大' }, { size: 26, label: '特大' }]" :key="preset.size" type="button" :aria-pressed="fontSize === preset.size" @click="fontSize = preset.size">{{ preset.label }}<small>{{ preset.size }}</small></button>
+                </div>
+              </div>
+              <div class="font-sheet-footer"><button type="button" class="font-reset" @click="fontSize = 18">恢复默认</button><button type="button" class="font-size-confirm" @click="showFontSizeDrawer = false">完成</button></div>
+            </section>
+          </div>
+        </Transition>
+      </Teleport>
     </template>
 
     <!-- 移动端底部操作栏 -->
@@ -229,6 +250,7 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 
 <style scoped>
 .novel-detail {
+  padding-top: calc(72px + env(safe-area-inset-top, 0px));
   --reader-accent: var(--season-accent, #a44769);
   --reader-ink: var(--season-ink, #633449);
   --reader-line: var(--season-line, #e8cbd5);
@@ -239,10 +261,12 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 .mobile-only { display: none; }
 
 .reader-toolbar {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: 40;
-  margin-bottom: 28px;
+  display: block;
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0px);
   border-bottom: 1px solid var(--reader-line);
   background: var(--theme-surface, #fffdf8);
 }
@@ -275,101 +299,21 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
   touch-action: manipulation;
 }
 .topbar-back { justify-self: start; padding-left: 0; }
-.topbar-settings { justify-self: end; border-color: var(--reader-line); }
+.topbar-settings { grid-column: 3; justify-self: end; border-color: var(--reader-line); }
 .topbar-settings.active, .topbar-settings:hover { background: var(--reader-soft); }
 .topbar-back:focus-visible, .topbar-settings:focus-visible, .font-controls button:focus-visible {
   outline: 2px solid var(--reader-accent);
   outline-offset: 3px;
 }
-.topbar-context {
-  text-align: center;
-  color: var(--theme-text-secondary, #788177);
-  font-size: 12px;
-  letter-spacing: .16em;
-  white-space: nowrap;
-}
 .settings-mark { font: 600 20px/1 Georgia, serif; letter-spacing: -.06em; }
-.settings-panel { padding: 0 20px 16px; }
-.setting-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--reader-line);
-  border-radius: 14px;
-  background: var(--reader-soft);
-}
-.setting-label { font-size: 13px; color: var(--reader-ink); font-weight: 600; }
-.setting-label small { display: block; margin-top: 5px; font-size: 10px; font-weight: 400; opacity: .75; }
-.font-controls { display: flex; align-items: center; gap: 4px; }
-.font-controls button {
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--reader-line);
-  border-radius: 10px;
-  color: var(--reader-ink);
-  background: var(--theme-surface, #fffdf8);
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.font-controls button:disabled { opacity: .35; cursor: default; }
-.font-size { min-width: 34px; text-align: center; color: var(--reader-ink); font-size: 14px; font-variant-numeric: tabular-nums; }
-.reader-settings-enter-active, .reader-settings-leave-active { transition: opacity .16s ease, transform .16s ease; }
-.reader-settings-enter-from, .reader-settings-leave-to { opacity: 0; transform: translateY(-5px); }
-
-/* 移动端精简头部 */
-.story-heading-mobile {
-  padding: 24px 22px 28px;
-  border-bottom: 1px solid var(--reader-line);
-}
-.mobile-meta {
-  font-size: 12px;
-  color: var(--reader-accent);
-  letter-spacing: 0.08em;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.story-heading-mobile h1 {
-  font: 600 clamp(24px, 6.5vw, 30px)/1.5 'Noto Serif JP', 'Songti SC', serif;
-  letter-spacing: .02em;
-  overflow-wrap: anywhere;
-  margin: 0 0 8px;
-  color: var(--reader-ink);
-}
-.mobile-lead {
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--theme-text-secondary, #67746a);
-  margin: 0 0 16px;
-}
-.mobile-actions {
-  margin-top: 12px;
-}
-.mobile-actions .primary-action {
-  width: 100%;
-  min-height: 44px;
-  padding: 12px;
-  font-size: 15px;
-}
-.action-error {
-  color: #984d45;
-  font-size: 13px;
-  margin-top: 8px;
-}
-
-.story-heading { max-width: 900px; padding-bottom: 8px; }
-.story-heading h1 { margin-top: 28px; line-height: 1.35; }
-.story-heading .page-lead { max-width: 680px; }
-.story-heading .detail-actions { margin: 28px 0 32px; }
-
 .reading-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(230px, 285px);
   gap: clamp(24px, 4vw, 56px);
   align-items: start;
-  margin-top: 25px;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 24px 32px 64px;
 }
 .reading-column, .reading-sidebar { min-width: 0; }
 .reading-intro { border-top: 1px solid var(--reader-line); padding: 20px 0 18px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; }
@@ -554,15 +498,52 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
 @media (max-width: 768px) {
   .desktop-only { display: none !important; }
   .mobile-only { display: block; }
-  .reader-toolbar { margin-bottom: 0; }
+
+  /* 移动端工具栏：sticky + 半透明背景 */
+  .reader-toolbar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--reader-line);
+    background: rgba(255, 253, 248, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .reader-topbar {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr) 48px;
+    align-items: center;
+    padding: 8px 16px;
+    min-height: 56px;
+  }
+  .topbar-settings {
+    justify-self: end;
+    border-color: var(--reader-line);
+    background: rgba(255, 253, 248, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .topbar-back {
+    background: rgba(255, 253, 248, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* 移动端隐藏 header，只保留工具栏 */
+  header.story-heading-mobile {
+    display: none !important;
+  }
 
   .novel-detail {
+    padding-top: calc(72px + env(safe-area-inset-top, 0px));
     padding-bottom: 80px;
   }
 
   .reading-layout {
     grid-template-columns: 1fr;
     margin-top: 0;
+    padding: 0 0 32px;
   }
 
   .reading-intro {
@@ -605,6 +586,8 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     padding: 24px 16px;
     font-size: 13px;
   }
+
+
 }
 
 @media (max-width: 800px) and (min-width: 769px) {
@@ -715,4 +698,42 @@ onBeforeUnmount(() => { loadVersion++; speechSelectionId++; disconnectObserver()
     padding-top: 8px;
   }
 }
+</style>
+
+<style scoped>
+.topbar-title { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; font-size: 14px; font-weight: 500; color: var(--reader-ink); }
+.reader-topbar { width: 100%; box-sizing: border-box; max-width: 1280px; margin: auto; }
+.reader-bottombar { display: none; }
+@media (max-width: 768px) { .reader-bottombar { display: flex; } }
+.font-size-drawer-overlay { --reader-ink: var(--season-ink, #633449); --reader-accent: var(--season-accent, #a44769); --reader-line: var(--season-line, #e8cbd5); --reader-soft: var(--season-soft, #faedf1); position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-end; justify-content: center; background: #17241f66; backdrop-filter: blur(4px); }
+.font-size-drawer { width: min(100%, 520px); box-sizing: border-box; max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; padding: 0 24px max(20px, env(safe-area-inset-bottom)); border: 1px solid var(--reader-line); border-bottom: 0; border-radius: 28px 28px 0 0; background: var(--theme-surface, #fffdf8); color: var(--theme-text, #35473d); box-shadow: 0 -12px 60px #15241f26; font-family: inherit; outline: none; }
+.font-sheet-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 0; }
+.font-sheet-heading h2 { margin: 0; font-weight: 600; font-family: inherit; font-size: 20px; line-height: 1.4; color: var(--reader-ink); }
+.font-sheet-heading p { margin: 6px 0 0; font-size: 13px; line-height: 1.6; color: var(--theme-text-secondary, #72796f); }
+.font-size-preview { padding: 18px 20px; border: 1px solid var(--reader-line); border-radius: 16px; background: var(--reader-soft); }
+.preview-label { font-size: 11px; letter-spacing: .12em; color: var(--reader-ink); opacity: .75; }
+.font-size-preview p { margin: 12px 0 0; min-height: 96px; font-family: 'Noto Serif JP', serif; line-height: 1.9; overflow-wrap: anywhere; color: var(--reader-ink); }
+.font-size-caption { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 8px; }
+.font-size-caption label { font-size: 14px; font-weight: 600; }
+.font-size-caption output { font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--reader-ink); }
+.font-size-caption small { font-size: 12px; font-weight: 400; }
+.font-slider-row { display: flex; align-items: center; gap: 16px; }
+.font-slider-row button { flex: 0 0 44px; height: 44px; border: 1px solid var(--reader-line); border-radius: 12px; background: var(--theme-surface, #fffdf8); color: var(--reader-ink); font-size: 17px; cursor: pointer; }
+.font-slider-row button:disabled { opacity: .35; cursor: default; }
+.font-slider-row input { width: 100%; min-width: 0; height: 44px; margin: 0; accent-color: var(--reader-accent); cursor: pointer; }
+.font-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+.font-presets button { min-height: 58px; border: 1px solid var(--reader-line); border-radius: 12px; background: transparent; color: var(--reader-ink); font-family: inherit; font-weight: 500; line-height: 1.4; font-size: 14px; cursor: pointer; }
+.font-presets button small { display: block; margin-top: 3px; font-size: 11px; opacity: .7; }
+.font-presets button[aria-pressed="true"] { background: var(--reader-soft); border-color: var(--reader-accent); box-shadow: inset 0 0 0 1px var(--reader-accent); }
+.font-sheet-footer { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; padding-top: 24px; }
+.font-sheet-footer button { min-height: 48px; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+.font-reset { border: 1px solid var(--reader-line); background: transparent; color: var(--reader-ink); }
+.font-size-confirm { border: 0; background: var(--reader-accent); color: #fff; }
+.font-size-drawer button:focus-visible, .font-slider-row input:focus-visible { outline: 2px solid var(--reader-accent); outline-offset: 3px; }
+.font-sheet-enter-active, .font-sheet-leave-active { transition: opacity .2s ease; }
+.font-sheet-enter-active .font-size-drawer, .font-sheet-leave-active .font-size-drawer { transition: transform .25s ease; }
+.font-sheet-enter-from, .font-sheet-leave-to { opacity: 0; }
+.font-sheet-enter-from .font-size-drawer, .font-sheet-leave-to .font-size-drawer { transform: translateY(100%); }
+@media (max-width: 380px) { .font-size-drawer { padding-inline: 18px; } .font-sheet-heading p { font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .font-sheet-enter-active, .font-sheet-leave-active, .font-sheet-enter-active .font-size-drawer, .font-sheet-leave-active .font-size-drawer { transition: none; } }
 </style>
