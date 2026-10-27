@@ -201,7 +201,7 @@ function toggleSection(section) {
 }
 .account-intro h2,
 .account-auth h2 {
-  font: clamp(28px, 3vw, 42px) / 1.4 'Zen Kaku Gothic New', sans-serif;
+  font: clamp(28px, 3vw, 42px) / 1.4 var(--app-font-family);
   margin: 6px 0;
   color: var(--text);
 }
@@ -221,7 +221,7 @@ function toggleSection(section) {
   border-radius: 50%;
   background: var(--accent);
   color: var(--bg);
-  font: 600 32px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 600 32px/1 var(--app-font-family);
   letter-spacing: 0;
 }
 
@@ -248,7 +248,7 @@ function toggleSection(section) {
   letter-spacing: 0.05em;
 }
 .account-summary strong {
-  font: 600 22px/1.2 'Zen Kaku Gothic New', sans-serif;
+  font: 600 22px/1.2 var(--app-font-family);
   color: var(--accent);
 }
 .account-summary a {
@@ -279,7 +279,7 @@ function toggleSection(section) {
   box-shadow: 0 8px 24px -12px rgba(53, 82, 71, 0.12);
 }
 .account-card h3 {
-  font: 600 22px/1.3 'Zen Kaku Gothic New', sans-serif;
+  font: 600 22px/1.3 var(--app-font-family);
   margin: 12px 0;
   color: var(--text);
 }
@@ -308,7 +308,7 @@ function toggleSection(section) {
   background: var(--surface);
   color: var(--text);
   padding: 0 14px;
-  font: 16px/1.4 'Zen Kaku Gothic New', sans-serif;
+  font: 16px/1.4 var(--app-font-family);
   transition: border-color 0.3s var(--spring),
               box-shadow 0.3s var(--spring),
               transform 0.2s var(--spring);
@@ -354,7 +354,7 @@ function toggleSection(section) {
   height: 48px;
   padding: 0 24px;
   border-radius: 8px;
-  font: 500 13px/1 'Noto Sans JP', 'Geist', system-ui, sans-serif;
+  font: 500 13px/1 var(--app-font-family);
   letter-spacing: 0.08em;
   transition: transform 0.3s var(--spring),
               background 0.3s var(--spring),
@@ -402,7 +402,7 @@ function toggleSection(section) {
   background: transparent;
   padding: 13px 26px;
   color: var(--text-secondary);
-  font: 500 14px/1 'Zen Kaku Gothic New', sans-serif;
+  font: 500 14px/1 var(--app-font-family);
   letter-spacing: 0.04em;
   cursor: pointer;
   border-bottom: 3px solid transparent;
@@ -640,7 +640,7 @@ function toggleSection(section) {
   }
   .account-page.is-auth .account-auth h2 {
     margin: 0 0 5px;
-    font: 500 clamp(28px, 5vw, 34px)/1.4 'Noto Serif JP', 'Songti SC', serif;
+    font: 500 clamp(28px, 5vw, 34px)/1.4 var(--app-font-family);
     letter-spacing: .05em;
     color: var(--theme-text, #27302b);
   }
@@ -668,7 +668,7 @@ function toggleSection(section) {
     border: 0;
     border-radius: 10px;
     color: var(--theme-text-secondary, #67746a);
-    font: 600 14px/1 'Noto Sans JP', sans-serif;
+    font: 600 14px/1 var(--app-font-family);
     transition: background .25s, color .25s, box-shadow .25s, transform .25s;
   }
   .account-page.is-auth .account-tabs button[aria-selected="true"] {
@@ -905,7 +905,7 @@ function toggleSection(section) {
     top: calc(105px + env(safe-area-inset-top, 0px));
     left: max(7%, 22px);
     color: #efe9d6;
-    font: 500 12px/1.4 'Noto Serif JP', 'Songti SC', serif;
+    font: 500 12px/1.4 var(--app-font-family);
     letter-spacing: .15em;
     animation: account-scene-reveal .7s ease-out both;
   }
@@ -1061,7 +1061,7 @@ function toggleSection(section) {
   .account-page:not(.is-auth) .account-columns .account-card h3 {
     margin: 7px 0 5px;
     color: var(--theme-text, #27302b);
-    font: 500 23px/1.35 'Noto Serif JP', 'Songti SC', serif;
+    font: 500 23px/1.35 var(--app-font-family);
   }
   .account-page:not(.is-auth) .account-columns .account-card > p:not(.eyebrow) {
     margin: 0;
@@ -1173,7 +1173,7 @@ function toggleSection(section) {
   }
   .account-page:not(.is-auth) .mobile-settings-toggle span:first-child { display: grid; gap: 2px; }
   .account-page:not(.is-auth) .mobile-settings-toggle small { color: var(--mobile-gold, #8d6b4d); font-size: 10px; letter-spacing: .14em; }
-  .account-page:not(.is-auth) .mobile-settings-toggle strong { font: 500 18px/1.35 'Noto Serif JP', 'Songti SC', serif; }
+  .account-page:not(.is-auth) .mobile-settings-toggle strong { font: 500 18px/1.35 var(--app-font-family); }
   .account-page:not(.is-auth) .mobile-settings-toggle em { color: var(--theme-text-secondary, #67746a); font-size: 11px; font-style: normal; }
   .account-page:not(.is-auth) .settings-chevron { font-size: 27px; line-height: 1; transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
   .account-page:not(.is-auth) .account-card.is-open .settings-chevron { transform: rotate(180deg); }

@@ -237,7 +237,7 @@ const grammarCategories = [
 }
 
 .section-title {
-  font: 600 20px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 20px var(--app-font-family);
   margin: 0 0 8px;
   color: #27302b;
 }
@@ -295,7 +295,7 @@ const grammarCategories = [
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 24px 'Zen Kaku Gothic New', sans-serif;
+  font: 24px var(--app-font-family);
   flex-shrink: 0;
 }
 
@@ -305,7 +305,7 @@ const grammarCategories = [
 }
 
 .type-info h3 {
-  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px var(--app-font-family);
   color: #27302b;
   margin: 0 0 6px;
 }
@@ -357,7 +357,7 @@ const grammarCategories = [
 }
 
 .mob-grammar-card h3 {
-  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px var(--app-font-family);
   color: #27302b;
   margin: 0 0 6px;
 }
@@ -425,7 +425,7 @@ const grammarCategories = [
 }
 
 .mistakes-info h3 {
-  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px var(--app-font-family);
   color: #27302b;
   margin: 0 0 6px;
 }
@@ -461,7 +461,7 @@ const grammarCategories = [
 }
 
 .mob-setting-group label {
-  font: 500 14px 'Zen Kaku Gothic New', sans-serif;
+  font: 500 14px var(--app-font-family);
   color: #27302b;
 }
 
@@ -471,7 +471,7 @@ const grammarCategories = [
   border: 1px solid #c9c9bd;
   border-radius: 10px;
   background: #fff;
-  font: 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 15px var(--app-font-family);
   color: #27302b;
   cursor: pointer;
   min-height: 48px;
@@ -494,7 +494,7 @@ const grammarCategories = [
   color: white;
   border: none;
   border-radius: 12px;
-  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 15px var(--app-font-family);
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -529,7 +529,7 @@ const grammarCategories = [
 }
 
 .loading-text {
-  font: 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 18px var(--app-font-family);
   color: #27302b;
   letter-spacing: 0.1em;
 }

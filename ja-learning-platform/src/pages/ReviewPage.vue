@@ -222,7 +222,7 @@ onMounted(load)
 .review-switch button[aria-selected=true] { color: #355247; border-bottom: 2px solid #355247; }
 .review-switch span { font-size: 12px; margin-left: 8px; }
 .review-empty { text-align: center; background: #fffdf8; padding: 60px 25px; }
-.review-empty > span { font: 54px 'Zen Kaku Gothic New', sans-serif; color: #96795c; }
+.review-empty > span { font: 54px var(--app-font-family); color: #96795c; }
 .review-empty h3 { font-size: 23px; }
 .review-empty p { font-size: 13px; color: #748074; }
 .review-empty .primary-action { margin-top: 20px; }
@@ -230,7 +230,7 @@ onMounted(load)
 .review-index { width: 58px; height: 58px; flex: none; border: 1px solid #a6b6a6; border-radius: 50%; display: grid; place-items: center; color: #355247; font-size: 13px; }
 .review-copy { flex: 1; min-width: 0; }
 .review-copy small { color: #9a815f; font-size: 12px; letter-spacing: .08em; }
-.review-copy h3 { font: 19px/1.6 'Zen Kaku Gothic New', sans-serif; margin: 9px 0; }
+.review-copy h3 { font: 19px/1.6 var(--app-font-family); margin: 9px 0; }
 .review-copy p { color: #748074; font-size: 12px; line-height: 1.8; margin: 0; }
 .review-item .secondary-action { flex: none; }
 @media (max-width: 640px) {
@@ -327,7 +327,7 @@ onMounted(load)
     font-weight: 600;
   }
   .mobile-empty h3 {
-    font: 700 18px/1.3 'Zen Kaku Gothic New', sans-serif;
+    font: 700 18px/1.3 var(--app-font-family);
     margin: 0 0 8px;
     color: var(--theme-text, #27302b);
   }
@@ -396,7 +396,7 @@ onMounted(load)
     display: grid;
     place-items: center;
     color: var(--theme-text, #27302b);
-    font: 600 10px/1.15 'Noto Serif JP', 'Songti SC', serif;
+    font: 600 10px/1.15 var(--app-font-family);
     background: linear-gradient(145deg, #f1dfca, #e7d4ba);
     overflow-wrap: anywhere;
     text-align: center;
@@ -414,7 +414,7 @@ onMounted(load)
     gap: 4px;
   }
   .card-question {
-    font: 500 14px/1.4 'Noto Serif JP', 'Songti SC', serif;
+    font: 500 14px/1.4 var(--app-font-family);
     margin: 0;
     color: var(--theme-text, #27302b);
     display: -webkit-box;

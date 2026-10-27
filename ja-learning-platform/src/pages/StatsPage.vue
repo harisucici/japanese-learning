@@ -289,7 +289,7 @@ onMounted(loadStats)
 }
 
 .overview-value {
-  font: 600 32px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 32px var(--app-font-family);
   color: #3a5b4b;
   margin-bottom: 6px;
   font-variant-numeric: tabular-nums;
@@ -310,7 +310,7 @@ onMounted(loadStats)
 }
 
 .mob-score-notice h2 {
-  font: 600 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 18px var(--app-font-family);
   margin: 0 0 20px;
   color: #27302b;
 }
@@ -329,13 +329,13 @@ onMounted(loadStats)
 }
 
 .score-type h3 {
-  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px var(--app-font-family);
   margin: 0 0 10px;
   color: #3a5b4b;
 }
 
 .score-value {
-  font: 600 24px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 24px var(--app-font-family);
   color: #355247;
   margin-bottom: 10px;
   font-variant-numeric: tabular-nums;
@@ -349,7 +349,7 @@ onMounted(loadStats)
 }
 
 .section-title {
-  font: 600 20px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 20px var(--app-font-family);
   margin: 32px 0 16px;
   color: #27302b;
 }
@@ -378,7 +378,7 @@ onMounted(loadStats)
 }
 
 .type-name {
-  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 15px var(--app-font-family);
   color: #27302b;
   flex: 1;
 }
@@ -389,7 +389,7 @@ onMounted(loadStats)
 }
 
 .type-accuracy {
-  font: 600 18px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 18px var(--app-font-family);
   color: #355247;
   min-width: 50px;
   text-align: right;
@@ -452,7 +452,7 @@ onMounted(loadStats)
 }
 
 .mistake-type {
-  font: 600 14px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 14px var(--app-font-family);
   color: #96795c;
   letter-spacing: 0.03em;
 }
@@ -540,7 +540,7 @@ onMounted(loadStats)
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 600 16px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 16px var(--app-font-family);
   flex-shrink: 0;
 }
 
@@ -551,7 +551,7 @@ onMounted(loadStats)
 
 .suggestion-content strong {
   display: block;
-  font: 600 15px 'Zen Kaku Gothic New', sans-serif;
+  font: 600 15px var(--app-font-family);
   color: #27302b;
   margin-bottom: 6px;
 }

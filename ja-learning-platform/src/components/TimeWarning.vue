@@ -56,7 +56,7 @@ const message = computed(() => {
   top: 0;
   z-index: 40;
   padding: 12px 0;
-  font: 13px 'Zen Kaku Gothic New', sans-serif;
+  font: 13px var(--app-font-family);
   letter-spacing: 0.04em;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
