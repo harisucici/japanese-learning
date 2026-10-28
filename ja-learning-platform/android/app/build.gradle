@@ -83,7 +83,7 @@ apply from: 'capacitor.build.gradle'
 android.sourceSets.main.assets.srcDir(layout.buildDirectory.dir('generated/tts-assets'))
 tasks.register('prepareBundledTts', Exec) {
     workingDir "${projectDir}/../.."
-    commandLine 'node', 'scripts/prepare-tts-model.js', '--android'
+    commandLine '/usr/local/bin/node', 'scripts/prepare-tts-model.js', '--android'
     inputs.files(fileTree("${projectDir}/../../src/tts"), file("${projectDir}/../../scripts/prepare-tts-model.js"), file("${projectDir}/../../scripts/tts-model-lock.json"), file("${projectDir}/../../package-lock.json"))
     outputs.dir(layout.buildDirectory.dir('generated/tts-assets'))
 }

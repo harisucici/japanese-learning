@@ -23,7 +23,7 @@
   :root[data-theme="dark"] { --mobile-moss: #b7c8aa; --mobile-gold: #c7a67e; }
   html, body, #app { overflow-x: clip; }
   .theme-root > footer { display: none !important; }
-  .app-main.mobile-nav-space { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .app-main.mobile-nav-space { padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); }
   body:has(.mobile-dock) footer { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)) !important; }
   .route-stage { min-width: 0; }
   .site-header.reader-header-hidden { display: none !important; }
@@ -31,6 +31,16 @@
     padding: env(safe-area-inset-top, 0px) 0 20px !important;
   }
   .interior-content { min-height: 0; padding-bottom: 24px !important; }
+  
+  /* Ensure content pages don't get hidden by dock at 768px */
+  .content-page.history-mobile,
+  .content-page.exam-mobile {
+    padding-bottom: 90px !important;
+  }
+  .stats-page.mob-stats {
+    padding-bottom: 360px !important;
+  }
+  
   .interior-hero { padding-bottom: 12px !important; }
   .interior-head .history-link { display: none !important; }
   .interior-content h2 { margin-top: 22px; margin-bottom: 14px; }
@@ -60,7 +70,8 @@
   .interior.mobile-content-first .hero-simple .hero-copy { position: static !important; inset: auto !important; transform: none !important; padding: 0 16px; text-align: center; }
   .interior.mobile-content-first .hero-simple .hero-copy h1 { margin: 4px 0 !important; color: #fffdf8; font-size: 23px; }
   .interior.mobile-content-first .hero-simple .hero-copy p { margin: 0; color: #fffdf8; }
-  .interior.mobile-content-first :is(.practice-main, .stats-main) { padding: 18px 2% 28px; }
+  .interior.mobile-content-first :is(.practice-main) { padding: 18px 2% 28px; }
+  .interior.mobile-content-first .stats-main { padding: 18px 2% 420px; }
   .interior.mobile-content-first .section-desc { margin-bottom: 12px; }
   .interior.mobile-content-first .mob-practice :is(.type-icon, .mob-random-start) { background: var(--mobile-moss) !important; }
   .interior.mobile-content-first .mob-practice .type-arrow { color: var(--mobile-moss) !important; }

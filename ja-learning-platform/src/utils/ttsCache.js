@@ -1,10 +1,15 @@
-// IndexedDB-backed LRU cache for Japanese TTS audio clips (Float32 PCM).
-// Persists synthesized audio across reloads so common words play instantly
-// after the first generation. Falls back to no-op on failure or when
-// IndexedDB is unavailable.
+// IndexedDB-backed LRU cache for Japanese TTS audio clips.
+//
+// Supports two storage shapes:
+//   - encoded (mp3/wav ArrayBuffer from the backend TTS)
+//   - raw Float32 PCM (from the Android native worker, or legacy cache entries)
+//
+// Each record carries a `format` field. Entries written by older versions of the
+// app lack this field and are treated as Float32 PCM so existing caches remain
+// usable after upgrade.
 
 const DB_NAME = 'jaleaning-tts'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const STORE = 'audio'
 const MAX_ENTRIES = 100
 
@@ -35,13 +40,23 @@ function openDB() {
   return dbPromise
 }
 
-function toBuffer(float32) {
-  return float32.buffer.slice(float32.byteOffset, float32.byteOffset + float32.byteLength)
+function toBuffer(data) {
+  if (data instanceof ArrayBuffer) {
+    return data.slice(0)
+  }
+  if (ArrayBuffer.isView(data)) {
+    return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
+  }
+  throw new Error('ttsCacheSet: unsupported audio data type')
 }
 
 function toFloat32(buffer) {
   // Defensive copy — caller may mutate the returned view.
   return new Float32Array(buffer.slice(0))
+}
+
+function isEncodedFormat(format) {
+  return format === 'mp3' || format === 'wav' || format === 'ogg' || format === 'webm'
 }
 
 export async function ttsCacheGet(key) {
@@ -62,7 +77,18 @@ export async function ttsCacheGet(key) {
           utx.objectStore(STORE).put({ ...rec, lastUsed: Date.now() })
         } catch { /* ignore */ }
         try {
-          done({ data: toFloat32(rec.buffer), samplingRate: rec.samplingRate })
+          if (isEncodedFormat(rec.format)) {
+            // Encoded audio ArrayBuffer — return as-is, tagged `encoded: true`.
+            done({
+              data: rec.buffer.slice(0),
+              samplingRate: rec.samplingRate,
+              format: rec.format,
+              encoded: true,
+            })
+          } else {
+            // Float32 PCM (legacy cache entries have no `format` field).
+            done({ data: toFloat32(rec.buffer), samplingRate: rec.samplingRate })
+          }
         } catch { done(null) }
       }
       req.onerror = () => done(null)
@@ -71,14 +97,21 @@ export async function ttsCacheGet(key) {
   })
 }
 
-export async function ttsCacheSet(key, data, samplingRate) {
+export async function ttsCacheSet(key, data, samplingRate, format) {
   const db = await openDB()
   if (!db) return false
   const buffer = toBuffer(data)
+  const storedFormat = format || 'pcm'
   await new Promise((resolve) => {
     try {
       const tx = db.transaction(STORE, 'readwrite')
-      tx.objectStore(STORE).put({ key, buffer, samplingRate, lastUsed: Date.now() })
+      tx.objectStore(STORE).put({
+        key,
+        buffer,
+        samplingRate,
+        format: storedFormat,
+        lastUsed: Date.now(),
+      })
       tx.oncomplete = resolve
       tx.onerror = resolve
       tx.onabort = resolve
