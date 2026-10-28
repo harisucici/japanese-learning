@@ -79,6 +79,9 @@ function onWorkerMessage(event) {
       if (s === 'ready') {
         workerReady = true
         setStatus('ready')
+        // Warm up the AudioContext during engine init so the first speak()
+        // call doesn't pay the resume latency on the user gesture.
+        try { getAudioContext().resume() } catch { /* ignore */ }
       } else if (s === 'loading' || s === 'downloading' || s === 'initializing') {
         setStatus(s)
       }
@@ -105,8 +108,14 @@ function onWorkerMessage(event) {
       const pending = pendingRequests.get(msg.id)
       if (!pending) return
       pendingRequests.delete(msg.id)
-      const data = new Float32Array(msg.buffer)
-      pending.resolve({ data, samplingRate: msg.samplingRate })
+      if (msg.format === 'mp3' || msg.format === 'wav') {
+        // Web backend TTS returns an encoded audio ArrayBuffer.
+        pending.resolve({ data: msg.buffer, samplingRate: msg.samplingRate, format: msg.format, encoded: true })
+      } else {
+        // Android native worker returns Float32 PCM.
+        const data = new Float32Array(msg.buffer)
+        pending.resolve({ data, samplingRate: msg.samplingRate })
+      }
       break
     }
     case 'error': {
@@ -265,7 +274,7 @@ export async function speakJapanese(text, onStatus = () => {}) {
 
   memorySet(text, result)
   // Persist asynchronously; don't await — playback doesn't depend on it.
-  ttsCacheSet(text, result.data, result.samplingRate).catch(() => {})
+  ttsCacheSet(text, result.data, result.samplingRate, result.format).catch(() => {})
 
   await playBuffer(result, id, onStatus)
 }
@@ -276,10 +285,26 @@ async function playBuffer(audio, id, onStatus) {
   try { await ctx.resume() } catch { /* ignore */ }
   if (id !== requestId) return
 
-  const buffer = ctx.createBuffer(1, audio.data.length, audio.samplingRate)
-  buffer.copyToChannel(audio.data, 0)
-  const source = ctx.createBufferSource()
-  source.buffer = buffer
+  let source
+  if (audio.encoded) {
+    // Web backend TTS: decode mp3/wav ArrayBuffer via AudioContext.
+    let audioBuffer
+    try {
+      audioBuffer = await ctx.decodeAudioData(audio.data.slice(0))
+    } catch (err) {
+      console.error('[TTS] decodeAudioData failed:', err)
+      if (id === requestId) onStatus('error')
+      return
+    }
+    source = ctx.createBufferSource()
+    source.buffer = audioBuffer
+  } else {
+    // Android native worker: Float32 PCM.
+    const buffer = ctx.createBuffer(1, audio.data.length, audio.samplingRate)
+    buffer.copyToChannel(audio.data, 0)
+    source = ctx.createBufferSource()
+    source.buffer = buffer
+  }
   source.connect(ctx.destination)
   source.onended = () => {
     try { source.disconnect() } catch { /* ignore */ }

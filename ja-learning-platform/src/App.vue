@@ -35,6 +35,39 @@ const detailBack = computed(() => route.path.startsWith('/novel/') ? '/novel' : 
 const navActive = (path) => path === '/' ? route.path === '/' : route.path === path || route.path.startsWith(`${path}/`)
 const closeMenu = () => { if (window.innerWidth <= 768) store.closeMenu() }
 const onKeydown = (event) => { if (event.key === 'Escape') closeMenu() }
+
+// BUG-001 recovery: CSS animations can get stuck at currentTime:0, preventing
+// Vue's transition from completing. Add timeout fallbacks for both leave and enter.
+let leaveDoneCallback = null;
+let enterDoneCallback = null;
+
+function onTransitionLeave(el, done) {
+  leaveDoneCallback = done;
+  setTimeout(() => {
+    if (leaveDoneCallback === done) {
+      leaveDoneCallback = null;
+      done();
+    }
+  }, 900);
+}
+
+function onTransitionEnter(el, done) {
+  enterDoneCallback = done;
+  setTimeout(() => {
+    if (enterDoneCallback === done) {
+      enterDoneCallback = null;
+      done();
+    }
+  }, 900);
+}
+
+function onTransitionAfterLeave(el) {
+  leaveDoneCallback = null;
+}
+
+function onTransitionAfterEnter(el) {
+  enterDoneCallback = null;
+}
 onMounted(() => window.addEventListener('keydown', onKeydown))
 onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 const active = computed(() => {
@@ -64,7 +97,7 @@ const active = computed(() => {
 
   <main id="main-content" class="app-main" :class="{ 'mobile-nav-space': showMobileNav }">
   <router-view v-slot="{ Component }">
-    <Transition name="mobile-page" mode="out-in"><div :key="route.fullPath" class="route-stage">
+    <Transition name="mobile-page" mode="out-in" @leave="onTransitionLeave" @after-leave="onTransitionAfterLeave"><div :key="route.fullPath" class="route-stage">
     <div v-if="route.path === '/'">
       <component :is="Component" />
     </div>

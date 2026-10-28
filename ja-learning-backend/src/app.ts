@@ -17,6 +17,7 @@ import statsRoutes from './routes/stats.routes';
 import vocabularyRoutes from './routes/vocabulary.routes';
 import grammarRoutes from './routes/grammar.routes';
 import adminRoutes from './routes/admin.routes';
+import ttsRoutes from './routes/tts.routes';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/v1/stats', statsRoutes);
 app.use('/api/v1/vocabulary', vocabularyRoutes);
 app.use('/api/v1/grammar', grammarRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/tts', ttsRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

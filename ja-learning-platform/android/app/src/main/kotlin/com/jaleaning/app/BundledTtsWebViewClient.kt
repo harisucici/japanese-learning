@@ -30,7 +30,7 @@ class BundledTtsWebViewClient(private val appBridge: Bridge) : BridgeWebViewClie
                 // AAPT inflates .gz assets and removes their extension. Store the
                 // untouched archive as .gz.bin while keeping the worker URL stable.
                 val asset = path.removePrefix("/") + if (path.endsWith(".gz")) ".bin" else ""
-                WebResourceResponse(mime, null, 200, "OK", mapOf("Cache-Control" to "no-store"),
+                WebResourceResponse(mime, null, 200, "OK", mapOf("Cache-Control" to "public, max-age=31536000, immutable"),
                     appBridge.context.assets.open(asset))
             } catch (error: IOException) {
                 Log.e("BundledTTS", "Missing bundled resource: $path", error)

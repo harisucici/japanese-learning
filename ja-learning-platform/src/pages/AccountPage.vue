@@ -1178,7 +1178,7 @@ function toggleSection(section) {
   .account-page:not(.is-auth) .settings-chevron { font-size: 27px; line-height: 1; transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
   .account-page:not(.is-auth) .account-card.is-open .settings-chevron { transform: rotate(180deg); }
   .account-page:not(.is-auth) .account-card-body { display: none; padding: 0 18px 20px; }
-  .account-page:not(.is-auth) .account-card.is-open .account-card-body { display: block; animation: account-open .25s ease-out both; }
+  .account-page:not(.is-auth) .account-card.is-open .account-card-body { display: block; animation: account-open .25s ease-out both; padding-bottom: 110px; }
   .account-page:not(.is-auth) .account-card-body > p { margin: 0; font-size: 12px; line-height: 1.6; }
   .account-page:not(.is-auth) .account-columns .account-card form { margin-top: 12px; padding-top: 14px; }
   .account-page:not(.is-auth) .account-logout { margin-top: 14px; }
