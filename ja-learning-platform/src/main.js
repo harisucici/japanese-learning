@@ -11,9 +11,13 @@ const app = createApp(App).use(createPinia()).use(router)
 // Android 从 APK 内置资源加载；浏览器首次使用在线资源。
 import { loadEngine } from './utils/japaneseSpeech.js'
 if ('requestIdleCallback' in window) {
-  requestIdleCallback(() => loadEngine().catch(() => {}), { timeout: 5000 })
+  requestIdleCallback(() => loadEngine().catch(err => {
+    console.warn('[TTS] engine init failed:', err?.message || err)
+  }), { timeout: 5000 })
 } else {
-  setTimeout(() => loadEngine().catch(() => {}), 2000)
+  setTimeout(() => loadEngine().catch(err => {
+    console.warn('[TTS] engine init failed:', err?.message || err)
+  }), 2000)
 }
 
 app.mount('#app')

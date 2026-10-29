@@ -133,14 +133,15 @@ function onWorkerMessage(event) {
 }
 
 function failWorker(message) {
-  console.error('[TTS] engine failed:', message)
+  const reason = message || 'Unknown TTS engine error'
+  console.error('[TTS] engine failed:', reason)
   workerReady = false
   preloadPromise = null
   worker?.terminate()
   worker = null
-  for (const pending of pendingRequests.values()) pending.reject(new Error(message))
+  for (const pending of pendingRequests.values()) pending.reject(new Error(reason))
   pendingRequests.clear()
-  setStatus('error', message)
+  setStatus('error', reason)
 }
 
 function requestSynthesis(text, onStatus) {
